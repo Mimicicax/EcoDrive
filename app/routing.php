@@ -38,8 +38,8 @@ function registerRoute(string $method, string $route, string $endpoint, string $
 function registerAppRoutes() {
     // Itt lehet regisztrálni a végpontokat
 
-    registerRoute("GET", "/auth/login", \EcoDrive\Endpoints\AuthenticationEndpoint::class, "showLogin");
-    registerRoute("POST", "/auth/login", \EcoDrive\Endpoints\AuthenticationEndpoint::class, "doLogin", "login");
+    registerRoute("GET", "/auth/login", \EcoDrive\Endpoints\Authenticator::class, "showLogin");
+    registerRoute("POST", "/auth/login", \EcoDrive\Endpoints\Authenticator::class, "doLogin", "login");
 }
 
 function route($name) {

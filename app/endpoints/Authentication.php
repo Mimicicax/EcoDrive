@@ -7,7 +7,7 @@ use function EcoDrive\Environment\appConfig;
 require_once "config.php";
 require_once appConfig()->APP_ROOT . "/endpoints/Endpoint.php";
 
-class AuthenticationEndpoint implements Endpoint
+class Authenticator implements Endpoint
 {
     // Megjeleníti a bejelentkezés oldalát
     public function showLogin() {

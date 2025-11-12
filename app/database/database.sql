@@ -1,0 +1,26 @@
+CREATE USER IF NOT EXISTS 'ecodrive'@'localhost' IDENTIFIED BY 'ecodrive2026';
+
+CREATE DATABASE IF NOT EXISTS ecodrive DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+USE ecodrive;
+
+GRANT ALL ON `ecodrive`.* TO 'ecodrive'@'localhost' IDENTIFIED BY 'ecodrive2026';
+
+CREATE TABLE IF NOT EXISTS users (
+    id INTEGER PRIMARY KEY AUTO_INCREMENT,
+    username VARCHAR(50) NOT NULL UNIQUE,
+    email VARCHAR(250) NOT NULL UNIQUE,
+    password VARCHAR(250) NOT NULL,
+    salt CHAR(16) NOT NULL,
+    reset_token CHAR(44) NULL DEFAULT NULL,
+    reset_token_expiry TIMESTAMP NULL DEFAULT NULL
+
+);
+
+CREATE TABLE IF NOT EXISTS sessions (
+    id INTEGER PRIMARY KEY AUTO_INCREMENT,
+    user INTEGER NOT NULL UNIQUE,
+    sessionId CHAR(44) NOT NULL UNIQUE, 
+    expiry TIMESTAMP NOT NULL,
+
+    FOREIGN KEY(user) REFERENCES users(id)
+);
