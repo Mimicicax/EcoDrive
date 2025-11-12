@@ -20,7 +20,7 @@ class Config {
 
 mysqli_report(MYSQLI_REPORT_ERROR);
 
-const appConfig = new Config();
+$appConfig = new Config();
 
 if (mysqli_connect_errno()) {
     http_response_code(500);
