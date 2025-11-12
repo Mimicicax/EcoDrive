@@ -9,6 +9,8 @@ class Config {
 
     public $VIEWS_PATH;
 
+    public $SERVER_ADDR;
+
     public function __construct() {
         $this->APP_ROOT = dirname(__FILE__) . "/app";
         $this->VIEWS_PATH = $this->APP_ROOT ."/views";
@@ -22,6 +24,9 @@ class Config {
         $ECODRIVE_ENV["DB_PORT"]);
 
         $this->WWW_HOST = $ECODRIVE_ENV["WWW_HOST"];
+
+        // Úgyse fogunk https-t használni
+        $this->SERVER_ADDR = "http://" . $this->WWW_HOST;
     }
 }
 

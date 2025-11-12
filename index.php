@@ -1,15 +1,13 @@
 <?php
 
-use function EcoDrive\Environment\appConfig;
-
 require_once "./app/boot.php";
 require_once "./app/routing.php";
 require_once "./config.php";
 
+use function EcoDrive\Environment\appConfig;
+
 // Lehetővé teszi a nézetek betöltését és változók átadását az összes végpont számára
 function view(string $viewName, $data = null) {
-    $path = appConfig()->VIEWS_PATH . "/" . $viewName . ".php";
-
     // Definiáljuk a változókat, hogy a nézetben elérhetőek legyenek. Ha string típusú, akkor elkódoljuk, hogy az
     // XSS támadások ellen védekezzünk.
     if (isset($data)) {
@@ -24,7 +22,9 @@ function view(string $viewName, $data = null) {
         }
     }
 
-    return include $path;
+    $_pageContent = appConfig()->VIEWS_PATH . "/" . $viewName . ".php";
+
+    return include appConfig()->VIEWS_PATH . "/layout.php";
 }
 
 // Kérelem kezelése

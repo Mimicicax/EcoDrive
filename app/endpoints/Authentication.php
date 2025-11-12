@@ -11,7 +11,7 @@ class AuthenticationEndpoint implements Endpoint
 {
     // Megjeleníti a bejelentkezés oldalát
     public function showLogin() {
-        return include(appConfig()->APP_ROOT."/Views/login.php");
+        return view("login", [ "title" => "Bejelentkezés" ]);
     }
 
     // Bejelentkezteti a felhasználót
