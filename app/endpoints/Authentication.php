@@ -2,12 +2,16 @@
 
 namespace EcoDrive\Endpoints;
 
-require_once "Endpoint.php";
+use function EcoDrive\Environment\appConfig;
+
+require_once "config.php";
+require_once appConfig()->APP_ROOT . "/endpoints/Endpoint.php";
 
 class AuthenticationEndpoint implements Endpoint
 {
     // Megjeleníti a bejelentkezés oldalát
     public function showLogin() {
+        return include(appConfig()->APP_ROOT."/Views/login.php");
     }
 
     // Bejelentkezteti a felhasználót

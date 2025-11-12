@@ -1,7 +1,7 @@
 <?php
 
-require_once "./backend/boot.php";
-require_once "./backend/routing.php";
+require_once "./app/boot.php";
+require_once "./app/routing.php";
 
 $uri = parse_url($_SERVER["REQUEST_URI"]);
 $endpoint = EcoDrive\Routing\endpointForPath($uri["path"]);

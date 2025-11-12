@@ -2,7 +2,10 @@
 
 namespace EcoDrive\Routing;
 
-require_once dirname(__FILE__) . "/Endpoints/Authentication.php";
+use function EcoDrive\Environment\appConfig;
+
+require_once "config.php";
+require_once appConfig()->APP_ROOT."/endpoints/Authentication.php";
 
 function & _routingTable() {
     static $routingTable = [];
