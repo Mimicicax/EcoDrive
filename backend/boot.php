@@ -2,11 +2,16 @@
 
 namespace EcoDrive\Environment;
 
+require_once dirname(__FILE__).'/routing.php';
+
+// Exception helyett használjon hibakódot
+mysqli_report(MYSQLI_REPORT_ERROR);
+
 class Config {
     public $DB_CONN;
     public $WWW_HOST;
     public function __construct() {
-        $ECODRIVE_ENV = parse_ini_file(".env");
+        $ECODRIVE_ENV = parse_ini_file(dirname(__FILE__) . "/../.env");
 
         $this->DB_CONN = @mysqli_connect($ECODRIVE_ENV["DB_HOST"], 
         $ECODRIVE_ENV["DB_USER"], 
@@ -18,12 +23,20 @@ class Config {
     }
 }
 
-mysqli_report(MYSQLI_REPORT_ERROR);
+// Ezen keresztül elérhetőek a beállítások
+function appConfig() {
+    static $appConfig = new Config();
+    return $appConfig;
+}
 
-const appConfig = new Config();
+// Beállítások betöltése, adatbázis kapcsolat létrehozása
+appConfig();
 
 if (mysqli_connect_errno()) {
     http_response_code(500);
     echo "Hiba majd ezt az oldalt szépre megcsináljuk vagy nem";
     exit(0);
 }
+
+// Végpontok regisztrálása
+\EcoDrive\Routing\registerAppRoutes();

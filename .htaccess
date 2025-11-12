@@ -15,3 +15,9 @@
 <FilesMatch "\.(env|sql|conf|config|json)$">
     Require all denied
 </FilesMatch>
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteRule ^index\.php$ - [L]
+    RewriteRule . /index.php [L,QSA]
+</IfModule>
