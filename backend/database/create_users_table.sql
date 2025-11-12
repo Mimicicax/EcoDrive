@@ -14,8 +14,8 @@ CREATE TABLE IF NOT EXISTS users (
 CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);
 CREATE INDEX IF NOT EXISTS idx_users_reset_token ON users(reset_token);
 
-INSERT INTO users (username, email, password, salt) 
-SELECT 'admin', 'admin@ecodrive.com', '1@e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855', 'abcdef1234567890'
-WHERE NOT EXISTS (
-    SELECT 1 FROM users WHERE username = 'admin' OR email = 'admin@ecodrive.com'
-);
+--INSERT INTO users (username, email, password, salt) 
+--SELECT 'admin', 'admin@ecodrive.com', '1@e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855', 'abcdef1234567890'
+--WHERE NOT EXISTS (
+    --SELECT 1 FROM users WHERE username = 'admin' OR email = 'admin@ecodrive.com'
+--);
