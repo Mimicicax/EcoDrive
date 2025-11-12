@@ -1,6 +1,7 @@
 CREATE USER IF NOT EXISTS 'ecodrive'@'localhost' IDENTIFIED BY 'ecodrive2026';
 
-CREATE DATABASE IF NOT EXISTS ecodrive DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+DROP DATABASE IF EXISTS ecodrive;
+CREATE DATABASE ecodrive DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 USE ecodrive;
 
 GRANT ALL ON `ecodrive`.* TO 'ecodrive'@'localhost' IDENTIFIED BY 'ecodrive2026';
