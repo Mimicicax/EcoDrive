@@ -1,10 +1,14 @@
 <?php
 
-require_once "./app/boot.php";
-require_once "./app/routing.php";
-require_once "./config.php";
-
+use EcoDrive\Models\Session;
 use function EcoDrive\Environment\appConfig;
+use function EcoDrive\Helpers\redirect;
+
+require_once "./config.php";
+require_once appConfig()->APP_ROOT . "/boot.php";
+require_once appConfig()->APP_ROOT . "/routing.php";
+require_once appConfig()->APP_ROOT . "/models/Session.php";
+require_once appConfig()->APP_ROOT . "/helpers/Redirect.php";
 
 // Lehetővé teszi a nézetek betöltését és változók átadását az összes végpont számára
 function view(string $viewName, $data = null) {
@@ -41,6 +45,12 @@ else {
     if (!isset($endpoint))
         http_response_code(405);
 
-    else
-        (new $handler[0])->{$handler[1]}();
+    else {
+        $instance = new $handler[0];
+
+        if ($instance->requiresAuth() && !Session::isAuthenticated())
+            return redirect("login");
+
+        $instance->{$handler[1]}();
+    }
 }

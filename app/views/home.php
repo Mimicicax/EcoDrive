@@ -1,2 +1,4 @@
+<?php use EcoDrive\Models\Session; ?>
+
 <h1>Főoldal</h1>
-<p>Felhasználó: <?= $user?->username ?> </p>
+<p>Felhasználó: <?= Session::currentUser()?->username ?> </p>

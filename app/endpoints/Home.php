@@ -11,7 +11,7 @@ require_once appConfig()->APP_ROOT . "/models/Session.php";
 class Home implements Endpoint
 {
     public function show() {
-        return view("home", [ "user" => Session::currentUser() ]);
+        return view("home");
     }
 
     public static function requiresAuth(): bool {

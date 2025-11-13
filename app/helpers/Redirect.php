@@ -6,7 +6,7 @@ use function EcoDrive\Environment\appConfig;
 use function EcoDrive\Routing\route;
 
 require_once "config.php";
-require_once appConfig()->APP_ROOT . "/app/routing.php";
+require_once appConfig()->APP_ROOT . "/routing.php";
 
 enum RedirectType {
     case Normal;

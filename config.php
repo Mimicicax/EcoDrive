@@ -2,6 +2,8 @@
 
 namespace EcoDrive\Environment;
 
+use DateTimeZone;
+
 class Config {
     public $DB_CONN;
     public $WWW_HOST;
@@ -12,6 +14,9 @@ class Config {
     public $SERVER_ADDR;
 
     public $SESSION_COOKIE_NAME;
+
+    public $DB_DATETIME_FORMAT;
+    public $DB_DATETIME_TIMEZONE;
 
     public function __construct() {
         $this->APP_ROOT = dirname(__FILE__) . "/app";
@@ -31,6 +36,10 @@ class Config {
         $this->SERVER_ADDR = "http://" . $this->WWW_HOST;
 
         $this->SESSION_COOKIE_NAME = "ECODRIVE_SESSION";
+
+        $this->DB_DATETIME_FORMAT = "Y-m-d G:i:s";
+
+        $this->DB_DATETIME_TIMEZONE = new DateTimeZone("UTC");
     }
 }
 
