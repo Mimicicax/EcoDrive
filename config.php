@@ -35,11 +35,11 @@ class Config {
         // Úgyse fogunk https-t használni
         $this->SERVER_ADDR = "http://" . $this->WWW_HOST;
 
-        $this->SESSION_COOKIE_NAME = "ECODRIVE_SESSION";
+        $this->SESSION_COOKIE_NAME = $ECODRIVE_ENV["SESSION_COOKIE_NAME"];
 
-        $this->DB_DATETIME_FORMAT = "Y-m-d G:i:s";
+        $this->DB_DATETIME_FORMAT = $ECODRIVE_ENV["DB_DATETIME_FORMAT"];
 
-        $this->DB_DATETIME_TIMEZONE = new DateTimeZone("UTC");
+        $this->DB_DATETIME_TIMEZONE = new DateTimeZone($ECODRIVE_ENV["DB_DATETIME_TIMEZONE"]);
     }
 }
 
