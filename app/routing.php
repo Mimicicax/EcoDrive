@@ -14,7 +14,34 @@ function registerAppRoutes() {
     registerRoute("POST", "/auth/login", \EcoDrive\Endpoints\Authenticator::class, "doLogin", "login");
 }
 
-namespace Internal {
+function endpointForPath(string $route) {
+    if (!array_key_exists($route, Internal\routingTable()))
+        return null;
+
+    return Internal\routingTable()[$route];
+}
+
+function registerRoute(string $method, string $route, string $endpoint, string $handler, ?string $name = null) {
+    if (!array_key_exists($route,Internal\routingTable()))
+        Internal\routingTable()[$route] = [ $method => [$endpoint, $handler] ];
+
+    else
+        Internal\routingTable()[$route][$method] =[ $endpoint, $handler];
+
+    if (isset($name))
+        Internal\routeNameTable()[$name] = appConfig()->SERVER_ADDR . $route;
+}
+
+function route($name) {
+    if (!array_key_exists($name, Internal\routeNameTable()))
+        return null;
+
+    return Internal\routeNameTable()[$name];
+}
+
+}
+
+namespace EcoDrive\Routing\Internal {
     function & routingTable() {
         static $routingTable = [];
         return $routingTable;
@@ -24,31 +51,4 @@ namespace Internal {
         static $names = [];
         return $names;
     }
-}
-
-function endpointForPath(string $route) {
-    if (!array_key_exists($route, \Internal\routingTable()))
-        return null;
-
-    return \Internal\routingTable()[$route];
-}
-
-function registerRoute(string $method, string $route, string $endpoint, string $handler, ?string $name = null) {
-    if (!array_key_exists($route,\Internal\routingTable()))
-        \Internal\routingTable()[$route] = [ $method => [$endpoint, $handler] ];
-
-    else
-        \Internal\routingTable()[$route][$method] =[ $endpoint, $handler];
-
-    if (isset($name))
-        \Internal\routeNameTable()[$name] = appConfig()->SERVER_ADDR . $route;
-}
-
-function route($name) {
-    if (!array_key_exists($name, \Internal\routeNameTable()))
-        return null;
-
-    return \Internal\routeNameTable()[$name];
-}
-
 }
