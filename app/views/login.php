@@ -8,6 +8,4 @@
     <input type="submit">
 </form>
 
-<?php if (isset($loginError)): ?>
-    Bejelentkezési hiba
-<?php endif ?>
+<?= $errors["loginError"] ?? "" ?>

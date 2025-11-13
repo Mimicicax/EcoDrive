@@ -11,7 +11,7 @@ require_once appConfig()->APP_ROOT . "/models/Session.php";
 require_once appConfig()->APP_ROOT . "/helpers/Redirect.php";
 
 // Lehetővé teszi a nézetek betöltését és változók átadását az összes végpont számára
-function view(string $viewName, $data = null) {
+function view(string $viewName, $data = null, $errors = null) {
     // Definiáljuk a változókat, hogy a nézetben elérhetőek legyenek. Ha string típusú, akkor elkódoljuk, hogy az
     // XSS támadások ellen védekezzünk.
     if (isset($data)) {
