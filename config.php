@@ -11,6 +11,8 @@ class Config {
 
     public $SERVER_ADDR;
 
+    public $SESSION_COOKIE_NAME;
+
     public function __construct() {
         $this->APP_ROOT = dirname(__FILE__) . "/app";
         $this->VIEWS_PATH = $this->APP_ROOT ."/views";
@@ -27,6 +29,8 @@ class Config {
 
         // Úgyse fogunk https-t használni
         $this->SERVER_ADDR = "http://" . $this->WWW_HOST;
+
+        $this->SESSION_COOKIE_NAME = "ECODRIVE_SESSION";
     }
 }
 
