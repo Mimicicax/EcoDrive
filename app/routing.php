@@ -6,9 +6,12 @@ use function EcoDrive\Environment\appConfig;
 
 require_once "config.php";
 require_once appConfig()->APP_ROOT."/endpoints/Authentication.php";
+require_once appConfig()->APP_ROOT."/endpoints/Home.php";
 
 function registerAppRoutes() {
     // Itt lehet regisztrálni a végpontokat
+
+    registerRoute("GET", "/", \EcoDrive\Endpoints\Home::class, "show", "home");
 
     registerRoute("GET", "/auth/login", \EcoDrive\Endpoints\Authenticator::class, "showLogin");
     registerRoute("POST", "/auth/login", \EcoDrive\Endpoints\Authenticator::class, "doLogin", "login");
