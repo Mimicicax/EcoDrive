@@ -15,15 +15,14 @@ function view(string $viewName, $data = null, $errors = null) {
     // Definiáljuk a változókat, hogy a nézetben elérhetőek legyenek. Ha string típusú, akkor elkódoljuk, hogy az
     // XSS támadások ellen védekezzünk.
     if (isset($data)) {
-        foreach ($data as $varName => $value) {
-            global ${$varName};
-
-            if (gettype($value) === "string")
-                ${$varName} = htmlspecialchars($value, ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5);
-
+        extract(array_map(function($val) {
+            if (gettype($val) === "string")
+                return htmlspecialchars($val, ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5);
+            
             else
-                ${$varName} = $value;
-        }
+                return $val;
+        }, 
+        $data));
     }
 
     $_pageContent = appConfig()->VIEWS_PATH . "/" . $viewName . ".php";
