@@ -18,6 +18,10 @@ class User {
 
     private const findByEmailQuery = "SELECT * FROM users WHERE email LIKE ?";
     private const findByUsernameQuery = "SELECT * FROM users WHERE username LIKE ?";
+    private const existsByUsernameQuery = "SELECT COUNT(*) FROM users WHERE username LIKE ?";
+    private const existsByEmailQuery = "SELECT COUNT(*) FROM users WHERE email LIKE ?";
+
+    private const createUserQuery = "INSERT INTO users(username, email, password) VALUES(?, ?, ?)";
 
     public function __construct($row) {
         $this->id = $row["id"] ?? -1;
@@ -53,12 +57,6 @@ class User {
         }
 
         $results = mysqli_stmt_get_result($stmt);
-
-        if ($results === false) {
-            mysqli_stmt_close($stmt);
-            return null;
-        }
-
         $fields = mysqli_fetch_assoc($results);
 
         mysqli_free_result($results);
@@ -68,6 +66,44 @@ class User {
             return null;
 
         return new User($fields);
+    }
+
+    public static function exists(string $uname, int $mode): ?bool {
+        if (!($stmt = mysqli_prepare(appConfig()->DB_CONN, $mode === User::FIND_BY_USERNAME ? User::existsByUsernameQuery : User::existsByEmailQuery)) ||
+            !mysqli_stmt_bind_param($stmt, "s", $uname) ||
+            !mysqli_stmt_execute($stmt)) {
+
+            mysqli_stmt_close($stmt);
+            return null;
+        }
+
+        $result = mysqli_stmt_get_result($stmt);
+        $fields = mysqli_fetch_array($result);
+
+        mysqli_stmt_close($stmt);
+        mysqli_free_result($result);
+
+        if (empty($fields))
+            return null;
+
+        return $fields[0] != 0;
+    }
+
+    public static function create(string $username, string $email, string $password): ?User {
+        $password = password_hash($password, PASSWORD_ARGON2I);
+
+        if (!($stmt = mysqli_prepare(appConfig()->DB_CONN, User::createUserQuery)) ||
+            !mysqli_stmt_bind_param($stmt, "sss", $username, $email, $password) ||
+            !mysqli_stmt_execute($stmt)) {
+
+            mysqli_stmt_close($stmt);
+            return null;
+        }
+
+        $u = new User(null);
+        $u->id = mysqli_insert_id(appConfig()->DB_CONN);
+
+        return $u;
     }
 
     public function passwordEquals($plaintextPassword) {
