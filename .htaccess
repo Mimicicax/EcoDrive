@@ -11,17 +11,9 @@
     Options -Indexes
 </IfModule>
 
-# Deny access to sensitive files
-<FilesMatch "\.(env|sql|conf|config|json)$">
-    Require all denied
-</FilesMatch>
-
-<FilesMatch "^config.php$">
-    Require all denied
-</FilesMatch>
-
 <IfModule mod_rewrite.c>
     RewriteEngine On
+    RewriteRule ^assets - [L]
     RewriteRule ^index\.php$ - [L]
     RewriteRule . /index.php [L,QSA]
 </IfModule>
