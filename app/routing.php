@@ -34,7 +34,7 @@ function registerRoute(string $method, string $route, string $endpoint, string $
         Internal\routingTable()[$route][$method] =[ $endpoint, $handler];
 
     if (isset($name))
-        Internal\routeNameTable()[$name] = appConfig()->SERVER_ADDR . $route;
+        Internal\routeNameTable()[$name] = $route;
 }
 
 function route($name) {
