@@ -30,15 +30,21 @@ function view(string $viewName, $data = null, $errors = null) {
     return include appConfig()->VIEWS_PATH . "/layout.php";
 }
 
+// Kiszámolja az adott asset (az assets mappában lévő dolgok) címét, hogy a kliens le tudja kérni
+function asset(string $fileName) {
+    return "/assets/$fileName";
+}
+
 // Kérelem kezelése
 
 $uri = parse_url($_SERVER["REQUEST_URI"]);
 $endpoint = \EcoDrive\Routing\endpointForPath($uri["path"]);
 
-if (!isset($endpoint))
+if (!isset($endpoint)) {
     http_response_code(404);
+    return view("404");
 
-else {
+} else {
     $handler = $endpoint[strtoupper($_SERVER['REQUEST_METHOD'])];
 
     if (!isset($endpoint))
