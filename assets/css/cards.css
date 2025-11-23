@@ -1,0 +1,33 @@
+/* Kártya (fehér lekerekített sarkú tárolóegység) stílusa */
+.card {
+    display: flex;
+    flex-flow: column;
+    max-width: fit-content;
+    padding: 2em;
+    border-radius: 10px;
+    background-color: var(--secondary-background-color);
+    transition: transform 200ms linear;
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.1);
+}
+
+.card:hover {
+    transform: translateY(-3px);
+}
+
+/* A bejelentkező kártya stílusa */
+.card.login {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.card.login > form > span:has(.button) {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1em;
+}
+
+.card.login > h1 {
+    text-align: center;
+}

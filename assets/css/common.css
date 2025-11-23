@@ -1,0 +1,37 @@
+* {
+    box-sizing: border-box;
+    font-family: "Lexend Deca", sans-serif;
+}
+
+html {
+    --text-color-primary: #c8d6e5;
+    --accent-color-primary: #10ac84;
+    --accent-color-light: #1dd1a1;
+    --border-color-unfocused: #8395a7;
+    --link-color: #0a3d62; 
+    --link-color-active: #ff6b6b; 
+    --ambient-background-color: #121921;
+    --secondary-background-color: #1b2632;
+    --error-color: #ee5253;
+
+    background-color: var(--ambient-background-color);
+    color: var(--text-color-primary);
+    caret-color: var(--text-color-primary);
+}
+
+form {
+    display: flex;
+    flex-flow: column;
+}
+
+a {
+    color: var(--accent-color-primary);
+}
+
+a:active {
+    color: var(--link-color-active);
+}
+
+.error {
+    color: var(--error-color);
+}

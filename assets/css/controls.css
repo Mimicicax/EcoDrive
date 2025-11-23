@@ -1,0 +1,87 @@
+input {
+    border: none;
+    outline: 2px solid var(--border-color-unfocused);
+    background-color: var(--secondary-background-color);
+    color: var(--text-color-primary);
+}
+
+input::placeholder {
+    color: #576574;
+}
+
+input:focus-visible {
+    outline: 2px solid var(--accent-color-primary);
+}
+
+.button {
+    outline: none;
+    border-radius: 10px;
+    border: 2px solid var(--accent-color-primary);
+    padding: 1em 2em;
+    text-decoration: none;
+    font-weight: 500;
+    cursor: default;
+    color: var(--accent-color-primary);
+    font-size: 0.9rem;
+    background-color: var(--secondary-background-color);
+    transition: transform 100ms linear;
+}
+
+.button:hover, .button:focus {
+    transform: scale(1.02);
+}
+
+.button:active {
+    color: var(--accent-color-primary);
+    transform: scale(0.98);
+}
+
+.button.primary {
+    color: white;
+    background-image: linear-gradient(to left, var(--accent-color-light), var(--accent-color-primary));
+    border: none;
+}
+
+.button.primary:active { color: white; }
+
+/* Az input groupok egy inputból és egy labelből állnak. A label az input körvonalán fekszik */
+.input-group {
+    position: relative;
+    margin: 1rem 0;
+    color: var(--border-color-unfocused);
+}
+
+.input-group > input {
+    padding: 1rem 1rem;
+    border-radius: 0.35rem;
+    width: 100%;
+}
+
+.input-group > label {
+    background-color: var(--secondary-background-color);
+    position: absolute;
+    color: inherit;
+    font-size: 0.8em;
+    padding: 0 0.5rem;
+    top: -0.5rem;
+    left: 1em;
+    transition: left 100ms linear, font-size 100ms linear;
+}
+
+.input-group.error > label {
+    color: var(--error-color);
+}
+
+.input-group:focus-within > label {
+    color: var(--accent-color-primary);
+    left: 1.1em;
+    font-size: 0.9em;
+}
+
+.input-group.error > input {
+    outline-color: var(--error-color);
+}
+
+.input-group.error:focus-within > label {
+    color: var(--error-color);
+}
