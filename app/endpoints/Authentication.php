@@ -17,7 +17,7 @@ require_once appConfig()->APP_ROOT . "/helpers/Redirect.php";
 class Authenticator implements Endpoint
 {
     private const loginError = "A felhasználónév vagy jelszó helytelen";
-    private const usernameLengthError = "A felhasználónév minimum 1, maximum 50 bájtból állhat";
+    private const usernameLengthError = "A felhasználónév minimum 1, maximum 50 karakterből állhat";
     private const usernameCodePointError = "Érvénytelen karakter a felhasználónévben";
     private const usernameTakenError = "A felhasználónév már foglalt";
     private const invalidEmailError = "Az email cím formátuma helytelen";
@@ -56,8 +56,8 @@ class Authenticator implements Endpoint
             return redirect("home", true, RedirectType::SeeOther);
         }
 
-        // Nincs ilyen felhasználó vagy a jelszó helytelen
-        return $this->loginView(null, [ "loginError" => Authenticator::loginError ]);
+        // Nincs ilyen felhasználó vagy a jelszó helytelen. A felhasználónevet visszaadjuk, hogy ne kelljen újra kitöltenie (valószínűleg a jelszó helytelen)
+        return $this->loginView(["providedUsername" => $username ], [ "loginError" => Authenticator::loginError]);
     }
 
     // Regisztrál egy felhasználót
@@ -79,7 +79,7 @@ class Authenticator implements Endpoint
             $errors["passwordError"] = $e;
         
         if (!empty($errors))
-            return $this->registrationView(null, $errors);
+            return $this->registrationView([ "providedUsername" => $username, "providedEmail" => $email ], $errors);
 
         // Érvényes adatok, készítünk egy fiókot és sessiont
         $newUser = User::create($username, $email, $pass);

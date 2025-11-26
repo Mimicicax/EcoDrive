@@ -1,12 +1,12 @@
 #container-404 {
+    display: flex;
+    flex-flow: column;
+    align-items: center;
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
     text-align: center;
-    display: flex;
-    flex-flow: column;
-    gap: 1em;
 }
 
 #container-404 > h1 {
@@ -15,4 +15,8 @@
     color: transparent;
     background-clip: text;
     margin-bottom: 0;
+}
+
+#container-404 > a {
+    margin-top: 1em;
 }

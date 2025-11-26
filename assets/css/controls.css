@@ -1,5 +1,7 @@
 input {
     border: none;
+    border-radius: 0.35rem;
+    padding: 1rem 1rem;
     outline: 2px solid var(--border-color-unfocused);
     background-color: var(--secondary-background-color);
     color: var(--text-color-primary);
@@ -14,11 +16,13 @@ input:focus-visible {
 }
 
 .button {
+    display: inline-block;
     outline: none;
     border-radius: 10px;
     border: 2px solid var(--accent-color-primary);
     padding: 1em 2em;
     text-decoration: none;
+    text-align: center;
     font-weight: 500;
     cursor: default;
     color: var(--accent-color-primary);
@@ -52,8 +56,6 @@ input:focus-visible {
 }
 
 .input-group > input {
-    padding: 1rem 1rem;
-    border-radius: 0.35rem;
     width: 100%;
 }
 
@@ -76,6 +78,11 @@ input:focus-visible {
     color: var(--accent-color-primary);
     left: 1.1em;
     font-size: 0.9em;
+}
+
+.input-group:has(input:required) > label::after {
+    content: ' *';
+    color: var(--error-color);
 }
 
 .input-group.error > input {
