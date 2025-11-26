@@ -4,8 +4,10 @@ use EcoDrive\Models\Session;
 use function EcoDrive\Environment\appConfig;
 use function EcoDrive\Helpers\redirect;
 
+// Fontos: ez bebootolja az alkalmazást, a többi kód és require ez alatt legyen. Egyedül a confignak nincs rá garantáltan szüksége
+require_once "./boot.php";
 require_once "./config.php";
-require_once appConfig()->APP_ROOT . "/boot.php";
+
 require_once appConfig()->APP_ROOT . "/routing.php";
 require_once appConfig()->APP_ROOT . "/models/Session.php";
 require_once appConfig()->APP_ROOT . "/helpers/Redirect.php";
@@ -56,6 +58,13 @@ if (!isset($endpoint)) {
         if ($instance->requiresAuth() && !Session::isAuthenticated())
             return redirect("login");
 
-        $instance->{$handler[1]}();
+        try {
+            $instance->{$handler[1]}();
+
+        } catch (\Throwable) {
+            // Valamilyen végzetes, kezeletlen hiba történt
+            http_response_code(500);
+            return view("500");
+        }
     }
 }

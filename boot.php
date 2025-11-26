@@ -3,19 +3,20 @@
 use function EcoDrive\Environment\appConfig;
 
 require_once 'config.php';
-require_once 'routing.php';
 
-// Exception helyett használjon hibakódot
-mysqli_report(MYSQLI_REPORT_ERROR);
+mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
 
 // Beállítások betöltése, adatbázis kapcsolat létrehozása
 EcoDrive\Environment\appConfig();
 
-if (mysqli_connect_errno()) {
+if (appConfig()->loadFailed()) {
     http_response_code(500);
-    echo "Hiba majd ezt az oldalt szépre megcsináljuk vagy nem";
+    view("500");
     exit(0);
 }
+
+// A routingot csak itt hozzuk be, mert lehet szüksége van a configra, ami csak most lett sikeresen inicializálva
+require_once appConfig()->APP_ROOT . "/routing.php";
 
 // Végpontok regisztrálása
 \EcoDrive\Routing\registerAppRoutes();
