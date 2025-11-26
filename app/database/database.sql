@@ -23,3 +23,10 @@ CREATE TABLE IF NOT EXISTS sessions (
 
     FOREIGN KEY(user) REFERENCES users(id)
 );
+
+SET GLOBAL event_scheduler = ON;
+
+CREATE EVENT IF NOT EXISTS SessionCleanupEvent
+ON SCHEDULE EVERY 1 DAY
+COMMENT "Kitörli a lejárt sessionöket"
+DO DELETE FROM sessions WHERE expiry <= NOW();
