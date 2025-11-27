@@ -553,8 +553,8 @@ def parseCSS(content):
 					token.data = variableMap[token.data]
 
 				else:
-					variableMap[token.data] = "--" + str(symbolCount + 1)
-					token.data = "--" + str(symbolCount + 1)
+					variableMap[token.data] = "--v" + str(symbolCount + 1)
+					token.data = "--v" + str(symbolCount + 1)
 					symbolCount += 1
 			
 			elif token.tokenType == Token.TOKEN_TYPE_WS:
