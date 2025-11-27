@@ -61,8 +61,12 @@ if (!isset($endpoint)) {
         try {
             $instance->{$handler[1]}();
 
-        } catch (\Throwable) {
+        } catch (\Throwable $ex) {
             // Valamilyen végzetes, kezeletlen hiba történt
+
+            if (appConfig()->DEBUG_MODE)
+                throw $ex;
+            
             http_response_code(500);
             return view("500");
         }

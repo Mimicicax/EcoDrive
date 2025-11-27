@@ -14,6 +14,8 @@ class Config {
     public $SESSION_COOKIE_NAME;
     public $DB_DATETIME_FORMAT;
     public $DB_DATETIME_TIMEZONE;
+    public $DEBUG_MODE;
+
     private bool $initError;
 
     public function __construct() {
@@ -33,6 +35,7 @@ class Config {
         }
 
         $this->WWW_HOST = $ECODRIVE_ENV["WWW_HOST"];
+        $this->DEBUG_MODE = (bool) $ECODRIVE_ENV["DEBUG_MODE"];
 
         // Úgyse fogunk https-t használni
         $this->SERVER_ADDR = "http://" . $this->WWW_HOST;
