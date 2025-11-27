@@ -5,15 +5,16 @@
 
 html {
     --text-color-primary: #c8d6e5;
+    --text-color-secondary: #8395a7;
     --accent-color-primary: #10ac84;
-    --accent-color-light: #1dd1a1;
+    --accent-color-secondary: #1dd1a1;
     --border-color-unfocused: #8395a7;
-    --link-color: #0a3d62; 
     --link-color-active: #ff6b6b; 
     --ambient-background-color: #121921;
     --secondary-background-color: #1b2632;
+    --ambient-background-color-darker: #090d10;
     --error-color: #ee5253;
-
+    --danger-color: #c23616;
     background-color: var(--ambient-background-color);
     color: var(--text-color-primary);
     caret-color: var(--text-color-primary);

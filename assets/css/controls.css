@@ -42,11 +42,30 @@ input:focus-visible {
 
 .button.primary {
     color: white;
-    background-image: linear-gradient(to left, var(--accent-color-light), var(--accent-color-primary));
+    background-image: linear-gradient(to left, var(--accent-color-secondary), var(--accent-color-primary));
     border: none;
 }
 
 .button.primary:active { color: white; }
+
+.button.danger {
+    border-color: var(--danger-color);
+    color: var(--danger-color);
+}
+
+.button.primary.danger {
+    background-image: linear-gradient(to left, var(--danger-color), var(--error-color));
+    color: white;
+}
+
+input[type="number"] {
+    -moz-appearance: textfield;
+}
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+}
 
 /* Az input groupok egy inputból és egy labelből állnak. A label az input körvonalán fekszik */
 .input-group {

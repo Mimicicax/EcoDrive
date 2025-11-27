@@ -1,0 +1,17 @@
+.vehicle-button-grid, .vehicle-numeric-input-group {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1em;
+}
+
+.vehicle.card .license-plate {
+    font-weight: 700;
+}
+
+.vehicle-container-header {
+    margin: 2em 0em;
+}
+
+.vehicle.card-container {
+    height: 100%;
+}
