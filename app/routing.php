@@ -7,6 +7,7 @@ use function EcoDrive\Environment\appConfig;
 require_once "config.php";
 require_once appConfig()->APP_ROOT."/endpoints/Authentication.php";
 require_once appConfig()->APP_ROOT."/endpoints/Home.php";
+require_once appConfig()->APP_ROOT."/endpoints/Vehicles.php";
 
 function registerAppRoutes() {
     // Itt lehet regisztrálni a végpontokat
@@ -17,6 +18,10 @@ function registerAppRoutes() {
     registerRoute("POST", "/auth/login", \EcoDrive\Endpoints\Authenticator::class, "processLogin", "login");
     registerRoute("GET", "/auth/register", \EcoDrive\Endpoints\Authenticator::class, "showRegistration");
     registerRoute("POST", "/auth/register", \EcoDrive\Endpoints\Authenticator::class, "processRegistration", "register");
+
+    registerRoute("GET", "/vehicles", \EcoDrive\Endpoints\Vehicles::class, "show", "vehicles");
+    registerRoute("POST", "/vehicles", \EcoDrive\Endpoints\Vehicles::class, "create");
+    registerRoute("PATCH", "/vehicles", \EcoDrive\Endpoints\Vehicles::class, "update");
 }
 
 function endpointForPath(string $route) {
