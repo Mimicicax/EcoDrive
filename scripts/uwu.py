@@ -563,10 +563,12 @@ def parseCSS(content):
 					tokenList[len(tokenList) - 1].tokenType == Token.TOKEN_TYPE_OPEN_CURLY or \
 					tokenList[len(tokenList) - 1].tokenType == Token.TOKEN_TYPE_COLON or \
 					tokenList[len(tokenList) - 1].tokenType == Token.TOKEN_TYPE_SEMICOLON or \
-					tokenList[len(tokenList) - 1].tokenType == Token.TOKEN_TYPE_COMMA:
+					tokenList[len(tokenList) - 1].tokenType == Token.TOKEN_TYPE_COMMA or \
+					tokenList[len(tokenList) - 1].tokenType == Token.TOKEN_TYPE_DELIM:
 					continue
 
-			elif token.tokenType == Token.TOKEN_TYPE_OPEN_CURLY and len(tokenList) != 0 and tokenList[len(tokenList) - 1].tokenType == Token.TOKEN_TYPE_WS:
+			elif (token.tokenType == Token.TOKEN_TYPE_OPEN_CURLY or token.tokenType == Token.TOKEN_TYPE_COMMA or token.tokenType == Token.TOKEN_TYPE_DELIM) and \
+				  len(tokenList) != 0 and tokenList[len(tokenList) - 1].tokenType == Token.TOKEN_TYPE_WS:
 				tokenList.pop()
 
 			elif token.tokenType == Token.TOKEN_TYPE_CLOSE_CURLY and tokenList[len(tokenList) - 1].tokenType == Token.TOKEN_TYPE_SEMICOLON:
