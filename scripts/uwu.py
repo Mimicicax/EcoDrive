@@ -139,7 +139,7 @@ def startsIdentSequence(content, ptr):
 		return True
 	
 	elif ch1 == '-':
-		if isIdentStartChar(ch2) or ch2 == '-' or startsValidEscape(ptr + 1, content):
+		if isIdentStartChar(ch2) or ch2 == '-' or startsValidEscape(content, ptr + 1):
 			return True
 		
 		return False
