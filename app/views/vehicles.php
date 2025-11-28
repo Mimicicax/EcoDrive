@@ -1,8 +1,10 @@
 <?php use function EcoDrive\Routing\route ?>
 
 <div class="vehicle-container-header">
-    Itt majd fasza lesz
     <p>Találatok száma: <?= empty($vehicleList) ? 0 : count($vehicleList) ?> db</p>
+    <button class="button primary" onclick="openModal(document.querySelector('#add-vehicle-popup'))">
+        Jármű hozzáadása
+    </button>
 </div>
 
 <?php if (empty($vehicleList)): ?>
@@ -13,6 +15,116 @@
     </span>
 </div>
 <?php else: ?>
+
+<dialog id="add-vehicle-popup" 
+        class="card" 
+        oncancel="closeModal(document.querySelector('#add-vehicle-popup'))">
+    <p>Jármű hozzáadása</p>
+    <form action="<?= route("vehicles") ?>" method="POST">
+        <div class="input-group <?= isset($errors["createError"]) && isset($errors["brandError"]) ? "error" : "" ?>">
+            <label for="add-vehicle-brand-field">
+                Márka
+            </label>
+            <input type="text" 
+                placeholder="Márka" 
+                id="add-vehicle-brand-field" 
+                name="brand" 
+                required 
+                value="<?= isset($errors["createError"]) ? $providedBrand : "" ?>">
+        </div>
+
+        <?php if (isset($errors["createError"]) && isset($errors["brandError"])): ?>
+            <span class="error">
+                <?= $errors["brandError"] ?>
+            </span>
+        <?php endif ?>
+
+        <div class="input-group <?= isset($errors["createError"]) && isset($errors["modelError"]) ? "error" : "" ?>">
+            <label for="add-vehicle-model-field">
+                Modell
+            </label>
+            <input type="text" 
+                placeholder="Modell" 
+                id="add-vehicle-model-field" 
+                name="model"
+                value="<?= isset($errors["createError"]) ? $providedModel : "" ?>">
+                required>
+        </div>
+
+        <?php if (isset($errors["createError"]) && isset($errors["modelError"])): ?>
+            <span class="error">
+                <?= $errors["modelError"] ?>
+            </span>
+        <?php endif ?>
+
+        <div class="input-group <?= isset($errors["createError"]) && isset($errors["licensePlateError"]) ? "error" : "" ?>">
+            <label for="add-vehicle-plate-field">
+                Rendszám
+            </label>
+            <input type="text" 
+                placeholder="Rendszám"
+                id="add-vehicle-plate-field" 
+                name="licensePlate"
+                value="<?= isset($errors["createError"]) ? $providedLicensePlate : "" ?>"
+                required>
+        </div>
+
+        <?php if (isset($errors["createError"]) && isset($errors["licensePlateError"])): ?>
+            <span class="error">
+                <?= $errors["licensePlateError"] ?>
+            </span>
+        <?php endif ?>
+
+        <span class="vehicle-numeric-input-group">
+            <div class="input-group <?= isset($errors["createError"]) && isset($errors["yearError"]) ? "error" : "" ?>">
+                <label for="add-vehicle-year-field">Évjárat</label>
+                <input type="number"
+                    placeholder="Évjárat"
+                    id="add-vehicle-plate-field"
+                    name="year"
+                    min="1900"
+                    max="<?= getdate()["year"] ?>"
+                    value="<?= isset($errors["createError"]) ? $providedYear : "" ?>"
+                    required
+                    >
+            </div>
+
+            <div class="input-group <?= isset($errors["createError"]) && isset($errors["consumptionError"]) ? "error" : "" ?>">
+                <label for="add-vehicle-consumption-field">
+                    Fogyasztás
+                </label>
+                <input type="text" 
+                    inputmode="decimal"
+                    placeholder="Fogyasztás (L/100 km)" 
+                    id="add-vehicle-consumption-field" 
+                    name="consumption" 
+                    value="<?= isset($errors["createError"]) ? $providedConsumption : "" ?>"
+                    required
+                >
+            </div>
+        </span>
+
+        <?php if (isset($errors["createError"]) && isset($errors["yearError"])): ?>
+            <span class="error">
+                <?= $errors["yearError"] ?>
+            </span>
+        <?php endif ?>
+            
+        <?php if (isset($errors["createError"]) && isset($errors["consumptionError"])): ?>
+            <span class="error">
+                <?= $errors["consumptionError"] ?>
+            </span>
+        <?php endif ?>
+
+        <span class="vehicle-button-grid">
+            <button type="button" class="button" onclick="closeModal(document.querySelector('#add-vehicle-popup'))">
+                Mégsem
+            </button>
+            <input type="submit" value="Hozzáadás" class="button primary">
+        </span>
+    </form>
+</dialog>
+
 <h1>Járműveim</h1>
 <div class="vehicle card-container">
     <?php foreach ($vehicleList as $vehicle): ?>
@@ -83,11 +195,11 @@
 
                     <div class="input-group">
                         <label for="<?= "$idPrefix-consumption" ?>">
-                            Fogyasztás (L/100 km)
+                            Fogyasztás
                         </label>
                         <input type="text" 
                             inputmode="decimal"
-                            placeholder="Fogyasztás" 
+                            placeholder="Fogyasztás (L/100 km)" 
                             id="<?= "$idPrefix-consumption" ?>" 
                             name="consumption" 
                             value="<?= $vehicle["consumption"] ?>"
@@ -95,10 +207,10 @@
                     </div>    
                 </span>
                 <span class="vehicle-button-grid">
-                    <button class="button danger">
+                    <button type="button" class="button danger">
                         Jármű törlése
                     </button>
-                    <input type="submit" value="Változtatások mentése" class="button primary">
+                    <input type="submit" value="Mentés" class="button primary">
                 </span>
             </form>
         </div>
