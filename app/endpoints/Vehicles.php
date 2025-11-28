@@ -84,7 +84,29 @@ class Vehicles implements Endpoint
     }
 
     public function delete() {
-        
+        parse_str($_SERVER['QUERY_STRING'], $params);
+
+        if (!isset($params["licensePlate"])) {
+            http_response_code(422);
+            echo "{\"error\": \"" . Vehicles::plateRequiredError . "\"}";
+
+        } else {
+            $err = Vehicle::delete(Session::currentUser(), trim($params["licensePlate"]));
+
+            if ($err === Vehicle::ERROR_NO_ERROR)
+                http_response_code(200);
+
+            else if ($err === Vehicle::ERROR_NOT_AUTHORISED)
+                http_response_code(401);
+
+            else if ($err === Vehicle::ERROR_NOT_FOUND)
+                http_response_code(404);
+
+            else if ($err === null)
+                http_response_code(500);
+
+            echo $params["licensePlate"];
+        }
     }
 
     public static function requiresAuth(): bool {
@@ -131,6 +153,12 @@ class Vehicles implements Endpoint
 
             return $exists ? Vehicles::plateExistsError : false;
         }
+
+        // TODO: eegyéni rendszámok validálása. Lehetséges formátumok:
+        // Három betű + négy szám, pl. ARC0717
+        // Négy betű + három szám, pl. BBKA313
+        // Öt betű + két szám, pl. PECAS19
+        // Hat betű + egy szám: DANIKA1
 
         return Vehicles::plateFormatError;
     }

@@ -22,6 +22,7 @@ function registerAppRoutes() {
     registerRoute("GET", "/vehicles", \EcoDrive\Endpoints\Vehicles::class, "show", "vehicles");
     registerRoute("POST", "/vehicles", \EcoDrive\Endpoints\Vehicles::class, "create");
     registerRoute("PATCH", "/vehicles", \EcoDrive\Endpoints\Vehicles::class, "update");
+    registerRoute("DELETE", "/vehicles", \EcoDrive\Endpoints\Vehicles::class, "delete");
 }
 
 function endpointForPath(string $route) {
