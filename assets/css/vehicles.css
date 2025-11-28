@@ -1,5 +1,6 @@
 .vehicle-button-grid, .vehicle-numeric-input-group {
     display: grid;
+    position: relative;
     width: 100%;
     grid-template-columns: repeat(2, 1fr);
     gap: 1em;
@@ -8,6 +9,17 @@
 .vehicle.card .license-plate {
     font-size: 1.1em;
     font-weight: 700;
+}
+
+.vehicle.card > p {
+    max-width: 300px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.vehicle-container-header {
+    margin: 2em 0;
 }
 
 #add-vehicle-popup {

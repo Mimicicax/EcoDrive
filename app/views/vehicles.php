@@ -1,20 +1,12 @@
 <?php use function EcoDrive\Routing\route ?>
 
+<h1>Járműveim</h1>
+
 <div class="vehicle-container-header">
-    <p>Találatok száma: <?= empty($vehicleList) ? 0 : count($vehicleList) ?> db</p>
     <button class="button primary" onclick="openModal(document.querySelector('#add-vehicle-popup'))">
         Jármű hozzáadása
     </button>
 </div>
-
-<?php if (empty($vehicleList)): ?>
-<div class="empty vehicle card-container">
-    <span>
-        <h1>Még nem mentettél el egy járművet sem</h1>
-        <p>Amint hozzáadsz járműveket, azok itt fognak megjelenni.</p>
-    </span>
-</div>
-<?php else: ?>
 
 <dialog id="add-vehicle-popup" 
         class="card" 
@@ -47,7 +39,7 @@
                 placeholder="Modell" 
                 id="add-vehicle-model-field" 
                 name="model"
-                value="<?= isset($errors["createError"]) ? $providedModel : "" ?>">
+                value="<?= isset($errors["createError"]) ? $providedModel : "" ?>"
                 required>
         </div>
 
@@ -80,7 +72,7 @@
                 <label for="add-vehicle-year-field">Évjárat</label>
                 <input type="number"
                     placeholder="Évjárat"
-                    id="add-vehicle-plate-field"
+                    id="add-vehicle-year-field"
                     name="year"
                     min="1900"
                     max="<?= getdate()["year"] ?>"
@@ -125,12 +117,20 @@
     </form>
 </dialog>
 
-<h1>Járműveim</h1>
+<?php if (empty($vehicleList)): ?>
+<div class="empty vehicle card-container">
+    <span>
+        <h1>Még nem mentettél el egy járművet sem</h1>
+        <p>Amint hozzáadsz járműveket, azok itt fognak megjelenni</p>
+    </span>
+</div>
+<?php else: ?>
+
 <div class="vehicle card-container">
     <?php foreach ($vehicleList as $vehicle): ?>
         <?php $idPrefix = $vehicle["license_plate"] ?>
 
-        <div class="vehicle card">
+        <div class="vehicle card" id="<?= "vehicle-$idPrefix" ?>">
             <p>
                 <span class="license-plate">
                     <?= $vehicle["license_plate"] ?>
@@ -207,7 +207,7 @@
                     </div>    
                 </span>
                 <span class="vehicle-button-grid">
-                    <button type="button" class="button danger">
+                    <button type="button" class="button danger" onclick="deleteVehicle('<?= "vehicle-$idPrefix" ?>', '<?= $idPrefix ?>')">
                         Jármű törlése
                     </button>
                     <input type="submit" value="Mentés" class="button primary">
@@ -216,4 +216,9 @@
         </div>
     <?php endforeach ?>
 </div>
+
+<?php if (isset($errors["createError"])): ?>
+    <script>openModal(document.getElementById("add-vehicle-popup"))</script>
+<?php endif ?>
+
 <?php endif ?>
