@@ -37,7 +37,7 @@ class Vehicle {
         if (!$stmt)
             return null;
 
-        if (!($stmt = mysqli_prepare(appConfig()->DB_CONN, Vehicle::findAllVehiclesQuery)) ||
+        if (!($stmt = mysqli_prepare(appConfig()->DB_CONN, Vehicle::existsQuery)) ||
             !mysqli_stmt_bind_param($stmt, "s", $licensePlate) ||
             !mysqli_stmt_execute($stmt)) {
 
@@ -53,7 +53,7 @@ class Vehicle {
 
         if (empty($fields))
             return null;
-
+        
         return $fields[0] != 0;
     }
 
