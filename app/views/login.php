@@ -1,6 +1,6 @@
 <?php use function EcoDrive\Routing\route ?>
 
-<div class="hero card">
+<div class="auth card">
     <h1>Bejelentkezés</h1>
 
     <form action="<?= route("login") ?>" method="POST">
@@ -30,7 +30,7 @@
 
         <a href="#">Elfelejtett jelszó</a>
 
-        <span id="login-button-group" class="action-section">
+        <span class="action-section">
             <a href="<?= route("register") ?>" class="button">Még nincs fiókom</a>
             <input type="submit" class="button primary" value="Bejelentkezés">
         </span>
