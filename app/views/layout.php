@@ -18,12 +18,19 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Lexend+Deca:wght@100..900&display=swap" rel="stylesheet">
     <script src="https://kit.fontawesome.com/b71a3cf50f.js" crossorigin="anonymous"></script>
+    <script src="<?= asset("script.js") ?>"></script>
     <title>
         <?= isset($title) ? $title . " | EcoDrive" : "EcoDrive" ?>
     </title>
 </head>
 <body>
-    <?php if (Session::isAuthenticated()): ?>
+    <?php 
+        /* 
+            Ellenőrizni kell a loadFailed()-et, mert ez a fájl akkor is betöltődik ha pl. nem tudtunk csatlakozni az adatbázishoz (hogy az 500-as oldalt visszaadjuk). 
+            Ilyenkor értelemszerűen nem hívhatjuk a Session::isAuthenticated()-et 
+        */
+     ?>
+    <?php if (!appConfig()->loadFailed() && Session::isAuthenticated()): ?>
     <header>
         <nav>
             <ul>
