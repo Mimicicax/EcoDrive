@@ -1,17 +1,25 @@
 .vehicle-button-grid, .vehicle-numeric-input-group {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    width: 100%;
+    grid-template-columns: repeat(2, 1fr);
     gap: 1em;
 }
 
 .vehicle.card .license-plate {
+    font-size: 1.1em;
     font-weight: 700;
 }
 
-.vehicle-container-header {
-    margin: 2em 0em;
+#add-vehicle-popup {
+    border: none;
+    color: inherit;
 }
 
-.vehicle.card-container {
-    height: 100%;
+#add-vehicle-popup > p {
+    font-size: 1.5em;
+    font-weight: 700;
+}
+
+#add-vehicle-popup::backdrop {
+    backdrop-filter: brightness(30%) blur(32px);
 }
