@@ -30,7 +30,7 @@
             Ilyenkor értelemszerűen nem hívhatjuk a Session::isAuthenticated()-et 
         */
      ?>
-    <?php if (!appConfig()->loadFailed() && Session::isAuthenticated()): ?>
+    <?php if (!appConfig()->loadFailed() && Session::isAuthenticated() && isset($activeNavLink)): ?>
     <header>
         <nav>
             <ul>
