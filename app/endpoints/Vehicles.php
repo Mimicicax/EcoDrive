@@ -25,7 +25,7 @@ class Vehicles implements Endpoint
     private const yearRequiredError = "Az évjárat megadása kötelező";
     private const yearInvalidError = "Az évjárat érvénytelen";
     private const consumptionRequiredError = "A fogyasztás megadása kötelező";
-    private const consumptionInvalidError = "A megadott fogyasztás nem megfelelő";
+    private const consumptionInvalidError = "A megadott fogyasztás formátuma nem megfelelő";
 
     private const vehicleCreationFailed = "A járművet belső hiba miatt nem sikerült rögzíteni";
 
@@ -48,7 +48,7 @@ class Vehicles implements Endpoint
             $errors["modelError"] = $e;
 
         if ($e = $this->validatePlate($plate))
-            $errors["plateError"] = $e;
+            $errors["licensePlateError"] = $e;
 
         if ($e = $this->validateYear($year))
             $errors["yearError"] = $e;
@@ -56,14 +56,24 @@ class Vehicles implements Endpoint
         if ($e = $this->validateConsumption($consumption))
             $errors["consumptionError"] = $e;
 
-        if (!empty($errors))
-            return $this->showVehiclesView(null, $errors);
+        $backData = [
+            "providedBrand" => $brand,
+            "providedModel" => $model,
+            "providedLicensePlate" => $plate,
+            "providedYear" => $year,
+            "providedConsumption" => $consumption
+        ];
+
+        if (!empty($errors)) {
+            $errors["createError"] = true;
+            return $this->showVehiclesView($backData, $errors);
+        }
 
         $created = Vehicle::create(Session::currentUser(), $brand, $model, $plate, $year, $consumption);
 
         if (!isset($created)) {
             $errors["internalCreationError"] = Vehicles::vehicleCreationFailed;
-            return $this->showVehiclesView(null, $errors);
+            return $this->showVehiclesView($backData, $errors);
         }
 
         return $this->showVehiclesView([ "createSuccess" => true ]);
@@ -129,7 +139,12 @@ class Vehicles implements Endpoint
         if (strlen($year) === 0)
             return Vehicles::yearRequiredError;
 
-        if (filter_var($year, FILTER_VALIDATE_INT, [ "min_range" => 1900, "max_range" => getdate()["year"] ]) === false)
+        if (filter_var($year, FILTER_VALIDATE_INT) === false)
+            return Vehicles::yearInvalidError;
+
+        $numYear = (int) $year;
+
+        if ($numYear < 1900 || $numYear > getdate()["year"])
             return Vehicles::yearInvalidError;
 
         return false;
