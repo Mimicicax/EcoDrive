@@ -157,20 +157,20 @@ class Vehicles implements Endpoint
     }
 
     private function validateBrand(string $brand) {
-        $result = $this->validateAlphanumeric($brand);
+        $result = $this->validateText($brand);
 
         if ($result === 1)
             return Vehicles::brandRequiredError;
 
-        else if ($result === 2)
+        else if ($result === 2) {
             return Vehicles::brandFormatError;
 
-        else
+        } else
             return false;
     }
 
     private function validateModel(string $brand) {
-        $result = $this->validateAlphanumeric($brand);
+        $result = $this->validateText($brand);
 
         if ($result === 1)
             return Vehicles::modelRequiredError;
@@ -204,7 +204,7 @@ class Vehicles implements Endpoint
 
             return false;
         }
-        
+
         return Vehicles::plateFormatError;
     }
 
@@ -233,11 +233,11 @@ class Vehicles implements Endpoint
         return false;
     }
 
-    private function validateAlphanumeric(string $str) {
+    private function validateText(string $str) {
         if (\strlen($str) == 0)
             return 1;
 
-        if (preg_match("/^[a-zA-Z0-9]+$/", $str) !== 1)
+        if (preg_match("/^(\p{L}|\p{N}|-| )+$/u", $str) !== 1)
             return 2;
 
         return 0;
