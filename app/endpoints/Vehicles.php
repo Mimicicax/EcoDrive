@@ -187,7 +187,8 @@ class Vehicles implements Endpoint
             return Vehicles::plateRequiredError;
 
         if (preg_match("/^[a-zA-Z]{3}-[0-9]{3}$/", $plate) === 1 ||
-            preg_match("/^[a-zA-Z]{2}-[a-zA-Z]{2}-[0-9]{3}$/", $plate) === 1) {
+            preg_match("/^[a-zA-Z]{2}-[a-zA-Z]{2}-[0-9]{3}$/", $plate) === 1 ||
+            preg_match("/^(([a-zA-Z]{3}[0-9]{4})|([a-zA-Z]{4}[0-9]{3})|([a-zA-Z]{5}[0-9]{2})|([a-zA-Z]{6}[0-9]{1}))$/", $plate) === 1) {
 
             $exists = Vehicle::exists($plate);
 
@@ -203,13 +204,7 @@ class Vehicles implements Endpoint
 
             return false;
         }
-
-        // TODO: eegyéni rendszámok validálása. Lehetséges formátumok:
-        // Három betű + négy szám, pl. ARC0717
-        // Négy betű + három szám, pl. BBKA313
-        // Öt betű + két szám, pl. PECAS19
-        // Hat betű + egy szám: DANIKA1
-
+        
         return Vehicles::plateFormatError;
     }
 
