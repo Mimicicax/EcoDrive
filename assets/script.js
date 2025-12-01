@@ -21,6 +21,65 @@ const closeModal = (mod) => {
     mod.close();
 }
 
+const updateVehicle = async (cardId, plate) => {
+    let card = document.getElementById(cardId);
+    let form = card.querySelector("form");
+    let formData = new FormData(form);
+    let inputList = card.querySelectorAll("input,button");
+
+    inputList.forEach((input) => input.disabled = true);
+
+    const setError = (fieldName, errorText) => {
+        let group = document.getElementById(plate + "-" + fieldName).parentNode;
+        let msg = document.createElement("span");
+
+        msg.textContent = errorText;
+        group.classList.add("error");
+        msg.classList.add("error");
+
+        if (group.parentNode.classList.contains("vehicle-numeric-input-group"))
+            group.parentNode.after(msg);
+
+        else
+            group.after(msg);
+    }
+
+    const clearErrors = () => {
+        Array.prototype.forEach.call(card.querySelectorAll(".error"), (el) => {
+            if (el.classList.contains("input-group"))
+                el.classList.remove("error");
+
+            else
+                el.remove();
+        });
+    }
+
+    clearErrors();
+
+    let resp = await fetch(`/vehicles`, {
+        method: "PUT",
+        body: new URLSearchParams(formData)
+    });
+
+    if (resp.status == 200) {
+        card.querySelector("[type=hidden]").value = formData.get("licensePlate");
+        card.getElementsByClassName("car-license-plate")[0].textContent = formData.get("licensePlate");
+        card.getElementsByClassName("car-brand")[0].textContent = formData.get("brand");
+        card.getElementsByClassName("car-model")[0].textContent = formData.get("model");
+        card.getElementsByClassName("car-year")[0].textContent = formData.get("year");
+
+    } else if (resp.status == 400) {
+        let errors = new URLSearchParams(await resp.text());
+    
+        errors.forEach((value, key) => {
+            let fieldName = key.slice(0, key.length - "Error".length);
+            setError(fieldName, value);
+        });
+    }
+
+    inputList.forEach((input) => input.disabled = false);
+};
+
 const deleteVehicle = async (cardId, plate) => {
     let card = document.getElementById(cardId);
     let inputList = card.querySelectorAll("input,button");
@@ -63,5 +122,5 @@ const deleteVehicle = async (cardId, plate) => {
         });
 
     } else
-        inputList.forEach((input) => input.disabled = true);
+        inputList.forEach((input) => input.disabled = false);
 }
