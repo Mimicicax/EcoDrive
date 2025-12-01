@@ -98,6 +98,8 @@ class Authenticator implements Endpoint
 
     private function validateUsername(string $username): bool|string {
         // Minimum 1, maximum 50 karakter
+        $username = trim($username);
+        
         if (strlen($username) < 1 || strlen($username) > 50)
             return Authenticator::usernameLengthError;
 

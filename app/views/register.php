@@ -20,7 +20,7 @@
     }
 ?>
 
-<div class="hero card">
+<div class="auth card">
     <h1>Regisztráció</h1>
 
     <form action="<?= route("register") ?>" method="POST">
@@ -32,6 +32,9 @@
 
     <?= generateInputGroup("password", "Jelszó megerősítése", "confirmPassword", $passwordError) ?>
 
-    <input type="submit" class="button primary action-section" value="Regisztráció">
+    <span class="action-section">
+        <a href="<?= route("login") ?>" class="button">Már van fiókom</a>
+        <input type="submit" class="button primary" value="Regisztráció">
+    </span>
 </form>
 </div>

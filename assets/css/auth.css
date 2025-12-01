@@ -1,0 +1,19 @@
+.card.auth {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 500px;
+}
+
+.card.auth > h1 {
+    text-align: center;
+}
+
+.card.auth .action-section {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    justify-content: space-evenly;
+    gap: 1em;
+    margin-top: 2em;
+}

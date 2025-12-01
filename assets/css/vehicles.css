@@ -1,0 +1,37 @@
+.vehicle-button-grid, .vehicle-numeric-input-group {
+    display: grid;
+    position: relative;
+    width: 100%;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1em;
+}
+
+.vehicle.card .car-license-plate {
+    font-size: 1.1em;
+    font-weight: 700;
+}
+
+.vehicle.card > p {
+    max-width: 300px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.vehicle-container-header {
+    margin: 2em 0;
+}
+
+#add-vehicle-popup {
+    border: none;
+    color: inherit;
+}
+
+#add-vehicle-popup > p {
+    font-size: 1.5em;
+    font-weight: 700;
+}
+
+#add-vehicle-popup::backdrop {
+    backdrop-filter: brightness(30%) blur(32px);
+}

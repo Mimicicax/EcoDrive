@@ -139,7 +139,7 @@ def startsIdentSequence(content, ptr):
 		return True
 	
 	elif ch1 == '-':
-		if isIdentStartChar(ch2) or ch2 == '-' or startsValidEscape(ptr + 1, content):
+		if isIdentStartChar(ch2) or ch2 == '-' or startsValidEscape(content, ptr + 1):
 			return True
 		
 		return False
@@ -553,10 +553,26 @@ def parseCSS(content):
 					token.data = variableMap[token.data]
 
 				else:
-					variableMap[token.data] = "--" + str(symbolCount + 1)
-					token.data = "--" + str(symbolCount + 1)
+					variableMap[token.data] = "--v" + str(symbolCount + 1)
+					token.data = "--v" + str(symbolCount + 1)
 					symbolCount += 1
 			
+			elif token.tokenType == Token.TOKEN_TYPE_WS:
+				if len(tokenList) == 0 or \
+					tokenList[len(tokenList) - 1].tokenType == Token.TOKEN_TYPE_CLOSE_CURLY or \
+					tokenList[len(tokenList) - 1].tokenType == Token.TOKEN_TYPE_OPEN_CURLY or \
+					tokenList[len(tokenList) - 1].tokenType == Token.TOKEN_TYPE_COLON or \
+					tokenList[len(tokenList) - 1].tokenType == Token.TOKEN_TYPE_SEMICOLON or \
+					tokenList[len(tokenList) - 1].tokenType == Token.TOKEN_TYPE_COMMA:
+					continue
+
+			elif (token.tokenType == Token.TOKEN_TYPE_OPEN_CURLY or token.tokenType == Token.TOKEN_TYPE_COMMA) and \
+				  len(tokenList) != 0 and tokenList[len(tokenList) - 1].tokenType == Token.TOKEN_TYPE_WS:
+				tokenList.pop()
+
+			elif token.tokenType == Token.TOKEN_TYPE_CLOSE_CURLY and tokenList[len(tokenList) - 1].tokenType == Token.TOKEN_TYPE_SEMICOLON:
+				tokenList.pop()
+
 			tokenList.append(token)
 
 	return tokenList

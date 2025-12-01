@@ -23,3 +23,22 @@ CREATE TABLE IF NOT EXISTS sessions (
 
     FOREIGN KEY(user) REFERENCES users(id)
 );
+
+CREATE TABLE IF NOT EXISTS vehicles (
+    id INT UNSIGNED AUTO_INCREMENT, 
+    user INT NOT NULL, 
+    brand VARCHAR(20) NOT NULL,
+    model VARCHAR(20) NOT NULL,
+    license_plate VARCHAR(10) UNIQUE NOT NULL,
+    year INT NOT NULL,
+    consumption FLOAT NOT NULL,
+    PRIMARY KEY(id),
+    FOREIGN KEY(user) REFERENCES users(id)
+);
+
+SET GLOBAL event_scheduler = ON;
+
+CREATE EVENT IF NOT EXISTS SessionCleanupEvent
+ON SCHEDULE EVERY 1 DAY
+COMMENT "Kitörli a lejárt sessionöket"
+DO DELETE FROM sessions WHERE expiry <= NOW();
