@@ -4,7 +4,6 @@ namespace EcoDrive\Models;
 
 require_once "config.php";
 
-use Throwable;
 use function EcoDrive\Environment\appConfig;
 
 require_once appConfig()->APP_ROOT . "/models/User.php";
