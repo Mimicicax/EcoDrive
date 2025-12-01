@@ -12,17 +12,29 @@ require_once appConfig()->APP_ROOT . "/routing.php";
 require_once appConfig()->APP_ROOT . "/models/Session.php";
 require_once appConfig()->APP_ROOT . "/helpers/Redirect.php";
 
+function escapeVar($var) {
+    if (gettype($var) === "string")
+        return htmlspecialchars($var, ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5);
+
+    else if (gettype($var) === "array") {
+        $arr = [];
+
+        foreach (array_keys($var) as $key)
+            $arr[$key] = escapeVar($var[$key]);
+        
+        return $arr;
+
+    } else
+        return $var;
+}
+
 // Lehetővé teszi a nézetek betöltését és változók átadását az összes végpont számára
 function view(string $viewName, $data = null, $errors = null) {
     // Definiáljuk a változókat, hogy a nézetben elérhetőek legyenek. Ha string típusú, akkor elkódoljuk, hogy az
     // XSS támadások ellen védekezzünk.
     if (isset($data)) {
         extract(array_map(function($val) {
-            if (gettype($val) === "string")
-                return htmlspecialchars($val, ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5);
-            
-            else
-                return $val;
+            return escapeVar($val);
         }, 
         $data));
     }
