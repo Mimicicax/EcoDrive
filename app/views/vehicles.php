@@ -132,10 +132,10 @@
 
         <div class="vehicle card" id="<?= "vehicle-$idPrefix" ?>">
             <p>
-                <span class="license-plate">
-                    <?= $vehicle["license_plate"] ?>
-                </span>
-                (<?= "$vehicle[brand]" ?> <?= "$vehicle[model]" ?>, <?= "$vehicle[year]" ?>)
+                <span class="car-license-plate"><?= $vehicle["license_plate"] ?></span>
+                (<span class="car-brand"><?= "$vehicle[brand]" ?></span>
+                <span class="car-model"><?= "$vehicle[model]" ?></span>,
+                <span class="car-year"><?= "$vehicle[year]" ?></span>)
             </p>
 
             <form>
@@ -161,7 +161,7 @@
                         Modell
                     </label>
                     <input type="text" 
-                        placeholder="Márka" 
+                        placeholder="Modell" 
                         id="<?= "$idPrefix-model" ?>" 
                         name="model" 
                         value="<?= $vehicle["model"] ?>"
@@ -169,12 +169,12 @@
                 </div>
 
                 <div class="input-group">
-                    <label for="<?= "$idPrefix-plate" ?>">
+                    <label for="<?= "$idPrefix-licensePlate" ?>">
                         Rendszám
                     </label>
                     <input type="text" 
                         placeholder="Rendszám" 
-                        id="<?= "$idPrefix-plate" ?>" 
+                        id="<?= "$idPrefix-licensePlate" ?>" 
                         name="licensePlate" 
                         value="<?= $vehicle["license_plate"] ?>"
                     >
@@ -210,7 +210,7 @@
                     <button type="button" class="button danger" onclick="deleteVehicle('<?= "vehicle-$idPrefix" ?>', '<?= $idPrefix ?>')">
                         Jármű törlése
                     </button>
-                    <input type="submit" value="Mentés" class="button primary">
+                    <button type="button" class="button primary" onclick="updateVehicle('<?= "vehicle-$idPrefix" ?>', '<?= $idPrefix ?>')">Mentés</button>
                 </span>
             </form>
         </div>
