@@ -23,11 +23,9 @@ class Vehicle {
     private const findVehicleOwnerQuery = "SELECT user FROM vehicles WHERE license_plate LIKE ?";
     private const createVehicleQuery = "INSERT INTO vehicles(user, brand, model, license_plate, year, consumption) VALUES(?, ?, ?, ?, ?, ?)";
     private const existsQuery = "SELECT COUNT(*) FROM vehicles WHERE license_plate LIKE ?";
-    private const deleteVehicleQuery = "DELETE FROM vehicles WHERE license_plate LIKE ?";
+    private const deleteVehicleQuery = "DELETE FROM vehicles WHERE id=?";
     private const updateVehicleQuery = "UPDATE vehicles SET brand=?, model=?, license_plate=?, year=?, consumption=? WHERE id=?";
     public const ERROR_NO_ERROR = 0;
-    public const ERROR_NOT_FOUND = 1;
-    public const ERROR_NOT_AUTHORISED = 2;
 
     public function __construct($fields) {
         $this->id = $fields["id"] ?? -1;
@@ -41,6 +39,7 @@ class Vehicle {
 
     public static function exists(string $licensePlate) {
         $stmt = mysqli_stmt_init(appConfig()->DB_CONN);
+        $licensePlate = strtoupper($licensePlate);
 
         if (!$stmt)
             return null;
@@ -92,6 +91,7 @@ class Vehicle {
 
     public static function find(string $plate) {
         $stmt = mysqli_stmt_init(appConfig()->DB_CONN);
+        $plate = strtoupper($plate);
 
         if (!$stmt)
             return null;
@@ -146,37 +146,14 @@ class Vehicle {
         return $vehicle;
     }
 
-    public static function delete(User $user, string $licensePlate) {
-        $licensePlate = strtoupper($licensePlate);
-
+    public function delete() {
         $stmt = mysqli_stmt_init(appConfig()->DB_CONN);
 
         if (!$stmt)
             return null;
 
-        if (!mysqli_stmt_prepare($stmt, Vehicle::findVehicleOwnerQuery) ||
-            !mysqli_stmt_bind_param($stmt, "s", $licensePlate) ||
-            !mysqli_stmt_execute($stmt)) {
-            mysqli_stmt_close($stmt);
-            return null;
-        }
-
-        $result = mysqli_stmt_get_result($stmt);
-        $fields = mysqli_fetch_assoc($result);
-        
-        mysqli_free_result($result);
-
-        if (!isset($fields)) {
-            mysqli_stmt_close($stmt);
-            return Vehicle::ERROR_NOT_FOUND;
-
-        } else if ($fields["user"] != $user->id) {
-            mysqli_stmt_close($stmt);
-            return Vehicle::ERROR_NOT_FOUND;
-        }
-
         if (!mysqli_stmt_prepare($stmt, Vehicle::deleteVehicleQuery) ||
-            !mysqli_stmt_bind_param($stmt, "s", $licensePlate) ||
+            !mysqli_stmt_bind_param($stmt, "i", $this->id) ||
             !mysqli_stmt_execute($stmt)) {
             mysqli_stmt_close($stmt);
             return null;
@@ -188,7 +165,9 @@ class Vehicle {
 
     public function update() {
         $stmt = mysqli_stmt_init(appConfig()->DB_CONN);
-        
+                
+        $this->licensePlate = strtoupper($this->licensePlate);
+
         if (!$stmt)
             return null;
 

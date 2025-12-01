@@ -112,19 +112,19 @@ class Vehicles implements Endpoint
             echo "{\"error\": \"" . Vehicles::plateRequiredError . "\"}";
 
         } else {
-            $err = Vehicle::delete(Session::currentUser(), trim($params["licensePlate"]));
+            $vehicle = Vehicle::find($params["licensePlate"]);
 
-            if ($err === Vehicle::ERROR_NO_ERROR)
-                http_response_code(200);
-
-            else if ($err === Vehicle::ERROR_NOT_AUTHORISED)
-                http_response_code(401);
-
-            else if ($err === Vehicle::ERROR_NOT_FOUND)
+            if (!isset($vehicle))
                 http_response_code(404);
 
-            else if ($err === null)
+            else if ($vehicle->user->id !== Session::currentUser()->id)
+                http_response_code(401);
+
+            else if ($vehicle->delete() !== Vehicle::ERROR_NO_ERROR)
                 http_response_code(500);
+
+            else 
+                http_response_code(200);
         }
     }
 
