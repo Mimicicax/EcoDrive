@@ -39,22 +39,7 @@ class Vehicles implements Endpoint
         $plate = trim($_POST["licensePlate"] ?? "");
         $year = trim($_POST["year"] ?? "");
         $consumption = trim(str_replace(',', '.', $_POST["consumption"] ?? ""));
-        $errors = [];
-
-        if ($e = $this->validateBrand($brand))
-            $errors["brandError"] = $e;
-
-        if ($e = $this->validateModel($model))
-            $errors["modelError"] = $e;
-
-        if ($e = $this->validatePlate($plate))
-            $errors["licensePlateError"] = $e;
-
-        if ($e = $this->validateYear($year))
-            $errors["yearError"] = $e;
-
-        if ($e = $this->validateConsumption($consumption))
-            $errors["consumptionError"] = $e;
+        $errors = $this->validateFields($brand, $model, $plate, $year, $consumption);
 
         $backData = [
             "providedBrand" => $brand,
@@ -80,7 +65,43 @@ class Vehicles implements Endpoint
     }
 
     public function update() {
-        
+        parse_str(file_get_contents("php://input"), $params);
+
+        $brand = trim($params["brand"] ?? "");
+        $model = trim($params["model"] ?? "");
+        $plate = trim($params["licensePlate"] ?? "");
+        $year = trim($params["year"] ?? "");
+        $consumption = trim(str_replace(',', '.', $params["consumption"] ?? ""));
+        $id = trim($params["vehicleId"]);
+        $errors = $this->validateFields($brand, $model, $plate, $year, $consumption, $id);
+
+        if (!empty($errors)) {
+            http_response_code(400);
+            echo http_build_query($errors);
+            return;
+        }
+
+        $vehicle = Vehicle::find($id);
+
+        if (!$vehicle)
+            http_response_code(404);
+
+        else if ($vehicle->user->id !== Session::currentUser()->id)
+            http_response_code(401);
+
+        else {
+            $vehicle->brand = $brand;
+            $vehicle->model = $model;
+            $vehicle->licensePlate = $plate;
+            $vehicle->year = (int) $year;
+            $vehicle->consumption = (float) $consumption;
+
+            if ($vehicle->update() !== Vehicle::ERROR_NO_ERROR)
+                http_response_code(500);
+
+            else
+                http_response_code(200);
+        }
     }
 
     public function delete() {
@@ -104,13 +125,35 @@ class Vehicles implements Endpoint
 
             else if ($err === null)
                 http_response_code(500);
-
-            echo $params["licensePlate"];
         }
     }
 
     public static function requiresAuth(): bool {
         return true;
+    }
+
+    private function validateFields($brand, $model, $plate, $year, $consumption, $vehicleId = null) {
+        $errors = [];
+
+        if ($e = $this->validateBrand($brand))
+            $errors["brandError"] = $e;
+
+        if ($e = $this->validateModel($model))
+            $errors["modelError"] = $e;
+
+        if ($e = $this->validatePlate($plate, $vehicleId))
+            $errors["licensePlateError"] = $e;
+
+        if ($e = $this->validateYear($year))
+            $errors["yearError"] = $e;
+
+        if ($e = $this->validateConsumption($consumption))
+            $errors["consumptionError"] = $e;
+
+        if (!empty($errors))
+            return $errors;
+
+        return false;
     }
 
     private function validateBrand(string $brand) {
@@ -139,7 +182,7 @@ class Vehicles implements Endpoint
             return false;
     }
 
-    private function validatePlate(string $plate) {        
+    private function validatePlate(string $plate, $vehicleId = null) {        
         if (strlen($plate) === 0)
             return Vehicles::plateRequiredError;
 
@@ -151,7 +194,14 @@ class Vehicles implements Endpoint
             if (!isset($exists))
                 return Vehicles::plateVerificationError;
 
-            return $exists ? Vehicles::plateExistsError : false;
+            if ($exists) {
+                if ($plate === $vehicleId)
+                    return false;
+
+                return Vehicles::plateExistsError;
+            }
+
+            return false;
         }
 
         // TODO: eegyéni rendszámok validálása. Lehetséges formátumok:
