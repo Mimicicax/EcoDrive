@@ -128,21 +128,22 @@
 
 <div class="vehicle card-container">
     <?php foreach ($vehicleList as $vehicle): ?>
-        <?php $idPrefix = $vehicle["license_plate"] ?>
+        
+        <?php $idPrefix = $vehicle->licensePlate ?>
 
         <div class="vehicle card" id="<?= "vehicle-$idPrefix" ?>">
             <p>
-                <span class="car-license-plate"><?= $vehicle["license_plate"] ?></span>
-                (<span class="car-brand"><?= "$vehicle[brand]" ?></span>
-                <span class="car-model"><?= "$vehicle[model]" ?></span>,
-                <span class="car-year"><?= "$vehicle[year]" ?></span>)
+                <span class="car-license-plate"><?= $vehicle->licensePlate ?></span>
+                (<span class="car-brand"><?= $vehicle->brand ?></span>
+                <span class="car-model"><?= $vehicle->model ?></span>,
+                <span class="car-year"><?= $vehicle->year ?></span>)
             </p>
 
             <form>
                 <input type="hidden" 
                 value="<?= $idPrefix ?>" 
                 name="vehicleId" 
-                value="<?= $vehicle["license_plate"] ?>">
+                value="<?= $vehicle->licensePlate ?>">
 
                 <div class="input-group">
                     <label for="<?= "$idPrefix-brand" ?>">
@@ -152,7 +153,7 @@
                         placeholder="Márka" 
                         id="<?= "$idPrefix-brand" ?>" 
                         name="brand" 
-                        value="<?= $vehicle["brand"] ?>"
+                        value="<?= $vehicle->brand ?>"
                     >
                 </div>
 
@@ -164,7 +165,7 @@
                         placeholder="Modell" 
                         id="<?= "$idPrefix-model" ?>" 
                         name="model" 
-                        value="<?= $vehicle["model"] ?>"
+                        value="<?= $vehicle->model ?>"
                     >
                 </div>
 
@@ -176,7 +177,7 @@
                         placeholder="Rendszám" 
                         id="<?= "$idPrefix-licensePlate" ?>" 
                         name="licensePlate" 
-                        value="<?= $vehicle["license_plate"] ?>"
+                        value="<?= $vehicle->licensePlate ?>"
                     >
                 </div>
 
@@ -187,7 +188,7 @@
                             placeholder="Évjárat"
                             id="<?= "$idPrefix-year" ?>"
                             name="year"
-                            value="<?= $vehicle["year"] ?>"
+                            value="<?= $vehicle->year ?>"
                             min="1900"
                             max="<?= getdate()["year"] ?>"
                             >
@@ -202,7 +203,7 @@
                             placeholder="Fogyasztás (L/100 km)" 
                             id="<?= "$idPrefix-consumption" ?>" 
                             name="consumption" 
-                            value="<?= $vehicle["consumption"] ?>"
+                            value="<?= $vehicle->consumption ?>"
                         >
                     </div>    
                 </span>

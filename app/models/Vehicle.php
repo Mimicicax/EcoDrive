@@ -82,7 +82,7 @@ class Vehicle {
         $array = [];
 
         while ($fields = mysqli_fetch_assoc($result))
-            array_push($array, $fields);
+            array_push($array, new Vehicle($fields));
 
         mysqli_stmt_close($stmt);
         mysqli_free_result($result);
