@@ -21,13 +21,17 @@ const closeModal = (mod) => {
     mod.close();
 }
 
+const toggleInputs = (inputList) => {
+    inputList.forEach((input) => input.disabled = !input.disabled);
+};
+
 const updateVehicle = async (cardId, plate) => {
     let card = document.getElementById(cardId);
     let form = card.querySelector("form");
     let formData = new FormData(form);
     let inputList = card.querySelectorAll("input,button");
 
-    inputList.forEach((input) => input.disabled = true);
+    toggleInputs(inputList);
 
     const setError = (fieldName, errorText) => {
         let group = document.getElementById(plate + "-" + fieldName).parentNode;
@@ -77,14 +81,14 @@ const updateVehicle = async (cardId, plate) => {
         });
     }
 
-    inputList.forEach((input) => input.disabled = false);
+    toggleInputs(inputList);
 };
 
 const deleteVehicle = async (cardId, plate) => {
     let card = document.getElementById(cardId);
     let inputList = card.querySelectorAll("input,button");
 
-    inputList.forEach((input) => input.disabled = true);
+    toggleInputs(inputList);
 
     let resp = await fetch(`/vehicles?licensePlate=${encodeURIComponent(plate)}`, {
         method: "DELETE",
@@ -95,7 +99,6 @@ const deleteVehicle = async (cardId, plate) => {
             { transform: "scale(1)" },
             { transform: "scale(1.1)" },
             { transform: "scale(0)" }
-
         ], { 
             duration: 250,
             easing: "cubic-bezier(0.4,0,0.2,1)" 
@@ -122,5 +125,5 @@ const deleteVehicle = async (cardId, plate) => {
         });
 
     } else
-        inputList.forEach((input) => input.disabled = false);
+        toggleInputs(inputList);
 }
