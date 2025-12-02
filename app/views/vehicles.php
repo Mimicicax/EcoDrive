@@ -13,7 +13,7 @@
         oncancel="closeModal(document.querySelector('#add-vehicle-popup'))">
     <p>Jármű hozzáadása</p>
     <form action="<?= route("vehicles") ?>" method="POST">
-        <div class="input-group <?= isset($errors["createError"]) && isset($errors["brandError"]) ? "error" : "" ?>">
+        <div class="input-group <?= isset($errors["brandError"]) ? "error" : "" ?>">
             <label for="add-vehicle-brand-field">
                 Márka
             </label>
@@ -22,16 +22,16 @@
                 id="add-vehicle-brand-field" 
                 name="brand" 
                 required 
-                value="<?= isset($errors["createError"]) ? $providedBrand : "" ?>">
+                value="<?= $providedBrand ?? "" ?>">
         </div>
 
-        <?php if (isset($errors["createError"]) && isset($errors["brandError"])): ?>
+        <?php if (isset($errors["brandError"])): ?>
             <span class="error">
                 <?= $errors["brandError"] ?>
             </span>
         <?php endif ?>
 
-        <div class="input-group <?= isset($errors["createError"]) && isset($errors["modelError"]) ? "error" : "" ?>">
+        <div class="input-group <?= isset($errors["modelError"]) ? "error" : "" ?>">
             <label for="add-vehicle-model-field">
                 Modell
             </label>
@@ -39,17 +39,17 @@
                 placeholder="Modell" 
                 id="add-vehicle-model-field" 
                 name="model"
-                value="<?= isset($errors["createError"]) ? $providedModel : "" ?>"
+                value="<?= $providedModel ?? "" ?>"
                 required>
         </div>
 
-        <?php if (isset($errors["createError"]) && isset($errors["modelError"])): ?>
+        <?php if (isset($errors["modelError"])): ?>
             <span class="error">
                 <?= $errors["modelError"] ?>
             </span>
         <?php endif ?>
 
-        <div class="input-group <?= isset($errors["createError"]) && isset($errors["licensePlateError"]) ? "error" : "" ?>">
+        <div class="input-group <?= isset($errors["licensePlateError"]) ? "error" : "" ?>">
             <label for="add-vehicle-plate-field">
                 Rendszám
             </label>
@@ -57,18 +57,18 @@
                 placeholder="Rendszám"
                 id="add-vehicle-plate-field" 
                 name="licensePlate"
-                value="<?= isset($errors["createError"]) ? $providedLicensePlate : "" ?>"
+                value="<?= $providedLicensePlate ?? "" ?>"
                 required>
         </div>
 
-        <?php if (isset($errors["createError"]) && isset($errors["licensePlateError"])): ?>
+        <?php if (isset($errors["licensePlateError"])): ?>
             <span class="error">
                 <?= $errors["licensePlateError"] ?>
             </span>
         <?php endif ?>
 
-        <span class="vehicle-numeric-input-group">
-            <div class="input-group <?= isset($errors["createError"]) && isset($errors["yearError"]) ? "error" : "" ?>">
+        <span class="dual-input-group">
+            <div class="input-group <?= isset($errors["yearError"]) ? "error" : "" ?>">
                 <label for="add-vehicle-year-field">Évjárat</label>
                 <input type="number"
                     placeholder="Évjárat"
@@ -76,12 +76,12 @@
                     name="year"
                     min="1900"
                     max="<?= getdate()["year"] ?>"
-                    value="<?= isset($errors["createError"]) ? $providedYear : "" ?>"
+                    value="<?= $providedYear ?? "" ?>"
                     required
                     >
             </div>
 
-            <div class="input-group <?= isset($errors["createError"]) && isset($errors["consumptionError"]) ? "error" : "" ?>">
+            <div class="input-group <?= isset($errors["consumptionError"]) ? "error" : "" ?>">
                 <label for="add-vehicle-consumption-field">
                     Fogyasztás
                 </label>
@@ -90,25 +90,25 @@
                     placeholder="Fogyasztás (L/100 km)" 
                     id="add-vehicle-consumption-field" 
                     name="consumption" 
-                    value="<?= isset($errors["createError"]) ? $providedConsumption : "" ?>"
+                    value="<?= $providedConsumption ?? "" ?>"
                     required
                 >
             </div>
         </span>
 
-        <?php if (isset($errors["createError"]) && isset($errors["yearError"])): ?>
+        <?php if (isset($errors["yearError"])): ?>
             <span class="error">
                 <?= $errors["yearError"] ?>
             </span>
         <?php endif ?>
             
-        <?php if (isset($errors["createError"]) && isset($errors["consumptionError"])): ?>
+        <?php if (isset($errors["consumptionError"])): ?>
             <span class="error">
                 <?= $errors["consumptionError"] ?>
             </span>
         <?php endif ?>
 
-        <span class="vehicle-button-grid">
+        <span class="dual-input-group">
             <button type="button" class="button" onclick="closeModal(document.querySelector('#add-vehicle-popup'))">
                 Mégsem
             </button>
@@ -181,7 +181,7 @@
                     >
                 </div>
 
-                <span class="vehicle-numeric-input-group">
+                <span class="dual-input-group">
                     <div class="input-group">
                         <label for="<?= "$idPrefix-year" ?>">Évjárat</label>
                         <input type="number"
@@ -207,7 +207,7 @@
                         >
                     </div>    
                 </span>
-                <span class="vehicle-button-grid">
+                <span class="dual-input-group">
                     <button type="button" class="button danger" onclick="deleteVehicle('<?= "vehicle-$idPrefix" ?>', '<?= $idPrefix ?>')">
                         Jármű törlése
                     </button>
@@ -218,7 +218,7 @@
     <?php endforeach ?>
 </div>
 
-<?php if (isset($errors["createError"])): ?>
+<?php if (!empty($errors)): ?>
     <script>openModal(document.getElementById("add-vehicle-popup"))</script>
 <?php endif ?>
 

@@ -49,10 +49,8 @@ class Vehicles implements Endpoint
             "providedConsumption" => $consumption
         ];
 
-        if (!empty($errors)) {
-            $errors["createError"] = true;
+        if (!empty($errors))
             return $this->showVehiclesView($backData, $errors);
-        }
 
         $created = Vehicle::create(Session::currentUser(), $brand, $model, $plate, $year, $consumption);
 
@@ -61,7 +59,7 @@ class Vehicles implements Endpoint
             return $this->showVehiclesView($backData, $errors);
         }
 
-        return $this->showVehiclesView([ "createSuccess" => true ]);
+        return $this->showVehiclesView();
     }
 
     public function update() {
