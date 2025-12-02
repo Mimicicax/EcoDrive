@@ -1,11 +1,3 @@
-.vehicle-button-grid, .vehicle-numeric-input-group {
-    display: grid;
-    position: relative;
-    width: 100%;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 1em;
-}
-
 .vehicle.card .car-license-plate {
     font-size: 1.1em;
     font-weight: 700;

@@ -9,11 +9,3 @@
 .card.auth > h1 {
     text-align: center;
 }
-
-.card.auth .action-section {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    justify-content: space-evenly;
-    gap: 1em;
-    margin-top: 2em;
-}
