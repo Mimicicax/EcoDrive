@@ -24,7 +24,10 @@ function escapeVar($var) {
         
         return $arr;
 
-    } else
+    } else if (is_subclass_of($var, "\\EcoDrive\\Models\\Model"))
+        return $var->modelEscaped();
+
+    else
         return $var;
 }
 

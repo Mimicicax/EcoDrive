@@ -7,8 +7,9 @@ require_once "config.php";
 use function EcoDrive\Environment\appConfig;
 
 require_once appConfig()->APP_ROOT . "/models/User.php";
+require_once appConfig()->APP_ROOT . "/models/Model.php";
 
-class Vehicle {
+class Vehicle extends Model {
     public int $id;
     public User $user;
     public string $brand;
@@ -180,5 +181,15 @@ class Vehicle {
 
         mysqli_stmt_close($stmt);
         return Vehicle::ERROR_NO_ERROR;
+    }
+
+    public function modelEscaped(): Vehicle {
+        $esc = clone $this;
+        
+        $esc->brand = escapeVar($esc->brand);
+        $esc->model = escapeVar($esc->model);
+        $esc->user = $esc->user->modelEscaped();
+        
+        return $esc;
     }
 }

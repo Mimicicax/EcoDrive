@@ -5,10 +5,11 @@ namespace EcoDrive\Models;
 require_once "config.php";
 
 use DateTimeImmutable;
-use DateTimeZone;
 use function EcoDrive\Environment\appConfig;
 
-class User {
+require_once appConfig()->APP_ROOT . "/models/Model.php";
+
+class User extends Model {
     public int $id;
     public string $username;
     public string $email;
@@ -108,5 +109,15 @@ class User {
 
     public function passwordEquals($plaintextPassword) {
         return password_verify($plaintextPassword, $this->password);
+    }
+
+    public function modelEscaped(): User {
+        $esc = clone $this;
+
+        $esc->username = escapeVar($esc->username);
+        $esc->password = escapeVar($esc->password);
+        $esc->email = escapeVar($esc->email);
+
+        return $esc;
     }
 }

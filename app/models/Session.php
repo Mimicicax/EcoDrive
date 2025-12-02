@@ -3,15 +3,14 @@
 namespace EcoDrive\Models;
 
 use DateInterval;
-use DateTimeZone;
-use mysqli_result;
-use function EcoDrive\Environment\appConfig;
 use DateTimeImmutable;
+use function EcoDrive\Environment\appConfig;
 
 require_once "config.php";
 require_once appConfig()->APP_ROOT . "/models/User.php";
+require_once appConfig()->APP_ROOT . "/models/Model.php";
 
-class Session {
+class Session extends Model {
 
     public int $id;
     public User $user;
@@ -155,5 +154,12 @@ class Session {
 
     private static function initialiseSessionCookie(string $sid, DateTimeImmutable $expiry) {
         setcookie(appConfig()->SESSION_COOKIE_NAME, $sid, $expiry->getTimestamp(), "/", "", false, true);
+    }
+
+    public function modelEscaped(): Session {
+        $esc = clone $this;
+        $esc->user = $esc->user->modelEscaped();
+
+        return $esc;
     }
 } 
