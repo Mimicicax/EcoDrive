@@ -32,7 +32,7 @@
 
     <?= generateInputGroup("password", "Jelszó megerősítése", "confirmPassword", $passwordError) ?>
 
-    <span class="action-section">
+    <span class="dual-input-group">
         <a href="<?= route("login") ?>" class="button">Már van fiókom</a>
         <input type="submit" class="button primary" value="Regisztráció">
     </span>
