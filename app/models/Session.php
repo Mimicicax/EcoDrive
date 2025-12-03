@@ -152,6 +152,24 @@ class Session extends Model {
         Session::$currentSession->sessionExpiry = $expiry;
     }
 
+    public function delete() {
+        $stmt = mysqli_stmt_init(appConfig()->DB_CONN);
+
+        if (!$stmt)
+            return null;
+
+        if (!mysqli_stmt_prepare($stmt, Session::deleteSessionByUser) ||
+            !mysqli_stmt_bind_param($stmt, "i", Session::$currentSession->user->id) ||
+            !mysqli_stmt_execute($stmt)) {
+            
+            mysqli_stmt_close($stmt);
+            return null;
+        }
+
+        mysqli_stmt_close($stmt);
+        return true;
+    }
+
     private static function initialiseSessionCookie(string $sid, DateTimeImmutable $expiry) {
         setcookie(appConfig()->SESSION_COOKIE_NAME, $sid, $expiry->getTimestamp(), "/", "", false, true);
     }
