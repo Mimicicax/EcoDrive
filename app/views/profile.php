@@ -1,4 +1,6 @@
-<h1>Profil</h1>
+<?php 
+use function EcoDrive\Routing\route;
+?><h1>Profil</h1>
 
 <div class="card-container profile" id="profileContainer">
 
@@ -15,7 +17,7 @@
                 <label for="email">Email cím</label>
                 <input type="email" name="email" id="email" placeholder="Email cím" value="<?= $user->email ?>">
             </div>
-            <button type="button" class="button primary" onclick="saveProfileData(['username', 'email'])">
+            <button type="button" class="button primary" onclick="saveProfileData(['username', 'email'], '<?= route("profile") ?>')">
                 Mentés
             </button>
         </form>
@@ -40,7 +42,7 @@
                     <input type="password" name="confirmPassword" id="confirmPassword" placeholder="Új jelszó megerősítése">
                 </div>
             </span>
-            <button type="button" class="button primary" onclick="saveProfileData(['currentPassword', 'newPassword', 'confirmPassword'])">
+            <button type="button" class="button primary" onclick="saveProfileData(['currentPassword', 'newPassword', 'confirmPassword'], '<?= route("profile") ?>')">
                 Új jelszó beállítása
             </button>
         </form>
