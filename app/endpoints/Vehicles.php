@@ -75,8 +75,7 @@ class Vehicles implements Endpoint
 
         if (!empty($errors)) {
             http_response_code(400);
-            echo http_build_query($errors);
-            return;
+            return http_build_query($errors);
         }
 
         $vehicle = Vehicle::find($id);
@@ -107,7 +106,7 @@ class Vehicles implements Endpoint
 
         if (!isset($params["licensePlate"])) {
             http_response_code(422);
-            echo "{\"error\": \"" . Vehicles::plateRequiredError . "\"}";
+            return "{\"error\": \"" . Vehicles::plateRequiredError . "\"}";
 
         } else {
             $vehicle = Vehicle::find($params["licensePlate"]);
