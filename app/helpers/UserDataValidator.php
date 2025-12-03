@@ -14,8 +14,8 @@ class UserDataValidationError {
     const USERNAME_TAKEN_ERROR = "A felhasználónév már foglalt";
     const INVALID_EMAIL_ERROR = "Az email cím formátuma helytelen";
     const EMAIL_TAKEN_ERROR = "Az email cím már foglalt";
-    private const PASSWORD_ERROR = "A jelszónak legalább 8 karakterből kell állnia és tartalmaznia kell legalább egy nagybetűt és számot";
-    private const PASSWORD_MISMATCH_ERROR = "A jelszavak nem egyeznek";
+    const PASSWORD_ERROR = "A jelszónak legalább 8 karakterből kell állnia és tartalmaznia kell legalább egy nagybetűt és számot";
+    const PASSWORD_MISMATCH_ERROR = "A jelszavak nem egyeznek";
 }
 
 function validateUsername(string $username): bool|string {
@@ -36,7 +36,7 @@ function validateUsername(string $username): bool|string {
     return false;
 }
 
-function validateEmail(string $email): bool|string {
+function validateEmail(string $email): bool|string {    
     // Helyes formátum
     if (!filter_var($email, FILTER_VALIDATE_EMAIL))
         return UserDataValidationError::INVALID_EMAIL_ERROR;    
@@ -52,7 +52,7 @@ function validatePassword(string $pass, string $confirmPass): bool|string {
     // Minimum 8 bájt, egy nagybetű és szám. Túl hosszú jelszó nem okoz problémát
     if (strlen($pass) < 8 || preg_match("/\p{Lu}|\p{N}/u", $pass) !== 1)
         return UserDataValidationError::PASSWORD_ERROR;  
-
+    
     // Nem egyeznek a jelszavak
     if ($pass != $confirmPass)
         return UserDataValidationError::PASSWORD_MISMATCH_ERROR;    
