@@ -18,6 +18,7 @@ function registerAppRoutes() {
     registerRoute("POST", "/auth/login", \EcoDrive\Endpoints\Authenticator::class, "processLogin", "login");
     registerRoute("GET", "/auth/register", \EcoDrive\Endpoints\Authenticator::class, "showRegistration");
     registerRoute("POST", "/auth/register", \EcoDrive\Endpoints\Authenticator::class, "processRegistration", "register");
+    registerRoute("GET", "/auth/logout", \EcoDrive\Endpoints\Authenticator::class, "processLogout", "logout");
 
     registerRoute("GET", "/vehicles", \EcoDrive\Endpoints\Vehicles::class, "show", "vehicles");
     registerRoute("POST", "/vehicles", \EcoDrive\Endpoints\Vehicles::class, "create");
@@ -25,6 +26,7 @@ function registerAppRoutes() {
     registerRoute("DELETE", "/vehicles", \EcoDrive\Endpoints\Vehicles::class, "delete");
 
     registerRoute("GET", "/profile", \EcoDrive\Endpoints\Profile::class, "show", "profile");
+    registerRoute("PATCH", "/profile", \EcoDrive\Endpoints\Profile::class, "update");
 }
 
 function endpointForPath(string $route) {
