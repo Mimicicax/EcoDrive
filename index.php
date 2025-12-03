@@ -74,7 +74,7 @@ if (!isset($endpoint)) {
             return redirect("login");
 
         try {
-            $instance->{$handler[1]}();
+           echo $instance->{$handler[1]}();
 
         } catch (\Throwable $ex) {
             // Valamilyen végzetes, kezeletlen hiba történt
