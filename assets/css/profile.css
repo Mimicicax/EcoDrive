@@ -1,11 +1,10 @@
 .card-container.profile {
     grid-template-columns: repeat(2, 1fr);
     justify-items: center;
-    max-width: max-content;
     margin: 2em auto;
 }
 
 .card-container.profile > .card {
-    max-width: none;
     width: 100%;
+    max-width: 500px;
 }

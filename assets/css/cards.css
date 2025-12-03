@@ -3,14 +3,12 @@
     background-color: var(--secondary-background-color);
     border-radius: 10px;
     box-shadow: 0 0 30px rgba(0, 0, 0, 0.1);
-    min-width: 0;
-    max-width: max-content;
 }
 
 .card-container {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
-    gap: 2em;
+    gap: 1em;
 }
 
 .card-container.empty {
@@ -19,4 +17,5 @@
     align-content: center;
     text-align: center;
     color: var(--text-color-secondary);
+    margin: auto;
 }

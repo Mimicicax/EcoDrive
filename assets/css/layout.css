@@ -5,6 +5,7 @@ body {
 }
 
 header {
+    position: relative;
     background-color: var(--secondary-background-color);
     min-width: 300px;
     height: 100vh;
@@ -61,4 +62,24 @@ nav ul li a:hover {
 nav ul li a:active {
     color: var(--text-color-secondary);
     background-color: var(--ambient-background-color-darker);
+}
+
+#header-bottom-section {
+    position: absolute;
+    text-align: center;
+    bottom: 1em;
+    width: 70%;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+#header-bottom-section > hr {
+    width: 100%;
+    margin: auto;
+    margin-bottom: 2em;
+    height: 2px;
+    background-color: var(--border-color-unfocused);
+    border-radius: 10px;
+    opacity: 0.5;
+    border: none;
 }
