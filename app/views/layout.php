@@ -64,6 +64,14 @@
                 </li>
             </ul>
         </nav>
+        <div id="header-bottom-section">
+            <hr>
+            <a href="<?= route("logout") ?>" class="button" id="logoutButton">
+                <i class="fa-solid fa-right-from-bracket fa-flip-horizontal"></i>
+                &nbsp;
+                Kijelentkezés
+            </a>
+        </div>
     </header>
     <?php endif ?>
 
@@ -72,3 +80,5 @@
     </main>
 </body>
 </html>
+
+<?php return ?>
