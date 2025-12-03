@@ -127,3 +127,56 @@ const deleteVehicle = async (cardId, plate) => {
     } else
         toggleInputs(inputList);
 }
+
+const saveProfileData = async (fields, route) => {
+    let data = new URLSearchParams();
+    let inputList = [];
+
+    fields.forEach((id) => {
+        let input = document.getElementById(id);
+        data.append(id, input.value);
+        inputList.push(input);
+    });
+
+    toggleInputs(inputList);
+
+    inputList.forEach((input) => {
+        input.parentNode.classList.remove("error");
+        
+        if (input.parentNode.parentNode.classList.contains("dual-input-group"))
+            input.parentNode.parentNode.querySelectorAll("span.error").forEach((span) => span.remove());
+        
+        else
+            input.parentNode.querySelectorAll("span.error").forEach((span) => span.remove());
+    });
+
+    let resp = await fetch(route, {
+        method: "PATCH",
+        body: data
+    });
+
+    if (resp.status === 200) {
+
+    } else {
+        let errors = new URLSearchParams(await resp.text());
+
+        errors.forEach((value, key) => {
+            let fieldId = key.substring(0, key.length - "Error".length);
+            let input = document.getElementById(fieldId);
+
+            input.parentNode.classList.add("error");
+
+            let msg = document.createElement("span");
+            msg.classList.add("error");
+            msg.textContent = value;
+
+            if (input.parentNode.parentNode.classList.contains("dual-input-group"))
+                input.parentNode.parentNode.appendChild(msg);
+            
+            else
+                input.parentNode.appendChild(msg);
+        });
+    }
+
+    toggleInputs(inputList);
+}
