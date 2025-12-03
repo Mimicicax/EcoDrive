@@ -84,13 +84,13 @@ const updateVehicle = async (cardId, plate) => {
     toggleInputs(inputList);
 };
 
-const deleteVehicle = async (cardId, plate) => {
+const deleteVehicle = async (cardId, plate, route) => {
     let card = document.getElementById(cardId);
     let inputList = card.querySelectorAll("input,button");
 
     toggleInputs(inputList);
 
-    let resp = await fetch(`/vehicles?licensePlate=${encodeURIComponent(plate)}`, {
+    let resp = await fetch(`${route}?licensePlate=${encodeURIComponent(plate)}`, {
         method: "DELETE",
     });
 

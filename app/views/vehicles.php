@@ -208,10 +208,10 @@
                     </div>    
                 </span>
                 <span class="dual-input-group">
-                    <button type="button" class="button danger" onclick="deleteVehicle('<?= "vehicle-$idPrefix" ?>', '<?= $idPrefix ?>')">
+                    <button type="button" class="button danger" onclick="deleteVehicle('<?= "vehicle-$idPrefix" ?>', '<?= $idPrefix ?>', '<?= route("vehicles") ?>')">
                         Jármű törlése
                     </button>
-                    <button type="button" class="button primary" onclick="updateVehicle('<?= "vehicle-$idPrefix" ?>', '<?= $idPrefix ?>')">Mentés</button>
+                    <button type="button" class="button primary" onclick="updateVehicle('<?= "vehicle-$idPrefix" ?>', '<?= $idPrefix ?>', '<?= route("vehicles") ?>')">Mentés</button>
                 </span>
             </form>
         </div>
