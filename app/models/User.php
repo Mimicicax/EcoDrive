@@ -11,9 +11,9 @@ require_once appConfig()->APP_ROOT . "/models/Model.php";
 
 class User extends Model {
     public int $id;
-    public string $username;
-    public string $email;
-    public string $password;
+    public ?string $username;
+    public ?string $email;
+    public ?string $password;
     public ?string $resetToken;
     public ?DateTimeImmutable $resetTokenExpiry;
 
@@ -21,10 +21,40 @@ class User extends Model {
     private const findByUsernameQuery = "SELECT * FROM users WHERE username LIKE ?";
     private const existsByUsernameQuery = "SELECT COUNT(*) FROM users WHERE username LIKE ?";
     private const existsByEmailQuery = "SELECT COUNT(*) FROM users WHERE email LIKE ?";
-
     private const createUserQuery = "INSERT INTO users(username, email, password) VALUES(?, ?, ?)";
 
+    private function updateQueryBuilder(&$bindTypes): string {
+        $query = "UPDATE users SET ";
+        $bindTypes = "";
+
+        if (!empty($this->username)) {
+            $query .= "username=?";
+            $bindTypes .= "s";
+        }
+
+        if (!empty($this->email)) {
+            $query .= (\strlen($bindTypes) != 0 ? "," : "") . "email=?";
+            $bindTypes .= "s";
+        }
+
+        if (!empty($this->password)) {
+            $query .= (\strlen($bindTypes) != 0 ? "," : "") . "password=?";
+            $bindTypes .= "s";
+        }
+
+        if (\strlen($bindTypes) == 0)
+            return "";
+
+        $query .= " WHERE id=?";
+        $bindTypes .= "i";
+
+        return $query;
+    }
+
     public function __construct($row) {
+        if (!isset($row))
+            $row = [];
+
         $this->id = $row["id"] ?? -1;
         $this->username = $row["username"] ?? "";
         $this->email = $row["email"] ?? "";
@@ -91,7 +121,7 @@ class User extends Model {
     }
 
     public static function create(string $username, string $email, string $password): ?User {
-        $password = password_hash($password, PASSWORD_ARGON2I);
+        $password = User::computePasswordHash($password);
 
         if (!($stmt = mysqli_prepare(appConfig()->DB_CONN, User::createUserQuery)) ||
             !mysqli_stmt_bind_param($stmt, "sss", $username, $email, $password) ||
@@ -105,6 +135,46 @@ class User extends Model {
         $u->id = mysqli_insert_id(appConfig()->DB_CONN);
 
         return $u;
+    }
+
+    public function update() {
+        $query = $this->updateQueryBuilder($bindTypes);
+
+        if (empty($query))
+            return true;
+
+        $stmt = mysqli_stmt_init(appConfig()->DB_CONN);
+
+        if (!$stmt)
+            return null;
+
+        $bindParams = [];
+
+        if (!empty($this->username))
+            array_push($bindParams, $this->username);
+
+        if (!empty($this->email))
+            array_push($bindParams, $this->email);
+
+        if (!empty($this->password))
+            array_push($bindParams, $this->computePasswordHash($this->password));
+
+        array_push($bindParams, $this->id);
+
+        if (!mysqli_stmt_prepare($stmt, $query) ||
+            !mysqli_stmt_bind_param($stmt, $bindTypes, ...$bindParams) || 
+            !mysqli_stmt_execute($stmt)) {
+                
+            mysqli_stmt_close($stmt);
+            return null;
+        }
+
+        mysqli_stmt_close($stmt);
+        return true;
+    }
+
+    private static function computePasswordHash($plaintextPassword) {
+        return password_hash($plaintextPassword, PASSWORD_ARGON2I);
     }
 
     public function passwordEquals($plaintextPassword) {
