@@ -84,6 +84,14 @@ class Authenticator implements Endpoint
         return redirect("login");
     }
 
+    public function processLogout() {
+        if (!Session::isAuthenticated())
+            return redirect("home", true, RedirectType::SeeOther);
+
+        Session::currentSession()->delete();
+        return redirect("login", true, RedirectType::SeeOther);
+    }
+
     public static function requiresAuth(): bool {
         return false;
     }
