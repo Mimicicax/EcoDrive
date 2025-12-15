@@ -24,9 +24,8 @@ class Vehicles implements Endpoint
     private const plateVerificationError = "A rendszám ellenőrzése belső hiba miatt nem sikerült";
     private const yearRequiredError = "Az évjárat megadása kötelező";
     private const yearInvalidError = "Az évjárat érvénytelen";
-    private const consumptionRequiredError = "A fogyasztás megadása kötelező";
     private const consumptionInvalidError = "A megadott fogyasztás formátuma nem megfelelő";
-
+    private const emissionInvalidError = "A megadott CO2 kibocsátás formátuma nem megfelelő";
     private const vehicleCreationFailed = "A járművet belső hiba miatt nem sikerült rögzíteni";
 
     public function show() {
@@ -39,20 +38,22 @@ class Vehicles implements Endpoint
         $plate = trim($_POST["licensePlate"] ?? "");
         $year = trim($_POST["year"] ?? "");
         $consumption = trim(str_replace(',', '.', $_POST["consumption"] ?? ""));
-        $errors = $this->validateFields($brand, $model, $plate, $year, $consumption);
+        $emission = trim(str_replace(',', '.', $_POST["emission"] ?? ""));
+        $errors = $this->validateFields($brand, $model, $plate, $year, $consumption, $emission);
 
         $backData = [
             "providedBrand" => $brand,
             "providedModel" => $model,
             "providedLicensePlate" => $plate,
             "providedYear" => $year,
-            "providedConsumption" => $consumption
+            "providedConsumption" => $consumption,
+            "providedEmission" => $emission
         ];
 
         if (!empty($errors))
             return $this->showVehiclesView($backData, $errors);
 
-        $created = Vehicle::create(Session::currentUser(), $brand, $model, $plate, $year, $consumption);
+        $created = Vehicle::create(Session::currentUser(), $brand, $model, $plate, $year, (float) $consumption, (float) $emission);
 
         if (!isset($created)) {
             $errors["internalCreationError"] = Vehicles::vehicleCreationFailed;
@@ -69,9 +70,10 @@ class Vehicles implements Endpoint
         $model = trim($params["model"] ?? "");
         $plate = trim($params["licensePlate"] ?? "");
         $year = trim($params["year"] ?? "");
-        $consumption = trim(str_replace(',', '.', $params["consumption"] ?? ""));
+        $consumption = trim(string: str_replace(',', '.', $params["consumption"] ?? ""));
+        $emission = trim(string: str_replace(',', '.', $params["emission"] ?? ""));
         $id = trim($params["vehicleId"]);
-        $errors = $this->validateFields($brand, $model, $plate, $year, $consumption, $id);
+        $errors = $this->validateFields($brand, $model, $plate, $year, $consumption, $emission, $id);
 
         if (!empty($errors)) {
             http_response_code(400);
@@ -92,7 +94,8 @@ class Vehicles implements Endpoint
             $vehicle->licensePlate = $plate;
             $vehicle->year = (int) $year;
             $vehicle->consumption = (float) $consumption;
-
+            $vehicle->co2EmissionRate = (float) $emission;
+            
             if ($vehicle->update() !== Vehicle::ERROR_NO_ERROR)
                 http_response_code(500);
 
@@ -129,7 +132,7 @@ class Vehicles implements Endpoint
         return true;
     }
 
-    private function validateFields($brand, $model, $plate, $year, $consumption, $vehicleId = null) {
+    private function validateFields($brand, $model, $plate, $year, $consumption, $emission, $vehicleId = null) {
         $errors = [];
 
         if ($e = $this->validateBrand($brand))
@@ -144,8 +147,11 @@ class Vehicles implements Endpoint
         if ($e = $this->validateYear($year))
             $errors["yearError"] = $e;
 
-        if ($e = $this->validateConsumption($consumption))
+        if ($e = $this->validateFloat($consumption, Vehicles::VALIDATE_CONSUMPTION))
             $errors["consumptionError"] = $e;
+
+        if ($e = $this->validateFloat($emission, Vehicles::VALIDATE_EMISSION))
+            $errors["emissionError"] = $e;
 
         if (!empty($errors))
             return $errors;
@@ -220,12 +226,15 @@ class Vehicles implements Endpoint
         return false;
     }
 
-    private function validateConsumption(string $cons) {        
-        if (strlen($cons) === 0)
-            return Vehicles::consumptionRequiredError;
+    private const VALIDATE_CONSUMPTION = 0;
+    private const VALIDATE_EMISSION = 1;
 
-        if (filter_var($cons, FILTER_VALIDATE_FLOAT, [ "min_range" => 0.01 ]) === false)
-            return Vehicles::consumptionInvalidError;
+    private function validateFloat(string $fl, int $mode) {        
+        if (strlen($fl) === 0)
+            return false;
+
+        if (filter_var($fl, FILTER_VALIDATE_FLOAT, [ "min_range" => 0.01 ]) === false)
+            return $mode == Vehicles::VALIDATE_CONSUMPTION ? Vehicles::consumptionInvalidError : Vehicles::emissionInvalidError;
 
         return false;
     }

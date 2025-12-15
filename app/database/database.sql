@@ -32,6 +32,7 @@ CREATE TABLE IF NOT EXISTS vehicles (
     license_plate VARCHAR(10) UNIQUE NOT NULL,
     year INT NOT NULL,
     consumption FLOAT NOT NULL,
+    emission FLOAT NOT NULL,
     PRIMARY KEY(id),
     FOREIGN KEY(user) REFERENCES users(id)
 );

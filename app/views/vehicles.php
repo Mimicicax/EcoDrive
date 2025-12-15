@@ -67,20 +67,26 @@
             </span>
         <?php endif ?>
 
-        <span class="dual-input-group">
-            <div class="input-group <?= isset($errors["yearError"]) ? "error" : "" ?>">
-                <label for="add-vehicle-year-field">Évjárat</label>
-                <input type="number"
-                    placeholder="Évjárat"
-                    id="add-vehicle-year-field"
-                    name="year"
-                    min="1900"
-                    max="<?= getdate()["year"] ?>"
-                    value="<?= $providedYear ?? "" ?>"
-                    required
-                    >
-            </div>
+        <div class="input-group <?= isset($errors["yearError"]) ? "error" : "" ?>">
+            <label for="add-vehicle-year-field">Évjárat</label>
+            <input type="number"
+                placeholder="Évjárat"
+                id="add-vehicle-year-field"
+                name="year"
+                min="1900"
+                max="<?= getdate()["year"] ?>"
+                value="<?= $providedYear ?? "" ?>"
+                required
+                >
+        </div>
 
+        <?php if (isset($errors["yearError"])): ?>
+            <span class="error">
+                <?= $errors["yearError"] ?>
+            </span>
+        <?php endif ?>
+
+        <span class="dual-input-group">
             <div class="input-group <?= isset($errors["consumptionError"]) ? "error" : "" ?>">
                 <label for="add-vehicle-consumption-field">
                     Fogyasztás
@@ -91,16 +97,22 @@
                     id="add-vehicle-consumption-field" 
                     name="consumption" 
                     value="<?= $providedConsumption ?? "" ?>"
-                    required
+                >
+            </div>
+
+            <div class="input-group <?= isset($errors["emissionError"]) ? "error" : "" ?>">
+                <label for="add-vehicle-emission-field">
+                    CO2 kibocsátás (g/km)
+                </label>
+                <input type="text" 
+                    inputmode="decimal"
+                    placeholder="CO2 kibocsátás (g/km)" 
+                    id="add-vehicle-emission-field" 
+                    name="emission" 
+                    value="<?= $providedEmission ?? \EcoDrive\Models\Vehicle::DEFAULT_EMISSION_RATE ?>"
                 >
             </div>
         </span>
-
-        <?php if (isset($errors["yearError"])): ?>
-            <span class="error">
-                <?= $errors["yearError"] ?>
-            </span>
-        <?php endif ?>
             
         <?php if (isset($errors["consumptionError"])): ?>
             <span class="error">
@@ -181,22 +193,22 @@
                     >
                 </div>
 
+                <div class="input-group">
+                    <label for="<?= "$idPrefix-year" ?>">Évjárat</label>
+                    <input type="number"
+                        placeholder="Évjárat"
+                        id="<?= "$idPrefix-year" ?>"
+                        name="year"
+                        value="<?= $vehicle->year ?>"
+                        min="1900"
+                        max="<?= getdate()["year"] ?>"
+                        >
+                </div>
+
                 <span class="dual-input-group">
                     <div class="input-group">
-                        <label for="<?= "$idPrefix-year" ?>">Évjárat</label>
-                        <input type="number"
-                            placeholder="Évjárat"
-                            id="<?= "$idPrefix-year" ?>"
-                            name="year"
-                            value="<?= $vehicle->year ?>"
-                            min="1900"
-                            max="<?= getdate()["year"] ?>"
-                            >
-                    </div>
-
-                    <div class="input-group">
                         <label for="<?= "$idPrefix-consumption" ?>">
-                            Fogyasztás
+                            Fogyasztás (L/100 km)
                         </label>
                         <input type="text" 
                             inputmode="decimal"
@@ -206,6 +218,19 @@
                             value="<?= $vehicle->consumption ?>"
                         >
                     </div>    
+
+                    <div class="input-group">
+                        <label for="<?= "$idPrefix-emission" ?>">
+                            CO2 kibocsátás (g/km)
+                        </label>
+                        <input type="text" 
+                            inputmode="decimal"
+                            placeholder="CO2 kibocsátás (g/km)" 
+                            id="<?= "$idPrefix-emission" ?>" 
+                            name="emission" 
+                            value="<?= $vehicle->co2EmissionRate ?>"
+                        >
+                    </div>   
                 </span>
                 <span class="dual-input-group">
                     <button type="button" class="button danger" onclick="deleteVehicle('<?= "vehicle-$idPrefix" ?>', '<?= $idPrefix ?>', '<?= route("vehicles") ?>')">

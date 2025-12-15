@@ -17,15 +17,17 @@ class Vehicle extends Model {
     public string $licensePlate;
     public int $year;
     public float $consumption;
+    public float $co2EmissionRate;
 
     private const findAllVehiclesQuery = "SELECT * FROM vehicles WHERE user=?";
     private const findVehicleQuery = "SELECT * FROM vehicles WHERE license_plate LIKE ?";
     private const findVehicleOwnerQuery = "SELECT user FROM vehicles WHERE license_plate LIKE ?";
-    private const createVehicleQuery = "INSERT INTO vehicles(user, brand, model, license_plate, year, consumption) VALUES(?, ?, ?, ?, ?, ?)";
+    private const createVehicleQuery = "INSERT INTO vehicles(user, brand, model, license_plate, year, consumption, emission) VALUES(?, ?, ?, ?, ?, ?, ?)";
     private const existsQuery = "SELECT COUNT(*) FROM vehicles WHERE license_plate LIKE ?";
     private const deleteVehicleQuery = "DELETE FROM vehicles WHERE id=?";
-    private const updateVehicleQuery = "UPDATE vehicles SET brand=?, model=?, license_plate=?, year=?, consumption=? WHERE id=?";
+    private const updateVehicleQuery = "UPDATE vehicles SET brand=?, model=?, license_plate=?, year=?, consumption=?, emission=? WHERE id=?";
     public const ERROR_NO_ERROR = 0;
+    public const DEFAULT_EMISSION_RATE = 108.2;     // g/km
 
     public function __construct($fields) {
         $this->id = $fields["id"] ?? -1;
@@ -35,6 +37,7 @@ class Vehicle extends Model {
         $this->licensePlate = $fields["license_plate"] ?? "";
         $this->year = (int) ($fields["year"] ?? -1);
         $this->consumption = (float) ($fields["consumption"] ?? -1);
+        $this->co2EmissionRate = (float) ($fields["emission"] ?? Vehicle::DEFAULT_EMISSION_RATE);
     }
 
     public static function exists(string $licensePlate) {
@@ -116,7 +119,7 @@ class Vehicle extends Model {
         return new Vehicle($fields);
     }
 
-    public static function create(User $user, string $brand, string $model, string $licensePlate, int $year, float $consumption) {
+    public static function create(User $user, string $brand, string $model, string $licensePlate, int $year, float $consumption, float $emission = Vehicle::DEFAULT_EMISSION_RATE) {
         $licensePlate = strtoupper($licensePlate);
 
         $stmt = mysqli_stmt_init(appConfig()->DB_CONN);
@@ -125,7 +128,7 @@ class Vehicle extends Model {
             return null;
 
         if (!mysqli_stmt_prepare($stmt, Vehicle::createVehicleQuery) ||
-            !mysqli_stmt_bind_param($stmt, "isssid", $user->id, $brand, $model, $licensePlate, $year, $consumption) ||
+            !mysqli_stmt_bind_param($stmt, "isssidd", $user->id, $brand, $model, $licensePlate, $year, $consumption, $emission) ||
             !mysqli_stmt_execute($stmt)) {
             mysqli_stmt_close($stmt);
             return null;
@@ -142,6 +145,7 @@ class Vehicle extends Model {
         $vehicle->licensePlate = $licensePlate;
         $vehicle->year = $year;
         $vehicle->consumption = $consumption;
+        $vehicle->co2EmissionRate = $emission;
 
         return $vehicle;
     }
@@ -172,7 +176,7 @@ class Vehicle extends Model {
             return null;
 
         if (!mysqli_stmt_prepare($stmt, Vehicle::updateVehicleQuery) ||
-            !mysqli_stmt_bind_param($stmt, "sssidi", $this->brand, $this->model, $this->licensePlate, $this->year, $this->consumption, $this->id) ||
+            !mysqli_stmt_bind_param($stmt, "sssiddi", $this->brand, $this->model, $this->licensePlate, $this->year, $this->consumption, $this->co2EmissionRate, $this->id) ||
             !mysqli_stmt_execute($stmt)) {
 
             mysqli_stmt_close($stmt);
