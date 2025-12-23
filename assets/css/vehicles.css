@@ -13,17 +13,3 @@
 .vehicle-container-header {
     margin: 2em 0;
 }
-
-#add-vehicle-popup {
-    border: none;
-    color: inherit;
-}
-
-#add-vehicle-popup > p {
-    font-size: 1.5em;
-    font-weight: 700;
-}
-
-#add-vehicle-popup::backdrop {
-    backdrop-filter: brightness(30%) blur(32px);
-}

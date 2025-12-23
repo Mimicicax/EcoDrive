@@ -45,3 +45,20 @@ span.error {
 span.error:last-of-type {
     margin-bottom: 1em;
 }
+
+dialog {
+    padding: 0;
+    background: none;
+    border: none;
+    color: inherit;
+    width: 450px;
+}
+
+.dialog-title {
+    font-size: 1.5em;
+    font-weight: 700;
+}
+
+dialog::backdrop {
+    backdrop-filter: brightness(30%) blur(32px);
+}
