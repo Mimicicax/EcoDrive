@@ -9,124 +9,125 @@
 </div>
 
 <dialog id="add-vehicle-popup" 
-        class="card" 
         oncancel="closeModal(document.querySelector('#add-vehicle-popup'))">
-    <p>Jármű hozzáadása</p>
-    <form action="<?= route("vehicles") ?>" method="POST">
-        <div class="input-group <?= isset($errors["brandError"]) ? "error" : "" ?>">
-            <label for="add-vehicle-brand-field">
-                Márka
-            </label>
-            <input type="text" 
-                placeholder="Márka" 
-                id="add-vehicle-brand-field" 
-                name="brand" 
-                required 
-                value="<?= $providedBrand ?? "" ?>">
-        </div>
-
-        <?php if (isset($errors["brandError"])): ?>
-            <span class="error">
-                <?= $errors["brandError"] ?>
-            </span>
-        <?php endif ?>
-
-        <div class="input-group <?= isset($errors["modelError"]) ? "error" : "" ?>">
-            <label for="add-vehicle-model-field">
-                Modell
-            </label>
-            <input type="text" 
-                placeholder="Modell" 
-                id="add-vehicle-model-field" 
-                name="model"
-                value="<?= $providedModel ?? "" ?>"
-                required>
-        </div>
-
-        <?php if (isset($errors["modelError"])): ?>
-            <span class="error">
-                <?= $errors["modelError"] ?>
-            </span>
-        <?php endif ?>
-
-        <div class="input-group <?= isset($errors["licensePlateError"]) ? "error" : "" ?>">
-            <label for="add-vehicle-plate-field">
-                Rendszám
-            </label>
-            <input type="text" 
-                placeholder="Rendszám"
-                id="add-vehicle-plate-field" 
-                name="licensePlate"
-                value="<?= $providedLicensePlate ?? "" ?>"
-                required>
-        </div>
-
-        <?php if (isset($errors["licensePlateError"])): ?>
-            <span class="error">
-                <?= $errors["licensePlateError"] ?>
-            </span>
-        <?php endif ?>
-
-        <div class="input-group <?= isset($errors["yearError"]) ? "error" : "" ?>">
-            <label for="add-vehicle-year-field">Évjárat</label>
-            <input type="number"
-                placeholder="Évjárat"
-                id="add-vehicle-year-field"
-                name="year"
-                min="1900"
-                max="<?= getdate()["year"] ?>"
-                value="<?= $providedYear ?? "" ?>"
-                required
-                >
-        </div>
-
-        <?php if (isset($errors["yearError"])): ?>
-            <span class="error">
-                <?= $errors["yearError"] ?>
-            </span>
-        <?php endif ?>
-
-        <span class="dual-input-group">
-            <div class="input-group <?= isset($errors["consumptionError"]) ? "error" : "" ?>">
-                <label for="add-vehicle-consumption-field">
-                    Fogyasztás
+    <div class="card">
+        <p class="dialog-title">Jármű hozzáadása</p>
+        <form action="<?= route("vehicles") ?>" method="POST">
+            <div class="input-group <?= isset($errors["brandError"]) ? "error" : "" ?>">
+                <label for="add-vehicle-brand-field">
+                    Márka
                 </label>
                 <input type="text" 
-                    inputmode="decimal"
-                    placeholder="Fogyasztás (L/100 km)" 
-                    id="add-vehicle-consumption-field" 
-                    name="consumption" 
-                    value="<?= $providedConsumption ?? "" ?>"
-                >
+                    placeholder="Márka" 
+                    id="add-vehicle-brand-field" 
+                    name="brand" 
+                    required 
+                    value="<?= $providedBrand ?? "" ?>">
             </div>
 
-            <div class="input-group <?= isset($errors["emissionError"]) ? "error" : "" ?>">
-                <label for="add-vehicle-emission-field">
-                    CO2 kibocsátás (g/km)
+            <?php if (isset($errors["brandError"])): ?>
+                <span class="error">
+                    <?= $errors["brandError"] ?>
+                </span>
+            <?php endif ?>
+
+            <div class="input-group <?= isset($errors["modelError"]) ? "error" : "" ?>">
+                <label for="add-vehicle-model-field">
+                    Modell
                 </label>
                 <input type="text" 
-                    inputmode="decimal"
-                    placeholder="CO2 kibocsátás (g/km)" 
-                    id="add-vehicle-emission-field" 
-                    name="emission" 
-                    value="<?= $providedEmission ?? \EcoDrive\Models\Vehicle::DEFAULT_EMISSION_RATE ?>"
-                >
+                    placeholder="Modell" 
+                    id="add-vehicle-model-field" 
+                    name="model"
+                    value="<?= $providedModel ?? "" ?>"
+                    required>
             </div>
-        </span>
-            
-        <?php if (isset($errors["consumptionError"])): ?>
-            <span class="error">
-                <?= $errors["consumptionError"] ?>
-            </span>
-        <?php endif ?>
 
-        <span class="dual-input-group">
-            <button type="button" class="button" onclick="closeModal(document.querySelector('#add-vehicle-popup'))">
-                Mégsem
-            </button>
-            <input type="submit" value="Hozzáadás" class="button primary">
-        </span>
-    </form>
+            <?php if (isset($errors["modelError"])): ?>
+                <span class="error">
+                    <?= $errors["modelError"] ?>
+                </span>
+            <?php endif ?>
+
+            <div class="input-group <?= isset($errors["licensePlateError"]) ? "error" : "" ?>">
+                <label for="add-vehicle-plate-field">
+                    Rendszám
+                </label>
+                <input type="text" 
+                    placeholder="Rendszám"
+                    id="add-vehicle-plate-field" 
+                    name="licensePlate"
+                    value="<?= $providedLicensePlate ?? "" ?>"
+                    required>
+            </div>
+
+            <?php if (isset($errors["licensePlateError"])): ?>
+                <span class="error">
+                    <?= $errors["licensePlateError"] ?>
+                </span>
+            <?php endif ?>
+
+            <div class="input-group <?= isset($errors["yearError"]) ? "error" : "" ?>">
+                <label for="add-vehicle-year-field">Évjárat</label>
+                <input type="number"
+                    placeholder="Évjárat"
+                    id="add-vehicle-year-field"
+                    name="year"
+                    min="1900"
+                    max="<?= getdate()["year"] ?>"
+                    value="<?= $providedYear ?? "" ?>"
+                    required
+                    >
+            </div>
+
+            <?php if (isset($errors["yearError"])): ?>
+                <span class="error">
+                    <?= $errors["yearError"] ?>
+                </span>
+            <?php endif ?>
+
+            <span class="dual-input-group">
+                <div class="input-group <?= isset($errors["consumptionError"]) ? "error" : "" ?>">
+                    <label for="add-vehicle-consumption-field">
+                        Fogyasztás
+                    </label>
+                    <input type="text" 
+                        inputmode="decimal"
+                        placeholder="Fogyasztás (L/100 km)" 
+                        id="add-vehicle-consumption-field" 
+                        name="consumption" 
+                        value="<?= $providedConsumption ?? "" ?>"
+                    >
+                </div>
+
+                <div class="input-group <?= isset($errors["emissionError"]) ? "error" : "" ?>">
+                    <label for="add-vehicle-emission-field">
+                        CO2 kibocsátás (g/km)
+                    </label>
+                    <input type="text" 
+                        inputmode="decimal"
+                        placeholder="CO2 kibocsátás (g/km)" 
+                        id="add-vehicle-emission-field" 
+                        name="emission" 
+                        value="<?= $providedEmission ?? \EcoDrive\Models\Vehicle::DEFAULT_EMISSION_RATE ?>"
+                    >
+                </div>
+            </span>
+
+            <?php if (isset($errors["consumptionError"])): ?>
+                <span class="error">
+                    <?= $errors["consumptionError"] ?>
+                </span>
+            <?php endif ?>
+
+            <span class="dual-input-group">
+                <button type="button" class="button" onclick="closeModal(document.querySelector('#add-vehicle-popup'))">
+                    Mégsem
+                </button>
+                <input type="submit" value="Hozzáadás" class="button primary">
+            </span>
+        </form>
+    </div>
 </dialog>
 
 <?php if (empty($vehicleList)): ?>
