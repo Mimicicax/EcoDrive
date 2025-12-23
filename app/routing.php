@@ -8,6 +8,7 @@ require_once "config.php";
 require_once appConfig()->APP_ROOT."/endpoints/Authentication.php";
 require_once appConfig()->APP_ROOT."/endpoints/Vehicles.php";
 require_once appConfig()->APP_ROOT."/endpoints/Profile.php";
+require_once appConfig()->APP_ROOT."/endpoints/Journal.php";
 
 function registerAppRoutes() {
     // Itt lehet regisztrálni a végpontokat
@@ -27,6 +28,8 @@ function registerAppRoutes() {
 
     registerRoute("GET", "/profile", \EcoDrive\Endpoints\Profile::class, "show", "profile");
     registerRoute("PATCH", "/profile", \EcoDrive\Endpoints\Profile::class, "update");
+
+    registerRoute("GET", "/journal", \EcoDrive\Endpoints\Journal::class, "show", "journal");
 }
 
 function endpointForPath(string $route) {

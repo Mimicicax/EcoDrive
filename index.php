@@ -35,6 +35,7 @@ function escapeVar($var) {
 function view(string $viewName, $data = null, $errors = null) {
     // Definiáljuk a változókat, hogy a nézetben elérhetőek legyenek. Ha string típusú, akkor elkódoljuk, hogy az
     // XSS támadások ellen védekezzünk.
+    
     if (isset($data)) {
         extract(array_map(function($val) {
             return escapeVar($val);
@@ -43,7 +44,7 @@ function view(string $viewName, $data = null, $errors = null) {
     }
 
     $_pageContent = appConfig()->VIEWS_PATH . "/" . $viewName . ".php";
-
+    
     return include appConfig()->VIEWS_PATH . "/layout.php";
 }
 

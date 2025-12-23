@@ -37,6 +37,17 @@ CREATE TABLE IF NOT EXISTS vehicles (
     FOREIGN KEY(user) REFERENCES users(id)
 );
 
+CREATE TABLE IF NOT EXISTS routes (id INT UNSIGNED AUTO_INCREMENT, 
+    vehicle INT UNSIGNED NOT NULL, 
+    from_address varchar(256) NOT NULL, 
+    to_address varchar(256) NOT NULL, 
+    travel_start_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP() NOT NULL, 
+    distance FLOAT NOT NULL, 
+    emission FLOAT DEFAULT 0.0, 
+    PRIMARY KEY(id), 
+    FOREIGN KEY(vehicle) REFERENCES vehicles(id)
+);
+
 SET GLOBAL event_scheduler = ON;
 
 CREATE EVENT IF NOT EXISTS SessionCleanupEvent
