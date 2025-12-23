@@ -56,16 +56,16 @@ function asset(string $fileName) {
 // Kérelem kezelése
 
 $uri = parse_url($_SERVER["REQUEST_URI"]);
-$endpoint = \EcoDrive\Routing\endpointForPath($uri["path"]);
+$endpoint = \EcoDrive\Routing\endpointForPath($uri["path"]) ?? null;
 
 if (!isset($endpoint)) {
     http_response_code(404);
     return view("404");
 
 } else {
-    $handler = $endpoint[strtoupper($_SERVER['REQUEST_METHOD'])];
+    $handler = $endpoint[strtoupper($_SERVER['REQUEST_METHOD'])] ?? null;
 
-    if (!isset($endpoint))
+    if (!isset($handler))
         http_response_code(405);
 
     else {
