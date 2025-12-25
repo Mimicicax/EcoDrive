@@ -109,6 +109,19 @@
     </div>
 </dialog>
 
+<?php if (empty($routeList)): ?>
+
+<div class="empty card-container">
+    <span>
+        <h1>A napló üres</h1>
+        <p>Adj hozzá útvonalakat és azok itt fognak megjelenni</p>
+    </span>
+</div>
+
+<?php else: ?>
+
+<?php endif ?>
+
 <?php if (!empty($errors)): ?>
     <script>openModal(document.getElementById("add-journal-entry-popup"))</script>
 <?php endif ?>
