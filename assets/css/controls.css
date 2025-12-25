@@ -1,4 +1,4 @@
-input {
+input, select {
     border: none;
     border-radius: 0.35rem;
     padding: 1rem 1rem;
@@ -11,7 +11,7 @@ input::placeholder {
     color: #576574;
 }
 
-input:focus-visible {
+input:focus-visible, select:focus-visible {
     outline: 2px solid var(--accent-color-primary);
 }
 
@@ -74,7 +74,7 @@ input[type="number"]::-webkit-outer-spin-button {
     color: var(--border-color-unfocused);
 }
 
-.input-group > input {
+.input-group > input, .input-group > select {
     width: 100%;
 }
 
@@ -105,7 +105,7 @@ input[type="number"]::-webkit-outer-spin-button {
     color: var(--error-color);
 }
 
-.input-group.error > input {
+.input-group.error > input, .input-group.error > select {
     outline-color: var(--error-color);
 }
 
@@ -115,7 +115,7 @@ input[type="number"]::-webkit-outer-spin-button {
 
 .dual-input-group {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(max(calc(50% - 1em), 200px), 1fr));
+    grid-template-columns: repeat(2, 1fr);
     width: 100%;
     gap: 1em;
 }

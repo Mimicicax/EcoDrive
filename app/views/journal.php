@@ -20,7 +20,7 @@
 
                 <select name="vehicle" id="vehicle">
                     <?php foreach ($userVehicles as $vehicle): ?>
-                        <option value="<?= $vehicle->id ?>">
+                        <option value="<?= $vehicle->licensePlate ?>">
                             <?php $name = $vehicle->licensePlate  . " (" . $vehicle->brand . " " . $vehicle->model . ")" ?>
                             <?= $name ?>
                         </option>

@@ -30,6 +30,7 @@ function registerAppRoutes() {
     registerRoute("PATCH", "/profile", \EcoDrive\Endpoints\Profile::class, "update");
 
     registerRoute("GET", "/journal", \EcoDrive\Endpoints\Journal::class, "show", "journal");
+    registerRoute("POST", "/journal", \EcoDrive\Endpoints\Journal::class, "create");
 }
 
 function endpointForPath(string $route) {
