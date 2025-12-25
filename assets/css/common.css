@@ -61,3 +61,15 @@ dialog {
 dialog::backdrop {
     backdrop-filter: brightness(30%) blur(32px);
 }
+
+.container-header {
+    display: flex;
+    width: 100%;
+    background-color: var(--secondary-background-color);
+    flex-flow: row wrap;
+    gap: 1em;
+    padding: 1em;
+    justify-items: flex-start;
+    align-items: center;
+    border-radius: 10px;
+}
