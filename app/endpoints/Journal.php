@@ -44,6 +44,18 @@ class Journal implements Endpoint
         $toCity = $_POST["to_city"] ?? "";
         $toStreet = $_POST["to_street"] ?? "";
     
+        $data = [
+            "providedVehicle" =>  $_POST["vehicle"] ?? null,
+            "providedTravelStart" => $_POST["travel_start"] ?? null,
+            "providedDistance" => $_POST["distance"] ?? null,
+            "providedFromZip" => $_POST["from_zip"] ?? null,
+            "providedFromCity" => $_POST["from_city"] ?? null,
+            "providedFromStreet" => $_POST["from_street"] ?? null,
+            "providedToZip" => $_POST["to_zip"] ?? null,
+            "providedToCity" => $_POST["to_city"] ?? null,
+            "providedToStreet" => $_POST["to_street"] ?? null
+        ];
+
         $errors = [];
         $vehicle = null;
 
@@ -54,11 +66,11 @@ class Journal implements Endpoint
             $vehicle = Vehicle::find($plate);
 
             if (!isset($vehicle) || $vehicle->user->id !== Session::currentUser()->id)
-                return Journal::vehicleNotFoundError;
+                $errors["plateError"] = Journal::vehicleNotFoundError;
         }
 
         if ($e = $this->validateTravelStart($start))
-            $errors["travelError"] = $e;
+            $errors["travelStartError"] = $e;
 
         if ($e = $this->validateDistance($distance))
             $errors["distanceError"] = $e;
@@ -70,7 +82,7 @@ class Journal implements Endpoint
             $errors["toZipError"] = $e;
 
         if (\count($errors) != 0)
-            return $this->showRoutes($errors);
+            return $this->showRoutes($data, $errors);
 
         $route = Route::create($vehicle, 
             DateTimeImmutable::createFromFormat(Journal::dateTimeFormat, $start), 
@@ -86,7 +98,10 @@ class Journal implements Endpoint
         if (!isset($route))
             $errors["creationFailure"] = Journal::routeCreationError;
 
-        return $this->showRoutes($errors);
+        else
+            $data = [];
+
+        return $this->showRoutes($data, $errors);
     }
 
     public static function requiresAuth(): bool {
@@ -111,23 +126,20 @@ class Journal implements Endpoint
     }
 
     private function validateZip(string $zip) {
-
         if (\strlen($zip) == 0)
             return false;
 
-        if (\strlen($zip) != 4 || filter_var($zip, FILTER_VALIDATE_INT, [ "min" => 0, "max" => 9999 ]) === false)
+        if (preg_match("/^[0-9]{4}$/", $zip) !== 1)
             return Journal::zipError;
 
         return false;
     }
 
-    private function showRoutes($errors = []) {
-        $data = [
-            "title" => "Napló",
-            "activeNavLink" => route("journal"),
-            "userVehicles" => Vehicle::findAll(Session::currentUser())
-        ];
+    private function showRoutes($data = [], $errors = []) {
+        $data["title"] = "Napló";
+        $data["activeNavLink"] = route("journal");
+        $data["userVehicles"] = Vehicle::findAll(Session::currentUser());
 
-        return view("journal", $data);
+        return view("journal", $data, $errors);
     }
 }

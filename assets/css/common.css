@@ -39,7 +39,6 @@ a:active {
 
 span.error {
     display: block;
-    margin: 0.5em 0;
 }
 
 span.error:last-of-type {
