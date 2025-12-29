@@ -22,6 +22,18 @@ class Route extends Model {
     public string $toCity;
     public string $toStreet;
 
+    private const findYearsQuery = "SELECT DISTINCT YEAR(routes.travel_start_time) 
+        FROM routes 
+        WHERE vehicle IN 
+            (SELECT id FROM vehicles WHERE vehicles.user = ?)     
+        ORDER BY 1";
+
+    private const findRouteQuery = "SELECT *
+        FROM routes 
+        WHERE vehicle = ?
+            AND YEAR(travel_start_time) = ?
+        ORDER BY travel_start_time";
+
     private const createRouteQuery = 
         "INSERT INTO routes (
             vehicle, 
@@ -36,8 +48,76 @@ class Route extends Model {
             to_street
         ) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-    public static function findAll(int $year) {
+    public function __construct($row = null) {
+        if (!isset($row))
+            return;
+        
+        $this->id = $row["id"] ?? -1;
 
+        if (array_key_exists("vehicles.id", $row))
+            $this->vehicle = new Vehicle($row, "vehicles");
+
+        else {
+            $this->vehicle = new Vehicle([]);
+            $this->vehicle->id = $row["vehicle"];
+        }
+
+        $this->travelStart = DateTimeImmutable::createFromFormat(appConfig()->DB_DATETIME_FORMAT, $row["travel_start_time"] ?? "");
+
+        $this->distance = $row["distance"];
+        $this->emission = $row["emission"];
+
+        $this->fromZip = $row["from_zip"];
+        $this->fromCity = $row["from_city"];
+        $this->fromStreet = $row["from_street"];
+
+        $this->toZip = $row["to_zip"];
+        $this->toCity = $row["to_city"];
+        $this->toStreet = $row["to_street"];
+    }
+
+    public static function findAllYears(User $user) {
+        if (!($stmt = mysqli_prepare(appConfig()->DB_CONN, Route::findYearsQuery)))
+            return null;
+
+        if (!mysqli_stmt_bind_param($stmt, "i", $user->id) || !mysqli_stmt_execute($stmt)) {
+            mysqli_stmt_close($stmt);
+            return null;
+        }
+
+        $result = mysqli_stmt_get_result($stmt);
+        mysqli_stmt_close($stmt);
+
+        $results = [];
+
+        while ($row = mysqli_fetch_row($result))
+            array_push($results, $row[0]);
+
+        return $results;
+    }
+
+    public static function findAll(Vehicle $vehicle, int $year) {
+        if (!($stmt = mysqli_prepare(appConfig()->DB_CONN, Route::findRouteQuery)))
+            return null;
+
+        if (!mysqli_stmt_bind_param($stmt, "ii", $vehicle->id, $year) || !mysqli_stmt_execute($stmt)) {
+            mysqli_stmt_close($stmt);
+            return null;
+        }
+
+        $result = mysqli_stmt_get_result($stmt);
+        mysqli_stmt_close($stmt);
+
+        $results = [];
+
+        while ($row = mysqli_fetch_assoc($result)) {
+            $r = new Route($row);
+            $r->vehicle = $vehicle;
+
+            array_push($results, $r);
+        }
+
+        return $results;
     }
 
     public static function create(Vehicle $vehicle, 

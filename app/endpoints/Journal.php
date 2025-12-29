@@ -98,8 +98,12 @@ class Journal implements Endpoint
         if (!isset($route))
             $errors["creationFailure"] = Journal::routeCreationError;
 
-        else
-            $data = [];
+        else {
+            $data = [
+                "filterYear" => $route->travelStart->format("Y"),
+                "filterVehicle" => $vehicle->licensePlate
+            ];
+        }
 
         return $this->showRoutes($data, $errors);
     }
@@ -139,6 +143,28 @@ class Journal implements Endpoint
         $data["title"] = "Napló";
         $data["activeNavLink"] = route("journal");
         $data["userVehicles"] = Vehicle::findAll(Session::currentUser());
+        $data["filterYearList"] = Route::findAllYears(Session::currentUser());
+
+        if (!empty($data["filterYearList"])) {
+            $year = $data["filterYearList"][0];
+            $vehicle = $data["userVehicles"][0];
+
+            if (isset($_GET["filterYear"]) && in_array($_GET["filterYear"], $data["filterYearList"]))
+                $year = $_GET["filterYear"];
+
+            if (isset($_GET["filterVehicle"])) {
+                foreach ($data["userVehicles"] as $v) {
+                    if ($v->licensePlate == $_GET["filterVehicle"]) {
+                        $vehicle = $v;
+                        break;
+                    }
+                }
+            }
+
+            $data["filterYear"] = $year;
+            $data["filterVehicle"] = $vehicle->licensePlate;
+            $data["routeList"] = Route::findAll($vehicle, $year);
+        }
 
         return view("journal", $data, $errors);
     }
