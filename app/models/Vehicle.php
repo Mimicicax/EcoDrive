@@ -29,15 +29,18 @@ class Vehicle extends Model {
     public const ERROR_NO_ERROR = 0;
     public const DEFAULT_EMISSION_RATE = 108.2;     // g/km
 
-    public function __construct($fields) {
-        $this->id = $fields["id"] ?? -1;
-        $this->user = new User(["id" => $fields["user"] ?? null]);
-        $this->brand = $fields["brand"] ?? "";
-        $this->model = $fields["model"] ?? "";
-        $this->licensePlate = $fields["license_plate"] ?? "";
-        $this->year = (int) ($fields["year"] ?? -1);
-        $this->consumption = (float) ($fields["consumption"] ?? -1);
-        $this->co2EmissionRate = (float) ($fields["emission"] ?? Vehicle::DEFAULT_EMISSION_RATE);
+    public function __construct($fields, $prefix = "") {
+        if ($prefix !==  "")
+            $prefix .= ".";
+
+        $this->id = $fields[$prefix . "id"] ?? -1;
+        $this->user = new User([$prefix . "id" => $fields["user"] ?? null]);
+        $this->brand = $fields[$prefix . "brand"] ?? "";
+        $this->model = $fields[$prefix . "model"] ?? "";
+        $this->licensePlate = $fields[$prefix . "license_plate"] ?? "";
+        $this->year = (int) ($fields[$prefix . "year"] ?? -1);
+        $this->consumption = (float) ($fields[$prefix . "consumption"] ?? -1);
+        $this->co2EmissionRate = (float) ($fields[$prefix . "emission"] ?? Vehicle::DEFAULT_EMISSION_RATE);
     }
 
     public static function exists(string $licensePlate) {
@@ -185,6 +188,11 @@ class Vehicle extends Model {
 
         mysqli_stmt_close($stmt);
         return Vehicle::ERROR_NO_ERROR;
+    }
+
+    public function name() {
+        $name = $this->licensePlate  . " (" . $this->brand . " " . $this->model . ")";
+        return escapeVar($name);
     }
 
     public function modelEscaped(): Vehicle {
