@@ -25,6 +25,11 @@ form {
     flex-flow: column;
 }
 
+form.horizontal {
+    flex-flow: row;
+    gap: 1em;
+}
+
 a {
     color: var(--accent-color-primary);
 }
@@ -69,7 +74,12 @@ dialog::backdrop {
     flex-flow: row wrap;
     gap: 1em;
     padding: 1em;
-    justify-items: flex-start;
+    justify-content: space-between;
     align-items: center;
     border-radius: 10px;
+    margin-bottom: 2em;
+}
+
+.container-header > form {
+    align-items: center;
 }
