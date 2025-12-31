@@ -170,6 +170,27 @@ class Session extends Model {
         return true;
     }
 
+    public static function destroyCurrentSession() {
+        if (!isset($_COOKIE[appConfig()->SESSION_COOKIE_NAME])) {
+            return;
+        }
+
+        $sid = $_COOKIE[appConfig()->SESSION_COOKIE_NAME];
+
+        // Töröljük az adatbázisból
+        $query = "DELETE FROM sessions WHERE session_id = ?";
+        $stmt = mysqli_prepare(appConfig()->DB_CONN, $query);
+        mysqli_stmt_bind_param($stmt, "s", $sid);
+        mysqli_stmt_execute($stmt);
+        mysqli_stmt_close($stmt);
+
+        // Cookie törlése
+        setcookie(appConfig()->SESSION_COOKIE_NAME, "", time() - 3600, "/");
+
+        // Cache törlése
+        Session::$currentSession = null;
+    }
+
     private static function initialiseSessionCookie(string $sid, DateTimeImmutable $expiry) {
         setcookie(appConfig()->SESSION_COOKIE_NAME, $sid, $expiry->getTimestamp(), "/", "", false, true);
     }

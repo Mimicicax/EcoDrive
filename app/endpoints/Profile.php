@@ -89,6 +89,19 @@ class Profile implements Endpoint
             http_response_code(200);
     }
 
+    public function deleteAccount() {
+        $user = Session::currentUser();
+        if (!$user) {
+            http_response_code(401);
+            return;
+        }
+
+        $user->softDelete();
+        Session::destroyCurrentSession();
+        http_response_code(200);
+        return redirect("home", true, RedirectType::SeeOther);
+    }
+
     public static function requiresAuth(): bool {
         return true;
     }

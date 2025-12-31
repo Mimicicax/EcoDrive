@@ -17,10 +17,10 @@ class User extends Model {
     public ?string $resetToken;
     public ?DateTimeImmutable $resetTokenExpiry;
 
-    private const findByEmailQuery = "SELECT * FROM users WHERE email LIKE ?";
-    private const findByUsernameQuery = "SELECT * FROM users WHERE username LIKE ?";
-    private const existsByUsernameQuery = "SELECT COUNT(*) FROM users WHERE username LIKE ?";
-    private const existsByEmailQuery = "SELECT COUNT(*) FROM users WHERE email LIKE ?";
+    private const findByEmailQuery = "SELECT * FROM users WHERE email LIKE ? AND deleted_at IS NULL";
+    private const findByUsernameQuery = "SELECT * FROM users WHERE username LIKE ? AND deleted_at IS NULL";
+    private const existsByUsernameQuery = "SELECT COUNT(*) FROM users WHERE username LIKE ? AND deleted_at IS NULL";
+    private const existsByEmailQuery = "SELECT COUNT(*) FROM users WHERE email LIKE ? AND deleted_at IS NULL";
     private const createUserQuery = "INSERT INTO users(username, email, password) VALUES(?, ?, ?)";
 
     private function updateQueryBuilder(&$bindTypes): string {
@@ -179,6 +179,18 @@ class User extends Model {
 
     public function passwordEquals($plaintextPassword) {
         return password_verify($plaintextPassword, $this->password);
+    }
+
+    public function softDelete() {
+        $query = "UPDATE users SET deleted_at = NOW() WHERE id = ?";
+        $stmt = mysqli_prepare(appConfig()->DB_CONN, $query);
+        mysqli_stmt_bind_param($stmt, "i", $this->id);
+        mysqli_stmt_execute($stmt);
+        mysqli_stmt_close($stmt);
+    }
+
+    public function isDeleted(): bool {
+        return $this->deleted_at !== null;
     }
 
     public function modelEscaped(): User {

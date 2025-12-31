@@ -1,0 +1,23 @@
+{
+    "name": "ecodrive/ecodrive",
+    "description": "EcoDrive - Járműkezelő alkalmazás",
+    "type": "project",
+    "require": {
+        "php": ">=8.0",
+        "ext-mysqli": "*"
+    },
+    "require-dev": {
+
+        "phpunit/phpunit": "^9.5"
+    },
+    "autoload": {
+        "psr-4": {
+            "EcoDrive\\": "app/"
+        }
+    },
+    "scripts": {
+        "test": "phpunit",
+        "test:unit": "phpunit --testsuite unit",
+        "test:integration": "phpunit --testsuite integration"
+    }
+}

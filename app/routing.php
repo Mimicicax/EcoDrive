@@ -10,7 +10,6 @@ require_once appConfig()->APP_ROOT."/endpoints/Vehicles.php";
 require_once appConfig()->APP_ROOT."/endpoints/Profile.php";
 
 function registerAppRoutes() {
-    // Itt lehet regisztrálni a végpontokat
 
     registerRoute("GET", "/", \EcoDrive\Endpoints\Vehicles::class, "show", "home");
 
@@ -27,6 +26,7 @@ function registerAppRoutes() {
 
     registerRoute("GET", "/profile", \EcoDrive\Endpoints\Profile::class, "show", "profile");
     registerRoute("PATCH", "/profile", \EcoDrive\Endpoints\Profile::class, "update");
+    registerRoute("DELETE", "/profile", \EcoDrive\Endpoints\Profile::class, "deleteAccount");
 }
 
 function endpointForPath(string $route) {

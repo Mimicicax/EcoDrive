@@ -1,0 +1,98 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    ports:
+      - "8080:80"
+    volumes:
+      - .:/var/www/html
+      - /var/www/html/vendor
+    depends_on:
+      - db
+    environment:
+      - DB_HOST=db
+      - DB_USER=ecodrive
+      - DB_PASSWORD=ecodrive2026
+      - DB_NAME=ecodrive
+      - DB_PORT=3306
+      - WWW_HOST=localhost
+      - SESSION_COOKIE_NAME=ECODRIVE_SESSION
+      - DEBUG_MODE=true
+      - DB_DATETIME_FORMAT=Y-m-d H:i:s
+      - DB_DATETIME_TIMEZONE=UTC
+    networks:
+      - ecodrive-network
+
+  db:
+    image: mysql:8.0
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: ecodrive
+      MYSQL_USER: ecodrive
+      MYSQL_PASSWORD: ecodrive2026
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./app/database/database.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - ecodrive-network
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    environment:
+      PMA_HOST: db
+      PMA_PORT: 3306
+      PMA_USER: ecodrive
+      PMA_PASSWORD: ecodrive2026
+    ports:
+      - "8081:80"
+    depends_on:
+      - db
+    networks:
+      - ecodrive-network
+
+  test:
+    build: .
+    depends_on:
+      - db_test
+    environment:
+      - DB_HOST=db_test
+      - DB_USER=ecodrive_test
+      - DB_PASSWORD=ecodrive_test
+      - DB_NAME=ecodrive_test
+      - DB_PORT=3306
+      - WWW_HOST=localhost
+      - SESSION_COOKIE_NAME=ECODRIVE_TEST_SESSION
+      - DEBUG_MODE=true
+      - DB_DATETIME_FORMAT=Y-m-d H:i:s
+      - DB_DATETIME_TIMEZONE=UTC
+    volumes:
+      - .:/var/www/html
+    command: composer test
+    networks:
+      - ecodrive-network
+
+  db_test:
+    image: mysql:8.0
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: ecodrive_test
+      MYSQL_USER: ecodrive_test
+      MYSQL_PASSWORD: ecodrive_test
+    volumes:
+      - db_test_data:/var/lib/mysql
+      - ./tests/setup-test-db.sh:/docker-entrypoint-initdb.d/setup-test-db.sh
+    networks:
+      - ecodrive-network
+
+volumes:
+  db_data:
+  db_test_data:
+
+networks:
+  ecodrive-network:
+    driver: bridge
