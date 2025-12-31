@@ -59,7 +59,7 @@ function asset(string $fileName) {
 $uri = parse_url($_SERVER["REQUEST_URI"]);
 $path = $uri["path"];
 
-if (str_ends_with($path, '/')) {
+if (str_ends_with($path, '/') && $path !== "/") {
     return redirect(rtrim($path, '/'), false);
 }
 
