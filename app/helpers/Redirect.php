@@ -13,9 +13,10 @@ enum RedirectType {
     case SeeOther;
 }
 
-function redirect(string $to, bool $interpretAsRoute = true, RedirectType $type = RedirectType::Normal) {
+function redirect(string $to, bool $interpretAsRoute = true, RedirectType $type = RedirectType::Normal, ?array $additionalData = null) {
     $code = $type === RedirectType::Normal ? 302 : 303;
-    header("Location: " . ($interpretAsRoute ? route($to) : $to), true, $code);
 
+    header("Location: " . ($interpretAsRoute ? route($to) : $to) . (isset($additionalData) ? "?" . http_build_query($additionalData) : ""), true, $code);
+    
     return 0;
 }

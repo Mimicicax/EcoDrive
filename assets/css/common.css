@@ -25,6 +25,11 @@ form {
     flex-flow: column;
 }
 
+form.horizontal {
+    flex-flow: row;
+    gap: 1em;
+}
+
 a {
     color: var(--accent-color-primary);
 }
@@ -39,9 +44,42 @@ a:active {
 
 span.error {
     display: block;
-    margin: 0.5em 0;
 }
 
 span.error:last-of-type {
     margin-bottom: 1em;
+}
+
+dialog {
+    padding: 0;
+    background: none;
+    border: none;
+    color: inherit;
+    width: 450px;
+}
+
+.dialog-title {
+    font-size: 1.5em;
+    font-weight: 700;
+}
+
+dialog::backdrop {
+    backdrop-filter: brightness(30%) blur(32px);
+}
+
+.container-header {
+    display: flex;
+    width: 100%;
+    background-color: var(--secondary-background-color);
+    flex-flow: row wrap;
+    gap: 1em;
+    padding: 1em;
+    justify-content: space-between;
+    align-items: center;
+    border-radius: 10px;
+    margin-bottom: 2em;
+}
+
+.container-header > form {
+    align-items: center;
 }

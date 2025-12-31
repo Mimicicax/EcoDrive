@@ -1,5 +1,6 @@
 <?php
 
+use EcoDrive\Helpers\RedirectType;
 use EcoDrive\Models\Session;
 use function EcoDrive\Environment\appConfig;
 use function EcoDrive\Helpers\redirect;
@@ -35,6 +36,7 @@ function escapeVar($var) {
 function view(string $viewName, $data = null, $errors = null) {
     // Definiáljuk a változókat, hogy a nézetben elérhetőek legyenek. Ha string típusú, akkor elkódoljuk, hogy az
     // XSS támadások ellen védekezzünk.
+    
     if (isset($data)) {
         extract(array_map(function($val) {
             return escapeVar($val);
@@ -43,7 +45,7 @@ function view(string $viewName, $data = null, $errors = null) {
     }
 
     $_pageContent = appConfig()->VIEWS_PATH . "/" . $viewName . ".php";
-
+    
     return include appConfig()->VIEWS_PATH . "/layout.php";
 }
 
@@ -55,16 +57,22 @@ function asset(string $fileName) {
 // Kérelem kezelése
 
 $uri = parse_url($_SERVER["REQUEST_URI"]);
-$endpoint = \EcoDrive\Routing\endpointForPath($uri["path"]);
+$path = $uri["path"];
+
+if (str_ends_with($path, '/')) {
+    return redirect(rtrim($path, '/'), false);
+}
+
+$endpoint = \EcoDrive\Routing\endpointForPath($uri["path"]) ?? null;
 
 if (!isset($endpoint)) {
     http_response_code(404);
     return view("404");
 
 } else {
-    $handler = $endpoint[strtoupper($_SERVER['REQUEST_METHOD'])];
+    $handler = $endpoint[strtoupper($_SERVER['REQUEST_METHOD'])] ?? null;
 
-    if (!isset($endpoint))
+    if (!isset($handler))
         http_response_code(405);
 
     else {

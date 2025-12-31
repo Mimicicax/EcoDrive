@@ -21,6 +21,7 @@ class Vehicle extends Model {
 
     private const findAllVehiclesQuery = "SELECT * FROM vehicles WHERE user=?";
     private const findVehicleQuery = "SELECT * FROM vehicles WHERE license_plate LIKE ?";
+    private const findVehicleByIdQuery = "SELECT * FROM vehicles WHERE id = ?";
     private const findVehicleOwnerQuery = "SELECT user FROM vehicles WHERE license_plate LIKE ?";
     private const createVehicleQuery = "INSERT INTO vehicles(user, brand, model, license_plate, year, consumption, emission) VALUES(?, ?, ?, ?, ?, ?, ?)";
     private const existsQuery = "SELECT COUNT(*) FROM vehicles WHERE license_plate LIKE ?";
@@ -29,15 +30,18 @@ class Vehicle extends Model {
     public const ERROR_NO_ERROR = 0;
     public const DEFAULT_EMISSION_RATE = 108.2;     // g/km
 
-    public function __construct($fields) {
-        $this->id = $fields["id"] ?? -1;
-        $this->user = new User(["id" => $fields["user"] ?? null]);
-        $this->brand = $fields["brand"] ?? "";
-        $this->model = $fields["model"] ?? "";
-        $this->licensePlate = $fields["license_plate"] ?? "";
-        $this->year = (int) ($fields["year"] ?? -1);
-        $this->consumption = (float) ($fields["consumption"] ?? -1);
-        $this->co2EmissionRate = (float) ($fields["emission"] ?? Vehicle::DEFAULT_EMISSION_RATE);
+    public function __construct($fields, $prefix = "") {
+        if ($prefix !==  "")
+            $prefix .= ".";
+
+        $this->id = $fields[$prefix . "id"] ?? -1;
+        $this->user = new User(["id" => $fields[$prefix . "user"] ?? null]);
+        $this->brand = $fields[$prefix . "brand"] ?? "";
+        $this->model = $fields[$prefix . "model"] ?? "";
+        $this->licensePlate = $fields[$prefix . "license_plate"] ?? "";
+        $this->year = (int) ($fields[$prefix . "year"] ?? -1);
+        $this->consumption = (float) ($fields[$prefix . "consumption"] ?? -1);
+        $this->co2EmissionRate = (float) ($fields[$prefix . "emission"] ?? Vehicle::DEFAULT_EMISSION_RATE);
     }
 
     public static function exists(string $licensePlate) {
@@ -101,6 +105,32 @@ class Vehicle extends Model {
 
         if (!mysqli_stmt_prepare($stmt, Vehicle::findVehicleQuery) ||
             !mysqli_stmt_bind_param($stmt, "s", $plate) ||
+            !mysqli_stmt_execute($stmt)) {
+
+            mysqli_stmt_close($stmt);
+            return null;
+        }
+
+        $result = mysqli_stmt_get_result($stmt);
+        $fields = mysqli_fetch_assoc($result);
+        
+        if (empty($fields))
+            return null;
+
+        mysqli_stmt_close($stmt);
+        mysqli_free_result($result);
+
+        return new Vehicle($fields);
+    }
+
+    public static function findById(int $id) {
+        $stmt = mysqli_stmt_init(appConfig()->DB_CONN);
+
+        if (!$stmt)
+            return null;
+
+        if (!mysqli_stmt_prepare($stmt, Vehicle::findVehicleByIdQuery) ||
+            !mysqli_stmt_bind_param($stmt, "i", $id) ||
             !mysqli_stmt_execute($stmt)) {
 
             mysqli_stmt_close($stmt);
@@ -185,6 +215,11 @@ class Vehicle extends Model {
 
         mysqli_stmt_close($stmt);
         return Vehicle::ERROR_NO_ERROR;
+    }
+
+    public function name() {
+        $name = $this->licensePlate  . " (" . $this->brand . " " . $this->model . ")";
+        return escapeVar($name);
     }
 
     public function modelEscaped(): Vehicle {
