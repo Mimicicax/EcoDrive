@@ -39,6 +39,8 @@ class Route extends Model {
         WHERE routes.id = ?
     ";
 
+    private const deleteQuery = "DELETE FROM routes WHERE id = ?";
+
     private const createRouteQuery = 
         "INSERT INTO routes (
             vehicle, 
@@ -206,6 +208,21 @@ class Route extends Model {
         $route->toStreet = $toStreet;
 
         return $route;
+    }
+
+    public function delete() {
+        $stmt = mysqli_stmt_init(appConfig()->DB_CONN);
+
+        if (!$stmt)
+            return;
+
+        if (!mysqli_stmt_prepare($stmt, Route::deleteQuery) || !mysqli_stmt_bind_param($stmt, "i", $this->id)) {
+            mysqli_stmt_close($stmt);
+            return;     
+        }
+
+        mysqli_stmt_execute($stmt);
+        mysqli_stmt_close($stmt);
     }
 
     public function modelEscaped(): Route {

@@ -196,11 +196,13 @@
                 <p><b>Távolság:</b> <?= $route->distance ?> km </p>
                 <p><b>Becsült CO2-kibocsátás:</b> <?= $route->emission ?> g</p>
             </div>
-            <button class="button secondary danger">Bejegyzés törlése</button>
+            <form action="<?= route("journal/delete") ?>" method="POST" onsubmit="return confirm('Biztosan törli a bejegyzést?')">
+                <input type="hidden" name="route" value="<?= $route->id ?>">
+                <button class="button secondary danger">Bejegyzés törlése</button>
+            </form>
         </div>
-
     <?php endforeach ?>
-
+    
 </div>
 <?php endif ?>
 

@@ -4,15 +4,18 @@ namespace EcoDrive\Endpoints;
 
 use DateTime;
 use DateTimeImmutable;
+use EcoDrive\Helpers\RedirectType;
 use EcoDrive\Models\Route;
 use EcoDrive\Models\Session;
 use EcoDrive\Models\Vehicle;
 
 use function EcoDrive\Environment\appConfig;
+use function EcoDrive\Helpers\redirect;
 use function EcoDrive\Routing\route;
 
 require_once "config.php";
 require_once appConfig()->APP_ROOT . "/models/Route.php";
+require_once appConfig()->APP_ROOT . "/helpers/Redirect.php";
 
 class Journal implements Endpoint
 {
@@ -108,6 +111,21 @@ class Journal implements Endpoint
         return $this->showRoutes($data, $errors);
     }
 
+    public function delete() {
+        $routeId = $_POST["route"] ?? "";
+
+        if ($routeId == "" || !filter_var($routeId, FILTER_VALIDATE_INT, [ "min" => 0 ]))
+            return $this->redirectAfterDelete();
+
+        $route = Route::find($routeId);
+
+        if ($route->vehicle->user->id !== Session::currentUser()->id) 
+            return $this->redirectAfterDelete();
+
+        $route->delete();
+        return $this->redirectAfterDelete($route);
+    }
+
     public static function requiresAuth(): bool {
         return true;
     }
@@ -137,6 +155,19 @@ class Journal implements Endpoint
             return Journal::zipError;
 
         return false;
+    }
+
+    private function redirectAfterDelete(?Route $deletedRoute = null) {
+        $data = null;
+
+        if (isset($deletedRoute)) {
+            $data = [
+                "filterYear" => $deletedRoute->travelStart->format('Y'),
+                "filterVehicle" => $deletedRoute->vehicle->licensePlate
+            ];
+        }
+
+        return redirect("journal", true, RedirectType::SeeOther, $data);
     }
 
     private function showRoutes($data = [], $errors = []) {
