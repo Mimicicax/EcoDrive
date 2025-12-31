@@ -34,6 +34,11 @@ class Route extends Model {
             AND YEAR(travel_start_time) = ?
         ORDER BY travel_start_time DESC";
 
+    private const findRouteByIdQuery = "SELECT routes.*
+        FROM routes
+        WHERE routes.id = ?
+    ";
+
     private const createRouteQuery = 
         "INSERT INTO routes (
             vehicle, 
@@ -118,6 +123,26 @@ class Route extends Model {
         }
 
         return $results;
+    }
+
+    public static function find(int $id) {
+        if (!($stmt = mysqli_prepare(appConfig()->DB_CONN, Route::findRouteByIdQuery)))
+            return null;
+
+        if (!mysqli_stmt_bind_param($stmt, "i", $id) || !mysqli_stmt_execute($stmt)) {
+            mysqli_stmt_close($stmt);
+            return null;
+        }
+
+        $result = mysqli_stmt_get_result($stmt);
+        $row = mysqli_fetch_assoc($result);
+
+        mysqli_stmt_close($stmt);
+        
+        $route = new Route($row);
+        $route->vehicle = Vehicle::findById($route->vehicle->id);
+
+        return $route;
     }
 
     public static function create(Vehicle $vehicle, 
