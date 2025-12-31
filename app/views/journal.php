@@ -135,7 +135,12 @@
                 <input type="text" name="to_street" id="to_street" <?= isset($providedToStreet) ? "value=\"$providedToStreet\"" : "" ?>>
             </span>
 
-            <input type="submit" value="Hozzáadás" class="button primary add-top-margin">
+            <span class="dual-input-group">
+                <button type="button" class="button" onclick="closeModal(document.querySelector('#add-journal-entry-popup'))">
+                    Mégsem
+                </button>
+                <input type="submit" value="Hozzáadás" class="button primary add-top-margin">
+            </span>
         </form>
     </div>
 </dialog>
