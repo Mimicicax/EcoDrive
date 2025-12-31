@@ -26,13 +26,13 @@ class Route extends Model {
         FROM routes 
         WHERE vehicle IN 
             (SELECT id FROM vehicles WHERE vehicles.user = ?)     
-        ORDER BY 1";
+        ORDER BY 1 DESC";
 
     private const findRouteQuery = "SELECT *
         FROM routes 
         WHERE vehicle = ?
             AND YEAR(travel_start_time) = ?
-        ORDER BY travel_start_time";
+        ORDER BY travel_start_time DESC";
 
     private const createRouteQuery = 
         "INSERT INTO routes (

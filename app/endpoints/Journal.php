@@ -149,12 +149,23 @@ class Journal implements Endpoint
             $year = $data["filterYearList"][0];
             $vehicle = $data["userVehicles"][0];
 
-            if (isset($_GET["filterYear"]) && in_array($_GET["filterYear"], $data["filterYearList"]))
+            if (isset($data["filterYear"]))
+                $year = $data["filterYear"];
+
+            else if (isset($_GET["filterYear"]) && \in_array($_GET["filterYear"], $data["filterYearList"]))
                 $year = $_GET["filterYear"];
 
-            if (isset($_GET["filterVehicle"])) {
+            $searchPlate = null;
+
+            if (isset($data["filterVehicle"]))
+                $searchPlate = $data["filterVehicle"];
+
+            else if (isset($_GET["filterVehicle"]))
+                $searchPlate = $_GET["filterVehicle"];
+
+            if (isset($searchPlate)) {
                 foreach ($data["userVehicles"] as $v) {
-                    if ($v->licensePlate == $_GET["filterVehicle"]) {
+                    if ($v->licensePlate == $searchPlate) {
                         $vehicle = $v;
                         break;
                     }
