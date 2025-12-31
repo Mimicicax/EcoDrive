@@ -21,6 +21,7 @@ class Vehicle extends Model {
 
     private const findAllVehiclesQuery = "SELECT * FROM vehicles WHERE user=?";
     private const findVehicleQuery = "SELECT * FROM vehicles WHERE license_plate LIKE ?";
+    private const findVehicleByIdQuery = "SELECT * FROM vehicles WHERE id = ?";
     private const findVehicleOwnerQuery = "SELECT user FROM vehicles WHERE license_plate LIKE ?";
     private const createVehicleQuery = "INSERT INTO vehicles(user, brand, model, license_plate, year, consumption, emission) VALUES(?, ?, ?, ?, ?, ?, ?)";
     private const existsQuery = "SELECT COUNT(*) FROM vehicles WHERE license_plate LIKE ?";
@@ -34,7 +35,7 @@ class Vehicle extends Model {
             $prefix .= ".";
 
         $this->id = $fields[$prefix . "id"] ?? -1;
-        $this->user = new User([$prefix . "id" => $fields["user"] ?? null]);
+        $this->user = new User(["id" => $fields[$prefix . "user"] ?? null]);
         $this->brand = $fields[$prefix . "brand"] ?? "";
         $this->model = $fields[$prefix . "model"] ?? "";
         $this->licensePlate = $fields[$prefix . "license_plate"] ?? "";
@@ -104,6 +105,32 @@ class Vehicle extends Model {
 
         if (!mysqli_stmt_prepare($stmt, Vehicle::findVehicleQuery) ||
             !mysqli_stmt_bind_param($stmt, "s", $plate) ||
+            !mysqli_stmt_execute($stmt)) {
+
+            mysqli_stmt_close($stmt);
+            return null;
+        }
+
+        $result = mysqli_stmt_get_result($stmt);
+        $fields = mysqli_fetch_assoc($result);
+        
+        if (empty($fields))
+            return null;
+
+        mysqli_stmt_close($stmt);
+        mysqli_free_result($result);
+
+        return new Vehicle($fields);
+    }
+
+    public static function findById(int $id) {
+        $stmt = mysqli_stmt_init(appConfig()->DB_CONN);
+
+        if (!$stmt)
+            return null;
+
+        if (!mysqli_stmt_prepare($stmt, Vehicle::findVehicleByIdQuery) ||
+            !mysqli_stmt_bind_param($stmt, "i", $id) ||
             !mysqli_stmt_execute($stmt)) {
 
             mysqli_stmt_close($stmt);
