@@ -1,5 +1,6 @@
 <?php
 
+use EcoDrive\Helpers\RedirectType;
 use EcoDrive\Models\Session;
 use function EcoDrive\Environment\appConfig;
 use function EcoDrive\Helpers\redirect;
@@ -56,6 +57,12 @@ function asset(string $fileName) {
 // Kérelem kezelése
 
 $uri = parse_url($_SERVER["REQUEST_URI"]);
+$path = $uri["path"];
+
+if (str_ends_with($path, '/')) {
+    return redirect(rtrim($path, '/'), false);
+}
+
 $endpoint = \EcoDrive\Routing\endpointForPath($uri["path"]) ?? null;
 
 if (!isset($endpoint)) {
