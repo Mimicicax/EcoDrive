@@ -4,6 +4,7 @@ namespace EcoDrive\Models;
 
 require_once "config.php";
 
+use DateTimeImmutable;
 use function EcoDrive\Environment\appConfig;
 
 require_once appConfig()->APP_ROOT . "/models/User.php";
@@ -18,13 +19,14 @@ class Vehicle extends Model {
     public int $year;
     public float $consumption;
     public float $co2EmissionRate;
+    public ?DateTimeImmutable $deletedAt;
 
-    private const findAllVehiclesQuery = "SELECT * FROM vehicles WHERE user=?";
-    private const findVehicleQuery = "SELECT * FROM vehicles WHERE license_plate LIKE ?";
-    private const findVehicleByIdQuery = "SELECT * FROM vehicles WHERE id = ?";
-    private const findVehicleOwnerQuery = "SELECT user FROM vehicles WHERE license_plate LIKE ?";
+    private const findAllVehiclesQuery = "SELECT * FROM vehicles WHERE user=? AND deleted_at IS NULL";
+    private const findVehicleQuery = "SELECT * FROM vehicles WHERE license_plate LIKE ? AND deleted_at IS NULL";
+    private const findVehicleByIdQuery = "SELECT * FROM vehicles WHERE id = ? AND deleted_at IS NULL";
+    private const findVehicleOwnerQuery = "SELECT user FROM vehicles WHERE license_plate LIKE ? AND deleted_at IS NULL";
     private const createVehicleQuery = "INSERT INTO vehicles(user, brand, model, license_plate, year, consumption, emission) VALUES(?, ?, ?, ?, ?, ?, ?)";
-    private const existsQuery = "SELECT COUNT(*) FROM vehicles WHERE license_plate LIKE ?";
+    private const existsQuery = "SELECT COUNT(*) FROM vehicles WHERE license_plate LIKE ? AND deleted_at IS NULL";
     private const deleteVehicleQuery = "DELETE FROM vehicles WHERE id=?";
     private const updateVehicleQuery = "UPDATE vehicles SET brand=?, model=?, license_plate=?, year=?, consumption=?, emission=? WHERE id=?";
     public const ERROR_NO_ERROR = 0;
@@ -42,6 +44,11 @@ class Vehicle extends Model {
         $this->year = (int) ($fields[$prefix . "year"] ?? -1);
         $this->consumption = (float) ($fields[$prefix . "consumption"] ?? -1);
         $this->co2EmissionRate = (float) ($fields[$prefix . "emission"] ?? Vehicle::DEFAULT_EMISSION_RATE);
+        
+        if (isset($fields[$prefix . "deleted_at"]))
+            $this->deletedAt = DateTimeImmutable::createFromFormat(appConfig()->DB_DATETIME_FORMAT, $fields[$prefix . "deleted_at"], appConfig()->DB_DATETIME_TIMEZONE);
+        else
+            $this->deletedAt = null;
     }
 
     public static function exists(string $licensePlate) {
@@ -195,6 +202,44 @@ class Vehicle extends Model {
 
         mysqli_stmt_close($stmt);
         return Vehicle::ERROR_NO_ERROR;
+    }
+
+    public function softDelete() {
+        $stmt = mysqli_stmt_init(appConfig()->DB_CONN);
+        $query = "UPDATE vehicles SET deleted_at = NOW() WHERE id = ?";
+
+        if (!$stmt || !mysqli_stmt_prepare($stmt, $query)) {
+            mysqli_stmt_close($stmt);
+            return false;
+        }
+
+        if (!mysqli_stmt_bind_param($stmt, "i", $this->id) || !mysqli_stmt_execute($stmt)) {
+            mysqli_stmt_close($stmt);
+            return false;
+        }
+
+        mysqli_stmt_close($stmt);
+        $this->deletedAt = new DateTimeImmutable('now', appConfig()->DB_DATETIME_TIMEZONE);
+        return true;
+    }
+
+    public function restore() {
+        $stmt = mysqli_stmt_init(appConfig()->DB_CONN);
+        $query = "UPDATE vehicles SET deleted_at = NULL WHERE id = ?";
+
+        if (!$stmt || !mysqli_stmt_prepare($stmt, $query)) {
+            mysqli_stmt_close($stmt);
+            return false;
+        }
+
+        if (!mysqli_stmt_bind_param($stmt, "i", $this->id) || !mysqli_stmt_execute($stmt)) {
+            mysqli_stmt_close($stmt);
+            return false;
+        }
+
+        mysqli_stmt_close($stmt);
+        $this->deletedAt = null;
+        return true;
     }
 
     public function update() {
