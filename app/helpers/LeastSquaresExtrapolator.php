@@ -47,7 +47,11 @@ class LeastSquaresExtrapolator {
         }
     }
 
-    public function evaluate(float $x) {        
-        return $this->slope * $x + $this->yIntercept;
+    public function accumulate(float $a, float $b) {
+        $end   = \max($a, $b);
+        $start = \min($a, $b);
+
+        return $this->slope * $end * $end / 2 + $this->yIntercept * $b - 
+               $this->slope * $start * $start / 2 - $this->yIntercept * $start;
     }
 }
