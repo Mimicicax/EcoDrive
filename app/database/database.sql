@@ -1,6 +1,6 @@
 CREATE USER IF NOT EXISTS 'ecodrive'@'localhost' IDENTIFIED BY 'ecodrive2026';
 
-DROP DATABASE IF EXISTS ecodrive;
+CREATE DATABASE IF NOT EXISTS ecodrive;
 CREATE DATABASE ecodrive DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 USE ecodrive;
 
@@ -12,7 +12,8 @@ CREATE TABLE IF NOT EXISTS users (
     email VARCHAR(250) NOT NULL UNIQUE,
     password VARCHAR(250) NOT NULL,
     reset_token CHAR(44) NULL DEFAULT NULL,
-    reset_token_expiry TIMESTAMP NULL DEFAULT NULL
+    reset_token_expiry TIMESTAMP NULL DEFAULT NULL,
+    deleted_at TIMESTAMP NULL DEFAULT NULL
 );
 
 CREATE TABLE IF NOT EXISTS sessions (
@@ -20,7 +21,6 @@ CREATE TABLE IF NOT EXISTS sessions (
     user INTEGER NOT NULL UNIQUE,
     session_id CHAR(44) NOT NULL UNIQUE, 
     expiry TIMESTAMP NOT NULL,
-
     FOREIGN KEY(user) REFERENCES users(id)
 );
 
@@ -33,6 +33,7 @@ CREATE TABLE IF NOT EXISTS vehicles (
     year INT NOT NULL,
     consumption FLOAT NOT NULL,
     emission FLOAT NOT NULL,
+    deleted_at TIMESTAMP NULL DEFAULT NULL,
     PRIMARY KEY(id),
     FOREIGN KEY(user) REFERENCES users(id)
 );
@@ -47,9 +48,25 @@ CREATE TABLE IF NOT EXISTS routes (id INT UNSIGNED AUTO_INCREMENT,
     to_street VARCHAR(256) NOT NULL,
     travel_start_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP() NOT NULL, 
     distance FLOAT NOT NULL, 
-    emission FLOAT DEFAULT 0.0, 
+    emission FLOAT DEFAULT 0.0,
+    deleted_at TIMESTAMP NULL DEFAULT NULL, 
     PRIMARY KEY(id), 
     FOREIGN KEY(vehicle) REFERENCES vehicles(id)
+);
+CREATE TABLE IF NOT EXISTS user_statistics (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    user INT NOT NULL UNIQUE,
+    period_type ENUM('monthly', 'yearly') DEFAULT 'monthly',
+    year YEAR NOT NULL,
+    month TINYINT,
+    total_distance FLOAT DEFAULT 0,
+    total_emission FLOAT DEFAULT 0,
+    total_cost DECIMAL(10, 2) DEFAULT 0,
+    average_consumption FLOAT DEFAULT 0,
+    total_routes INT DEFAULT 0,
+    last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY(user) REFERENCES users(id),
+    UNIQUE KEY unique_period (user, year, month, period_type)
 );
 
 SET GLOBAL event_scheduler = ON;
