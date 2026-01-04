@@ -46,6 +46,7 @@ class Statistics implements Endpoint
     private function retrieveStats() {
         $month = date('n');
         $year = date('Y');
+        $monthStartDay = (new DateTimeImmutable("$year-$month-1"))->format('z');
 
         $currentYearRoutes = Route::findAllForUser(Session::currentUser(), $year);
         $previousYearRoutes = Route::findAllForUser(Session::currentUser(), $year - 1);
@@ -58,20 +59,29 @@ class Statistics implements Endpoint
         $totalYearlyDistance = 0;
         $totalMonthlyDistance = 0;
         $previousMonthEmission = 0;
-        $extrapolator = new \EcoDrive\Helpers\Statistics\LeastSquaresExtrapolator();
+        $monthlyExtrapolator = new \EcoDrive\Helpers\Statistics\LeastSquaresExtrapolator();
+        $yearlyExtrapolator = new \EcoDrive\Helpers\Statistics\LeastSquaresExtrapolator();
+
         $monthlyEmissionPerVehicle = [];
+        $yearlyEmissionPerVehicle = [];
 
         foreach ($currentYearRoutes as $route) {
             $yearlyEmission += $route->emission;
             $totalYearlyDistance += $route->distance;
+            $yearlyExtrapolator->feed($route->travelStart->format('z') + 1, $route->emission);
 
             $routeMonth = $route->travelStart->format('n');
 
-            $extrapolator->feed((float) $route->travelStart->format('z') + 1, $route->emission);
+            if (\array_key_exists($route->vehicle->id, $yearlyEmissionPerVehicle))
+                $yearlyEmissionPerVehicle[$route->vehicle->id]["emission"] += $route->emission;
+
+            else
+                $yearlyEmissionPerVehicle[$route->vehicle->id] = [ "vehicle" => $route->vehicle, "emission" => $route->emission ];
 
             if ($routeMonth == $month) {
                 $monthlyEmission += $route->emission;
                 $totalMonthlyDistance += $route->distance;
+                $monthlyExtrapolator->feed((float) $route->travelStart->format('z') + 1 - $monthStartDay, $route->emission);
 
                 if (\array_key_exists($route->vehicle->id, $monthlyEmissionPerVehicle))
                     $monthlyEmissionPerVehicle[$route->vehicle->id]["emission"] += $route->emission;
@@ -90,19 +100,20 @@ class Statistics implements Endpoint
             }
         }
 
-        $extrapolator->finalise();
+        $monthlyExtrapolator->finalise();
+        $yearlyExtrapolator->finalise();
 
         return \array_merge($this->previousYearAggregate($previousYearRoutes, $month), [
             "yearlyEmission" => $yearlyEmission,
             "monthlyEmission" => $monthlyEmission,
             "monthlyDistance" => $totalMonthlyDistance,
-            "monthlyDataPoints" => $extrapolator->data(),
             "previousMonthEmission" => $previousMonthEmission,
             "perVehicleMonthlyEmissionData" => $monthlyEmissionPerVehicle,
+            "perVehicleYearlyEmissionData" => $yearlyEmissionPerVehicle,
             "averageEUMonthlyCO2Emission" => Statistics::euAverageMonthlyCo2Emission,
             "yearlyDistance" => $totalYearlyDistance,
-            "predictedMonthlyConsumption" => $extrapolator->accumulate((new DateTimeImmutable("$year-$month-1"))->format('z') + 1, (new DateTimeImmutable("first day of next month"))->format('z')),
-            "predictedYearlyConsumption" => $extrapolator->accumulate(1, (new DateTimeImmutable("$year-12-31"))->format('z') + 1)
+            "predictedMonthlyExtrapolator" => $monthlyExtrapolator,
+            "predictedYearlyExtrapolator" => $yearlyExtrapolator
         ]);
     }
 
