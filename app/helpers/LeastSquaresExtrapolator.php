@@ -47,6 +47,10 @@ class LeastSquaresExtrapolator {
         }
     }
 
+    public function data() {
+        return $this->data;
+    }
+
     public function accumulate(float $a, float $b) {
         $end   = \max($a, $b);
         $start = \min($a, $b);
