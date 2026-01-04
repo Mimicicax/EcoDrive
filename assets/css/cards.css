@@ -1,7 +1,6 @@
 .card {
     display: flex;
     flex-flow: column;
-    justify-content: center;
     gap: 1em;
     padding: 2em;
     background-color: var(--secondary-background-color);
