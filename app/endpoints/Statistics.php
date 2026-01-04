@@ -77,10 +77,17 @@ class Statistics implements Endpoint
                     $monthlyEmissionPerVehicle[$route->vehicle->id]["emission"] += $route->emission;
 
                 else
-                    array_push($monthlyEmissionPerVehicle, [ "vehicle" => $route->vehicle, "emission" => $route->emission ]);
+                    $monthlyEmissionPerVehicle[$route->vehicle->id] = [ "vehicle" => $route->vehicle, "emission" => $route->emission ];
 
             } else if ($month > 1 && $routeMonth == $month - 1)
                 $previousMonthEmission += $route->emission;
+        }
+
+        if ($month == 1) {
+            foreach ($previousYearRoutes as $prev) {
+                if ($prev->travelStart->format('n') == 12)
+                    $previousMonthEmission += $prev->emission;
+            }
         }
 
         $extrapolator->finalise();
@@ -89,12 +96,13 @@ class Statistics implements Endpoint
             "yearlyEmission" => $yearlyEmission,
             "monthlyEmission" => $monthlyEmission,
             "monthlyDistance" => $totalMonthlyDistance,
+            "monthlyDataPoints" => $extrapolator->data(),
             "previousMonthEmission" => $previousMonthEmission,
             "perVehicleMonthlyEmissionData" => $monthlyEmissionPerVehicle,
             "averageEUMonthlyCO2Emission" => Statistics::euAverageMonthlyCo2Emission,
             "yearlyDistance" => $totalYearlyDistance,
-            "predictedMonthlyConsumption" => $extrapolator->evaluate((new DateTimeImmutable($year . "-" . ($month == 12 ? "12" : $month) . "-" . ($month == 12 ? "31" : "01")))->format('z') + 1),
-            "predictedYearlyConsumption" => $extrapolator->evaluate((new DateTimeImmutable("$year-12-31"))->format('z') + 1)
+            "predictedMonthlyConsumption" => $extrapolator->accumulate((new DateTimeImmutable("$year-$month-1"))->format('z') + 1, (new DateTimeImmutable("first day of next month"))->format('z')),
+            "predictedYearlyConsumption" => $extrapolator->accumulate(1, (new DateTimeImmutable("$year-12-31"))->format('z') + 1)
         ]);
     }
 
