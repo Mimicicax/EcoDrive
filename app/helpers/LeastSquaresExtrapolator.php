@@ -14,7 +14,7 @@ class LeastSquaresExtrapolator {
         else
             $this->data[$x] = $y;
     }
-
+    
     public function finalise() {
         $xSum = 0;
         $xSquareSum = 0;
@@ -49,6 +49,10 @@ class LeastSquaresExtrapolator {
 
     public function data() {
         return $this->data;
+    }
+
+    public function evaluate(float $x) {
+        return $this->slope * $x + $this->yIntercept;
     }
 
     public function accumulate(float $a, float $b) {
