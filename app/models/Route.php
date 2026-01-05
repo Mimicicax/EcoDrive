@@ -21,26 +21,22 @@ class Route extends Model {
     public int $toZip;
     public string $toCity;
     public string $toStreet;
-    public ?DateTimeImmutable $deletedAt;
 
     private const findYearsQuery = "SELECT DISTINCT YEAR(routes.travel_start_time) 
         FROM routes 
         WHERE vehicle IN 
-            (SELECT id FROM vehicles WHERE vehicles.user = ?)
-            AND routes.deleted_at IS NULL     
+            (SELECT id FROM vehicles WHERE vehicles.user = ?)     
         ORDER BY 1 DESC";
 
     private const findRouteQuery = "SELECT *
         FROM routes 
         WHERE vehicle = ?
             AND YEAR(travel_start_time) = ?
-            AND deleted_at IS NULL
         ORDER BY travel_start_time DESC";
 
     private const findRouteByIdQuery = "SELECT routes.*
         FROM routes
         WHERE routes.id = ?
-        AND routes.deleted_at IS NULL
     ";
 
     private const deleteQuery = "DELETE FROM routes WHERE id = ?";
@@ -85,11 +81,6 @@ class Route extends Model {
         $this->toZip = $row["to_zip"];
         $this->toCity = $row["to_city"];
         $this->toStreet = $row["to_street"];
-
-        if (isset($row["deleted_at"]))
-            $this->deletedAt = DateTimeImmutable::createFromFormat(appConfig()->DB_DATETIME_FORMAT, $row["deleted_at"], appConfig()->DB_DATETIME_TIMEZONE);
-        else
-            $this->deletedAt = null;
     }
 
     public static function findAllYears(User $user) {
@@ -232,44 +223,6 @@ class Route extends Model {
 
         mysqli_stmt_execute($stmt);
         mysqli_stmt_close($stmt);
-    }
-
-    public function softDelete() {
-        $stmt = mysqli_stmt_init(appConfig()->DB_CONN);
-        $query = "UPDATE routes SET deleted_at = NOW() WHERE id = ?";
-
-        if (!$stmt || !mysqli_stmt_prepare($stmt, $query)) {
-            mysqli_stmt_close($stmt);
-            return false;
-        }
-
-        if (!mysqli_stmt_bind_param($stmt, "i", $this->id) || !mysqli_stmt_execute($stmt)) {
-            mysqli_stmt_close($stmt);
-            return false;
-        }
-
-        mysqli_stmt_close($stmt);
-        $this->deletedAt = new DateTimeImmutable('now', appConfig()->DB_DATETIME_TIMEZONE);
-        return true;
-    }
-
-    public function restore() {
-        $stmt = mysqli_stmt_init(appConfig()->DB_CONN);
-        $query = "UPDATE routes SET deleted_at = NULL WHERE id = ?";
-
-        if (!$stmt || !mysqli_stmt_prepare($stmt, $query)) {
-            mysqli_stmt_close($stmt);
-            return false;
-        }
-
-        if (!mysqli_stmt_bind_param($stmt, "i", $this->id) || !mysqli_stmt_execute($stmt)) {
-            mysqli_stmt_close($stmt);
-            return false;
-        }
-
-        mysqli_stmt_close($stmt);
-        $this->deletedAt = null;
-        return true;
     }
 
     public function modelEscaped(): Route {

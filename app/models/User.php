@@ -16,12 +16,11 @@ class User extends Model {
     public ?string $password;
     public ?string $resetToken;
     public ?DateTimeImmutable $resetTokenExpiry;
-    public ?DateTimeImmutable $deletedAt;
 
-    private const findByEmailQuery = "SELECT * FROM users WHERE email LIKE ? AND deleted_at IS NULL";
-    private const findByUsernameQuery = "SELECT * FROM users WHERE username LIKE ? AND deleted_at IS NULL";
-    private const existsByUsernameQuery = "SELECT COUNT(*) FROM users WHERE username LIKE ? AND deleted_at IS NULL";
-    private const existsByEmailQuery = "SELECT COUNT(*) FROM users WHERE email LIKE ? AND deleted_at IS NULL";
+    private const findByEmailQuery = "SELECT * FROM users WHERE email LIKE ?";
+    private const findByUsernameQuery = "SELECT * FROM users WHERE username LIKE ?";
+    private const existsByUsernameQuery = "SELECT COUNT(*) FROM users WHERE username LIKE ?";
+    private const existsByEmailQuery = "SELECT COUNT(*) FROM users WHERE email LIKE ?";
     private const createUserQuery = "INSERT INTO users(username, email, password) VALUES(?, ?, ?)";
 
     private function updateQueryBuilder(&$bindTypes): string {
@@ -64,13 +63,9 @@ class User extends Model {
 
         if (isset($row["reset_token_expiry"]))
             $this->resetTokenExpiry = DateTimeImmutable::createFromFormat(appConfig()->DB_DATETIME_FORMAT, $row["reset_token_expiry"], appConfig()->DB_DATETIME_TIMEZONE);
+
         else
             $this->resetTokenExpiry = null;
-
-        if (isset($row["deleted_at"]))
-            $this->deletedAt = DateTimeImmutable::createFromFormat(appConfig()->DB_DATETIME_FORMAT, $row["deleted_at"], appConfig()->DB_DATETIME_TIMEZONE);
-        else
-            $this->deletedAt = null;
     }
 
     const FIND_BY_EMAIL = 0;
@@ -79,9 +74,11 @@ class User extends Model {
     public static function find(string $name, int $mode): ?User {
 
         if ($mode === User::FIND_BY_USERNAME && !($stmt = mysqli_prepare(appConfig()->DB_CONN, User::findByUsernameQuery))) {
+            mysqli_stmt_close($stmt);
             return null;
 
         } else if ($mode === User::FIND_BY_EMAIL && !($stmt = mysqli_prepare(appConfig()->DB_CONN, User::findByEmailQuery))) {
+            mysqli_stmt_close($stmt);
             return null;
         }
 
@@ -182,44 +179,6 @@ class User extends Model {
 
     public function passwordEquals($plaintextPassword) {
         return password_verify($plaintextPassword, $this->password);
-    }
-
-    public function softDelete() {
-        $stmt = mysqli_stmt_init(appConfig()->DB_CONN);
-        $query = "UPDATE users SET deleted_at = NOW() WHERE id = ?";
-
-        if (!$stmt || !mysqli_stmt_prepare($stmt, $query)) {
-            mysqli_stmt_close($stmt);
-            return false;
-        }
-
-        if (!mysqli_stmt_bind_param($stmt, "i", $this->id) || !mysqli_stmt_execute($stmt)) {
-            mysqli_stmt_close($stmt);
-            return false;
-        }
-
-        mysqli_stmt_close($stmt);
-        $this->deletedAt = new DateTimeImmutable('now', appConfig()->DB_DATETIME_TIMEZONE);
-        return true;
-    }
-
-    public function restore() {
-        $stmt = mysqli_stmt_init(appConfig()->DB_CONN);
-        $query = "UPDATE users SET deleted_at = NULL WHERE id = ?";
-
-        if (!$stmt || !mysqli_stmt_prepare($stmt, $query)) {
-            mysqli_stmt_close($stmt);
-            return false;
-        }
-
-        if (!mysqli_stmt_bind_param($stmt, "i", $this->id) || !mysqli_stmt_execute($stmt)) {
-            mysqli_stmt_close($stmt);
-            return false;
-        }
-
-        mysqli_stmt_close($stmt);
-        $this->deletedAt = null;
-        return true;
     }
 
     public function modelEscaped(): User {
