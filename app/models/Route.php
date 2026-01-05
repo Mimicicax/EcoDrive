@@ -39,6 +39,13 @@ class Route extends Model {
         WHERE routes.id = ?
     ";
 
+    private const findRoutesByUserQuery = "SELECT *
+        FROM routes
+        WHERE routes.vehicle IN (SELECT id FROM vehicles WHERE user = ?)
+            AND YEAR(travel_start_time) = ?
+        ORDER BY travel_start_time DESC
+    ";
+
     private const deleteQuery = "DELETE FROM routes WHERE id = ?";
 
     private const createRouteQuery = 
@@ -120,6 +127,30 @@ class Route extends Model {
         while ($row = mysqli_fetch_assoc($result)) {
             $r = new Route($row);
             $r->vehicle = $vehicle;
+
+            array_push($results, $r);
+        }
+
+        return $results;
+    }
+
+    public static function findAllForUser(User $user, int $year) {
+        if (!($stmt = mysqli_prepare(appConfig()->DB_CONN, Route::findRoutesByUserQuery)))
+            return null;
+
+        if (!mysqli_stmt_bind_param($stmt, "ii", $user->id, $year) || !mysqli_stmt_execute($stmt)) {
+            mysqli_stmt_close($stmt);
+            return null;
+        }
+
+        $result = mysqli_stmt_get_result($stmt);
+        mysqli_stmt_close($stmt);
+
+        $results = [];
+
+        while ($row = mysqli_fetch_assoc($result)) {
+            $r = new Route($row);
+            $r->vehicle = Vehicle::findById($row["vehicle"]);
 
             array_push($results, $r);
         }
