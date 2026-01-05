@@ -1,5 +1,3 @@
-/* mobile: max 576px, tablet: max 992px, desktop: >= 992px */
-
 #hamburger-toggle {
     display: none;
 }
@@ -43,28 +41,25 @@
     transform: translate(0px, -9px) rotateZ(-45deg);
 }
 
-/* body {
-    display: flex;
-    flex-flow: row nowrap;
-    margin: 0;
-}
-
 header {
-    position: relative;
-    background-color: var(--secondary-background-color);
-    min-width: 300px;
-    height: 100vh;
-    box-shadow: 2px 0 30px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-flow: row;
+    align-items: center;
+    justify-content: center;
+    height: 100px;
+    width: 100%;
     padding: 1em;
+    background-color: var(--secondary-background-color);
+    box-shadow: 2px 0 30px rgba(0, 0, 0, 0.1);
 }
 
-main {
-    display: flex;
+header:has(#hamburger-toggle:checked) {
+    height: max-content;
     flex-flow: column;
-    width: 100%;
-    height: 100vh;
-    padding: 2em;
-    overflow-y: scroll;
+}
+
+nav {
+    display: none;
 }
 
 nav ul {
@@ -72,13 +67,17 @@ nav ul {
     padding-left: 0;
 }
 
+#hamburger-toggle:checked ~ nav {
+    display: block;
+}
+
 nav ul li a {
     display: block;
     position: relative;
     text-decoration: none;
-    padding: 1em 0 1em 2em;
+    padding: 1em 3em 1em 1em;
     margin: 2em auto;
-    width: 90%;
+    width: 100%;
     border-radius: 10px;
     color: var(--text-color-secondary);
 }
@@ -109,22 +108,49 @@ nav ul li a:active {
     background-color: var(--ambient-background-color-darker);
 }
 
-#header-bottom-section {
-    position: absolute;
-    text-align: center;
-    bottom: 1em;
-    width: 70%;
-    left: 50%;
-    transform: translateX(-50%);
+body {
+    display: flex;
+    flex-flow: column;
+    margin: 0;
+    width: 100%;
+    height: 100%;
+    gap: 1em;
 }
 
-#header-bottom-section > hr {
+main {
+    display: flex;
+    flex-flow: column;
     width: 100%;
-    margin: auto;
-    margin-bottom: 2em;
-    height: 2px;
-    background-color: var(--border-color-unfocused);
-    border-radius: 10px;
-    opacity: 0.5;
-    border: none;
-} */
+    height: 100vh;
+    padding: 2em;
+    overflow-y: scroll;
+}
+
+@media screen and (min-width: 1024px) {
+    #hamburger-bars {
+        display: none;
+    }
+
+    nav {
+        display: block;
+    }
+
+    header {
+        position: relative;
+        max-width: 300px;
+        height: 100vh;
+        align-items: start;
+    }
+
+    #logoutButton {
+        position: absolute;
+        width: 70%;
+        bottom: 2em;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+
+    body {
+        flex-flow: row nowrap;
+    }
+}

@@ -69,15 +69,15 @@
                         Statisztika
                     </a>
                 </li>
+                <li>
+                    <a href="<?= route("logout") ?>" class="button" id="logoutButton">
+                        <i class="fa-solid fa-right-from-bracket fa-flip-horizontal"></i>
+                        &nbsp;
+                        Kijelentkezés
+                    </a>
+                </li>
             </ul>
         </nav>
-        <div id="header-bottom-section">
-            <a href="<?= route("logout") ?>" class="button" id="logoutButton">
-                <i class="fa-solid fa-right-from-bracket fa-flip-horizontal"></i>
-                &nbsp;
-                Kijelentkezés
-            </a>
-        </div>
     </header>
     <?php endif ?>
 
