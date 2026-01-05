@@ -33,6 +33,12 @@
      ?>
     <?php if (!appConfig()->loadFailed() && Session::isAuthenticated() && isset($activeNavLink)): ?>
     <header>
+        <input type="checkbox" id="hamburger-toggle">
+        <label id="hamburger-bars" for="hamburger-toggle">
+            <div></div>
+            <div></div>
+            <div></div>
+        </label>
         <nav>
             <ul>
                 <li>
@@ -66,7 +72,6 @@
             </ul>
         </nav>
         <div id="header-bottom-section">
-            <hr>
             <a href="<?= route("logout") ?>" class="button" id="logoutButton">
                 <i class="fa-solid fa-right-from-bracket fa-flip-horizontal"></i>
                 &nbsp;
