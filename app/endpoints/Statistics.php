@@ -51,7 +51,7 @@ class Statistics implements Endpoint
         $currentYearRoutes = Route::findAllForUser(Session::currentUser(), $year);
         $previousYearRoutes = Route::findAllForUser(Session::currentUser(), $year - 1);
         
-        if (empty($currentYearRoutes) && empty($previousYearRoutes))
+        if (empty($currentYearRoutes))
             return null;
 
         $yearlyEmission = 0;

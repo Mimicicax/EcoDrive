@@ -40,6 +40,16 @@
 
 <h1>Statisztika</h1>
 
+<?php if (!isset($stats)): ?>
+
+<div class="empty card-container">
+    <span>
+        <h1>Nincsenek adatok erre az évre</h1>
+        <p>Mentsd el a megtett utaidat és az adatok itt fognak megjelenni.</p>
+    </span>
+</div>
+
+<?php else: ?>
 <div class="main-stat-container">
    
     <div class="card">
@@ -49,13 +59,19 @@
             <div class="stat-grid">
                 <p>Ebben a hónapban:</p>
                 <p>
-                    <?= roundStatInfo($stats["monthlyEmission"] / 1000.0) ?> kg (<?php echoDeviation($stats["monthlyEmission"] / $stats["previousMonthEmission"]); ?>)
+                    <?php if ($stats["previousMonthEmission"] == 0): ?>
+                        <?= roundStatInfo($stats["monthlyEmission"] / 1000.0) ?> kg
+                    <?php else: ?>
+                        <?= roundStatInfo($stats["monthlyEmission"] / 1000.0) ?> kg (<?php echoDeviation($stats["monthlyEmission"] / $stats["previousMonthEmission"]) ?>)
+                    <?php endif ?>
                 </p>
 
-                <p>Tavaly ebben a hónapban:</p>
-                <p>
-                    <?= roundStatInfo($stats["previousYearMonthlyEmission"] / 1000.0) ?> kg (<?php echoDeviation($stats["monthlyEmission"] / $stats["previousYearMonthlyEmission"]); ?>)
-                </p>
+                <?php if ($stats["previousYearMonthlyEmission"] != 0): ?>
+                    <p>Tavaly ebben a hónapban:</p>
+                    <p>
+                        <?= roundStatInfo($stats["previousYearMonthlyEmission"] / 1000.0) ?> kg (<?php echoDeviation($stats["monthlyEmission"] / $stats["previousYearMonthlyEmission"]); ?>)
+                    </p>
+                <?php endif ?>
 
                 <p>Eltérés az EU átlagtól:</p>
                 <p>
@@ -77,13 +93,19 @@
             <div class="stat-grid">
                 <p>Idén:</p>
                 <p>
-                    <?= roundStatInfo($stats["yearlyEmission"] / 1000.0) ?> kg (<?php echoDeviation($stats["yearlyEmission"] / $stats["previousYearlyEmission"]); ?>)
+                    <?php if ($stats["previousYearlyEmission"] == 0): ?>
+                        <?= roundStatInfo($stats["yearlyEmission"] / 1000.0) ?> kg
+                    <?php else: ?>
+                        <?= roundStatInfo($stats["yearlyEmission"] / 1000.0) ?> kg (<?php echoDeviation($stats["yearlyEmission"] / $stats["previousYearlyEmission"]); ?>)
+                    <?php endif ?>
                 </p>
 
-                <p>Tavaly:</p>
-                <p>
-                    <?= roundStatInfo($stats["previousYearlyEmission"] / 1000.0) ?> kg
-                </p>
+                <?php if ($stats["previousYearlyEmission"] != 0): ?>
+                    <p>Tavaly:</p>
+                    <p>
+                        <?= roundStatInfo($stats["previousYearlyEmission"] / 1000.0) ?> kg
+                    </p>
+                <?php endif ?>
 
                 <p>Eltérés az EU átlagtól:</p>
                 <p>
@@ -352,3 +374,4 @@
     });
 
 </script>
+<?php endif ?>
