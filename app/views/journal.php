@@ -205,7 +205,7 @@
                 <p><b>Távolság:</b></p>
                 <p><?= $route->distance ?> km</p>
                 <p><b>Becsült CO2-kibocsátás:</b></p>
-                <p><?= $route->emission ?> g</p>
+                <p><?= round($route->emission, 2) ?> g</p>
             </div>
             <form action="<?= route("journal/delete") ?>" method="POST" onsubmit="return confirm('Biztosan törli a bejegyzést?')">
                 <input type="hidden" name="route" value="<?= $route->id ?>">
