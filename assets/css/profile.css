@@ -1,10 +1,21 @@
-.card-container.profile {
-    grid-template-columns: repeat(2, 1fr);
+#profileContainer {
+    display: grid;
+    grid-template-columns: 1fr;
     justify-items: center;
+    align-items: center;
+    gap: 2em;
+    width: 100%;
     margin: 2em auto;
 }
 
-.card-container.profile > .card {
+#profileContainer > .card {
+    height: 100%;
     width: 100%;
-    max-width: 500px;
+    max-width: 450px;
+}
+
+@media screen and (min-width: 1200px) {
+    #profileContainer {
+        grid-template-columns: repeat(2, 1fr);
+    }
 }

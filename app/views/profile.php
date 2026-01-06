@@ -2,7 +2,7 @@
 use function EcoDrive\Routing\route;
 ?><h1>Profil</h1>
 
-<div class="card-container profile" id="profileContainer">
+<div id="profileContainer">
 
     <div class="card">
         <h2>Email cím és felhasználónév</h2>
