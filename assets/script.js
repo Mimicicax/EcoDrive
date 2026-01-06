@@ -41,10 +41,11 @@ const updateVehicle = async (cardId, plate) => {
         group.classList.add("error");
         msg.classList.add("error");
 
-        if (group.parentNode.classList.contains("vehicle-numeric-input-group"))
+        if (group.parentNode.classList.contains("dual-input-group")) {
+            msg.style = "margin:0.5em 0 1em 0";
             group.parentNode.after(msg);
 
-        else
+        } else
             group.after(msg);
     }
 
