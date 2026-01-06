@@ -122,7 +122,7 @@
 
     <div class="card">
         <h2>Kibocsátás megoszlás</h2>
-        <div class="stat-columns">
+        <div class="stat-columns dual-canvas">
             <canvas id="monthlyConsumptionShare" style="max-width:250px;max-height:200px"></canvas>
             <canvas id="yearlyConsumptionShare" style="max-width:250px;max-height:200px"></canvas>
         </div>
@@ -130,7 +130,7 @@
 
     <div class="card">
         <h2>Becsült kibocsátás</h2>
-        <div class="stat-columns">
+        <div class="stat-columns dual-canvas">
             <canvas id="monthlyConsumptionPredictionCurve" style="max-width:250px;max-height:250px"></canvas>
             <canvas id="yearlyConsumptionPredictionCurve" style="max-width:250px;max-height:250px"></canvas>
         </div>
@@ -144,6 +144,7 @@
     let barChartOptions = {
         barThickness: 20,
         borderRadius: 5,
+        responsive: true,
         plugins: {
            legend: {
                 display: false
@@ -166,6 +167,7 @@
     };
 
     let pieChartOptions = {
+        responsive: true,
         elements: {
             arc: {
                 borderWidth: 0
@@ -287,6 +289,7 @@
 
     const monthlyConsumptionPredictionCurve = new Chart("monthlyConsumptionPredictionCurve", {
         options: { 
+            responsive: true,
             plugins: {
                 title: {
                     display: true,
