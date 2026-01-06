@@ -28,8 +28,6 @@
             </span>
         <?php endif ?>
 
-        <a href="#">Elfelejtett jelszó</a>
-
         <span class="dual-input-group add-top-margin">
             <a href="<?= route("register") ?>" class="button">Még nincs fiókom</a>
             <input type="submit" class="button primary" value="Bejelentkezés">
