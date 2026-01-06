@@ -229,11 +229,11 @@ class Vehicles implements Endpoint
     private const VALIDATE_CONSUMPTION = 0;
     private const VALIDATE_EMISSION = 1;
 
-    private function validateFloat(string $fl, int $mode) {        
-        if (strlen($fl) === 0)
+    private function validateFloat(string $fl, int $mode) {  
+        if (\strlen($fl) === 0)
             return false;
 
-        if (filter_var($fl, FILTER_VALIDATE_FLOAT, [ "min_range" => 0.01 ]) === false)
+        if (filter_var($fl, FILTER_VALIDATE_FLOAT) === false || (float) $fl < 0)
             return $mode == Vehicles::VALIDATE_CONSUMPTION ? Vehicles::consumptionInvalidError : Vehicles::emissionInvalidError;
 
         return false;
