@@ -151,6 +151,10 @@ const saveProfileData = async (fields, route) => {
             input.parentNode.querySelectorAll("span.error").forEach((span) => span.remove());
     });
 
+    inputList[0].closest('.card').querySelectorAll('span.error').forEach((el) => {
+        el.remove();
+    })
+
     let resp = await fetch(route, {
         method: "PATCH",
         body: data
@@ -172,10 +176,10 @@ const saveProfileData = async (fields, route) => {
             msg.textContent = value;
 
             if (input.parentNode.parentNode.classList.contains("dual-input-group"))
-                input.parentNode.parentNode.appendChild(msg);
+                input.parentNode.parentNode.after(msg);
             
             else
-                input.parentNode.appendChild(msg);
+                input.parentNode.after(msg);
         });
     }
 
