@@ -54,7 +54,7 @@
 @media screen and (max-width: 500px) {
     .dual-input-group {
         grid-template-columns: 1fr;
-        gap: 0;
+        gap: 1em;
     }
 }
 

@@ -71,7 +71,6 @@ dialog::backdrop {
 
 .container-header {
     display: flex;
-    width: 100%;
     background-color: var(--secondary-background-color);
     flex-flow: row wrap;
     gap: 1em;

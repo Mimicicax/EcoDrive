@@ -10,6 +10,20 @@
     text-overflow: ellipsis;
 }
 
-.vehicle-container-header {
-    margin: 2em 0;
+#vehicle-container {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2em;
+}
+
+@media screen and (min-width: 860px) {
+    #vehicle-container {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+@media screen and (min-width: 1650px) {
+    #vehicle-container {
+        grid-template-columns: 1fr 1fr 1fr;
+    }
 }

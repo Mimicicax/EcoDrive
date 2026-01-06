@@ -2,7 +2,7 @@
 
 <h1>Járműveim</h1>
 
-<div class="vehicle-container-header">
+<div class="container-header">
     <button class="button primary" onclick="openModal(document.querySelector('#add-vehicle-popup'))">
         Jármű hozzáadása
     </button>
@@ -131,7 +131,7 @@
 </dialog>
 
 <?php if (empty($vehicleList)): ?>
-<div class="empty vehicle card-container">
+<div class="empty card-container">
     <span>
         <h1>Még nem mentettél el egy járművet sem</h1>
         <p>Amint hozzáadsz járműveket, azok itt fognak megjelenni</p>
@@ -139,7 +139,7 @@
 </div>
 <?php else: ?>
 
-<div class="vehicle card-container">
+<div id="vehicle-container">
     <?php foreach ($vehicleList as $vehicle): ?>
         
         <?php $idPrefix = $vehicle->licensePlate ?>
