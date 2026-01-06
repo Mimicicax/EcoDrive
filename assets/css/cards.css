@@ -24,37 +24,3 @@
     color: var(--text-color-secondary);
     margin: auto;
 }
-
-.card-container.journal {
-    display: flex;
-    flex-flow: column;
-}
-
-.card.journal-entry {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    justify-items: center;
-    align-self: center;
-    width: 50%;
-} 
-
-.card.journal-entry > div:first-of-type {
-    justify-self: start;
-}
-
-.card.journal-entry > div:last-of-type {
-    justify-self: end;
-}
-
-.card.journal-entry p {
-    font-weight: 300;
-} 
-
-.card.journal-entry b {
-    font-weight: 500;
-} 
-
-.card.card.journal-entry > button {
-    grid-column: 1 / -1;
-    width: 100%;
-}

@@ -1,0 +1,84 @@
+div:has(.route-filter-form) > *, .route-filter-form > * {
+    width: 100%;
+}
+
+.route-filter-form {
+    display: flex;
+    flex-flow: column;
+    gap: 1em;
+}
+
+@media screen and (min-width: 600px) {
+    .route-filter-form {
+        flex-flow: row;
+    }
+}
+
+@media screen and (min-width: 800px) {
+    div:has(.route-filter-form) {
+        flex-flow: row;
+    }
+
+    .route-filter-form {
+        max-width: 550px;
+    }
+
+    div:has(.route-filter-form) > button {
+        max-width: max-content;
+    }
+}
+
+#journal-container {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 2em;
+    justify-items: center;
+}
+
+.journal-entry {
+    width: 100%;
+    max-width: 750px;
+}
+
+.journal-data-column {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+
+.journal-data-column > p:nth-child(even) {
+    justify-self: end;
+}
+
+#journal-container > h2 {
+    justify-self: start;
+}
+
+/* 
+.card.journal-entry {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    justify-items: center;
+    align-self: center;
+    width: 50%;
+} 
+
+.card.journal-entry > div:first-of-type {
+    justify-self: start;
+}
+
+.card.journal-entry > div:last-of-type {
+    justify-self: end;
+}
+
+.card.journal-entry p {
+    font-weight: 300;
+} 
+
+.card.journal-entry b {
+    font-weight: 500;
+} 
+
+.card.card.journal-entry > button {
+    grid-column: 1 / -1;
+    width: 100%;
+} */

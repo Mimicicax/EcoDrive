@@ -10,7 +10,7 @@
         Bejegyzés hozzáadása
     </button>
 
-    <form action="<?= route("journal") ?>" method="GET" class="horizontal">
+    <form action="<?= route("journal") ?>" method="GET" class="route-filter-form">
         <span class="input-group">
             <label for="filterVehicle">Jármű</label>
 
@@ -67,7 +67,7 @@
 
             <span <?= "class=\"input-group" . (isset($errors["travelStartError"]) ? " error" : "") . "\"" ?> >
                 <label for="travel_start">Indulás időpontja</label>
-                <input type="datetime-local" name="travel_start" id="travel_start" <?= isset($providedTravelStart) ? "value=\"$providedTravelStart\"" : "" ?>>
+                <input type="datetime-local" name="travel_start" id="travel_start" <?= isset($providedTravelStart) ? "value=\"$providedTravelStart\"" : "" ?> required>
             </span>
 
             <?php if (isset($errors["travelStartError"])): ?>
@@ -78,7 +78,7 @@
 
             <span <?= "class=\"input-group" . (isset($errors["distanceError"]) ? " error" : "") . "\"" ?> >
                 <label for="distance">Távolság (km)</label>
-                <input type="text" inputmode="decimal" name="distance" id="distance" <?= isset($providedDistance) ? "value=\"$providedDistance\"" : "" ?>>
+                <input required type="text" inputmode="decimal" name="distance" id="distance" <?= isset($providedDistance) ? "value=\"$providedDistance\"" : "" ?>>
             </span>
 
             <?php if (isset($errors["distanceError"])): ?>
@@ -96,7 +96,7 @@
 
                 <span class="input-group">
                     <label for="from_city">Város</label>
-                    <input type="text" name="from_city" id="from_city" <?= isset($providedFromCity) ? "value=\"$providedFromCity\"" : "" ?>>
+                    <input type="text" required name="from_city" id="from_city" <?= isset($providedFromCity) ? "value=\"$providedFromCity\"" : "" ?>>
                 </span>
             </span>
 
@@ -120,7 +120,7 @@
                 
                 <span class="input-group">
                     <label for="to_city">Város</label>
-                    <input type="text" name="to_city" id="to_city" <?= isset($providedToCity) ? "value=\"$providedToCity\"" : "" ?>>
+                    <input type="text" required name="to_city" id="to_city" <?= isset($providedToCity) ? "value=\"$providedToCity\"" : "" ?>>
                 </span>
             </span>
 
@@ -159,7 +159,7 @@
 
 <h1><?= $filterYear ?></h1>
 
-<div class="card-container journal">
+<div id="journal-container">
     <?php $month = \EcoDrive\Helpers\monthName($routeList[0]->travelStart) ?>
 
     <h2><?= ucfirst($month) ?> </h2>
@@ -171,16 +171,16 @@
             $toAddress = $route->toStreet;
 
             if ($route->fromCity != "")
-                $fromAddress .= ($fromAddress == "" ? $route->fromCity : ", " . $route->fromCity);
+                $fromAddress .= ($fromAddress == "" ? $route->fromCity : ", <wbr>" . $route->fromCity);
 
             if ($route->fromZip != 0)
-                $fromAddress .= ($fromAddress == "" ? $route->fromZip : ", " . $route->fromZip);
+                $fromAddress .= ($fromAddress == "" ? $route->fromZip : ", <wbr>" . $route->fromZip);
 
             if ($route->toCity != "")
-                $toAddress .= ($toAddress == "" ? $route->toCity : ", " . $route->toCity);
+                $toAddress .= ($toAddress == "" ? $route->toCity : ", <wbr>" . $route->toCity);
 
             if ($route->toZip != 0)
-                $toAddress .= ($toAddress == "" ? $route->toZip : ", " . $route->toZip);
+                $toAddress .= ($toAddress == "" ? $route->toZip : ", <wbr>" . $route->toZip);
 
             $m = \EcoDrive\Helpers\monthName($route->travelStart);
         ?>
@@ -191,15 +191,21 @@
         <?php endif ?>
 
         <div class="card journal-entry">
-            <div>
-                <p><b>Innen:</b> <?= $fromAddress ?></p>
-                <p><b>Ide:</b> <?= $toAddress ?></p>
-                <p><b>Indulás:</b> <?= dateTimeToLocalString($route->travelStart) ?></p>
+            <div class="journal-data-column">
+                <p><b>Innen:</b></p>
+                <p><?= $fromAddress ?></p>
+                <p><b>Ide:</b></p>
+                <p><?= $toAddress ?></p>
+                <p><b>Indulás:</b></p>
+                <p><?= dateTimeToLocalString($route->travelStart) ?></p>
             </div>
-            <div>
-                <p><b>Jármű:</b> <?= $route->vehicle->name() ?> </p>
-                <p><b>Távolság:</b> <?= $route->distance ?> km </p>
-                <p><b>Becsült CO2-kibocsátás:</b> <?= $route->emission ?> g</p>
+            <div class="journal-data-column">
+                <p><b>Jármű:</b></p>
+                <p><?= $route->vehicle->name() ?></p>
+                <p><b>Távolság:</b></p>
+                <p><?= $route->distance ?> km</p>
+                <p><b>Becsült CO2-kibocsátás:</b></p>
+                <p><?= $route->emission ?> g</p>
             </div>
             <form action="<?= route("journal/delete") ?>" method="POST" onsubmit="return confirm('Biztosan törli a bejegyzést?')">
                 <input type="hidden" name="route" value="<?= $route->id ?>">

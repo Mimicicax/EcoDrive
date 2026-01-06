@@ -122,10 +122,6 @@ main {
     padding: 0 0.5em;
 }
 
-@media screen and (max-width: 500px) {
-    
-}
-
 @media screen and (min-width: 1024px) {
     #hamburger-bars {
         display: none;

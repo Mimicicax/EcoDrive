@@ -27,11 +27,6 @@ form {
     flex-flow: column;
 }
 
-form.horizontal {
-    flex-flow: row;
-    gap: 1em;
-}
-
 a {
     color: var(--accent-color-primary);
 }
