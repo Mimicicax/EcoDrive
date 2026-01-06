@@ -114,7 +114,7 @@ class Journal implements Endpoint
     public function delete() {
         $routeId = $_POST["route"] ?? "";
 
-        if ($routeId == "" || !filter_var($routeId, FILTER_VALIDATE_INT, [ "min" => 0 ]))
+        if ($routeId == "" || !filter_var($routeId, FILTER_VALIDATE_INT, [ "options" => [ "min" => 0 ]]))
             return $this->redirectAfterDelete();
 
         $route = Route::find($routeId);
@@ -141,7 +141,7 @@ class Journal implements Endpoint
     }
 
     private function validateDistance(string $dist) {
-        if (filter_var($dist, FILTER_VALIDATE_FLOAT, [ "min" => 0.0 ]) === false)
+        if (filter_var($dist, FILTER_VALIDATE_FLOAT, [ "options" =>[ "min_range" => 0.0 ]]) === false)
             return Journal::distanceError;
 
         return false;

@@ -233,7 +233,7 @@ class Vehicles implements Endpoint
         if (\strlen($fl) === 0)
             return false;
 
-        if (filter_var($fl, FILTER_VALIDATE_FLOAT) === false || (float) $fl < 0)
+        if (filter_var($fl, FILTER_VALIDATE_FLOAT, [ "options" => [ "min_range" => 0 ] ]) === false)
             return $mode == Vehicles::VALIDATE_CONSUMPTION ? Vehicles::consumptionInvalidError : Vehicles::emissionInvalidError;
 
         return false;
