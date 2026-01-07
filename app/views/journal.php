@@ -78,7 +78,7 @@
 
             <span <?= "class=\"input-group" . (isset($errors["distanceError"]) ? " error" : "") . "\"" ?> >
                 <label for="distance">Távolság (km)</label>
-                <input required type="text" inputmode="decimal" name="distance" id="distance" <?= isset($providedDistance) ? "value=\"$providedDistance\"" : "" ?>>
+                <input type="text" inputmode="decimal" name="distance" id="distance" <?= isset($providedDistance) ? "value=\"$providedDistance\"" : "" ?>>
             </span>
 
             <?php if (isset($errors["distanceError"])): ?>
@@ -96,7 +96,7 @@
 
                 <span class="input-group">
                     <label for="from_city">Város</label>
-                    <input type="text" required name="from_city" id="from_city" <?= isset($providedFromCity) ? "value=\"$providedFromCity\"" : "" ?>>
+                    <input type="text" name="from_city" id="from_city" <?= isset($providedFromCity) ? "value=\"$providedFromCity\"" : "" ?>>
                 </span>
             </span>
 
@@ -120,7 +120,7 @@
                 
                 <span class="input-group">
                     <label for="to_city">Város</label>
-                    <input type="text" required name="to_city" id="to_city" <?= isset($providedToCity) ? "value=\"$providedToCity\"" : "" ?>>
+                    <input type="text" name="to_city" id="to_city" <?= isset($providedToCity) ? "value=\"$providedToCity\"" : "" ?>>
                 </span>
             </span>
 
@@ -190,7 +190,7 @@
             <h2><?= ucfirst($month) ?> </h2>
         <?php endif ?>
 
-        <div class="card journal-entry">
+        <div class="card journal-entry" id="route-<?= $route->id ?>">
             <div class="journal-data-column">
                 <p><b>Innen:</b></p>
                 <p><?= $fromAddress ?></p>
@@ -207,9 +207,9 @@
                 <p><b>Becsült CO2-kibocsátás:</b></p>
                 <p><?= round($route->emission, 2) ?> g</p>
             </div>
-            <form action="<?= route("journal/delete") ?>" method="POST" onsubmit="return confirm('Biztosan törli a bejegyzést?')">
-                <input type="hidden" name="route" value="<?= $route->id ?>">
-                <button class="button secondary danger">Bejegyzés törlése</button>
+            <form action="<?= route("journal") ?>">
+                <input type="hidden" name="routeId" value="<?= $route->id ?>">
+                <button class="button secondary danger" type="button" onclick="deleteRoute('route-<?= $route->id ?>')">Bejegyzés törlése</button>
             </form>
         </div>
     <?php endforeach ?>

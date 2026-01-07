@@ -32,7 +32,7 @@ function registerAppRoutes() {
 
     registerRoute("GET", "/journal", \EcoDrive\Endpoints\Journal::class, "show", "journal");
     registerRoute("POST", "/journal", \EcoDrive\Endpoints\Journal::class, "create");
-    registerRoute("POST", "/journal/delete", \EcoDrive\Endpoints\Journal::class, "delete", "journal/delete");
+    registerRoute("DELETE", "/journal", \EcoDrive\Endpoints\Journal::class, "delete");
 
     registerRoute("GET", "/statistics", \EcoDrive\Endpoints\Statistics::class, "show", "statistics");
 }

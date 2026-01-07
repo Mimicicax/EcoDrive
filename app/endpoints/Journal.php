@@ -98,32 +98,30 @@ class Journal implements Endpoint
             $toStreet
         );
 
-        if (!isset($route))
-            $errors["creationFailure"] = Journal::routeCreationError;
-
-        else {
-            $data = [
-                "filterYear" => $route->travelStart->format("Y"),
-                "filterVehicle" => $vehicle->licensePlate
-            ];
-        }
-
-        return $this->showRoutes($data, $errors);
+        return redirect(route("vehicles"), true, \EcoDrive\Helpers\RedirectType::SeeOther, [
+            "filterYear" => $route->travelStart->format("Y"),
+            "filterVehicle" => $vehicle->licensePlate
+        ]);
     }
 
     public function delete() {
-        $routeId = $_POST["route"] ?? "";
+        parse_str($_SERVER['QUERY_STRING'], $params);
+        $routeId = trim($params["routeId"] ?? "");
 
-        if ($routeId == "" || !filter_var($routeId, FILTER_VALIDATE_INT, [ "options" => [ "min" => 0 ]]))
-            return $this->redirectAfterDelete();
+        if ($routeId == "" || !filter_var($routeId, FILTER_VALIDATE_INT, [ "options" => [ "min" => 0 ]])) {
+            http_response_code(400);
+            return;
+        }
 
-        $route = Route::find($routeId);
+        $route = Route::find((int) $routeId);
 
-        if ($route->vehicle->user->id !== Session::currentUser()->id) 
-            return $this->redirectAfterDelete();
+        if ($route->vehicle->user->id !== Session::currentUser()->id) {
+            http_response_code(401);
+            return;
+        }
 
         $route->delete();
-        return $this->redirectAfterDelete($route);
+        return;
     }
 
     public static function requiresAuth(): bool {

@@ -144,7 +144,6 @@ const saveProfileData = async (cardId) => {
     for (const kv of data.entries())
         url.append(kv[0], kv[1]);
 
-
     toggleInputs(inputList);
 
     inputList.forEach((input) => {
@@ -190,4 +189,63 @@ const saveProfileData = async (cardId) => {
     }
 
     toggleInputs(inputList);
+}
+
+const deleteRoute = async (cardId) => {
+    if (!confirm("Biztosan törli a bejegyzést?"))
+        return;
+
+    let card = document.getElementById(cardId);
+    let form = card.querySelector('form');
+    let url = new URLSearchParams();
+    
+    for (const kv of (new FormData(form)).entries())
+        url.append(kv[0], kv[1]);
+
+    let resp = await fetch(`${form.action}?${url.toString()}`, {
+        method: 'DELETE',
+    });
+
+    if (resp.status !== 200)
+        return;
+
+    let prev = card.previousElementSibling;
+    let next = card.nextElementSibling;
+    let cont = document.getElementById("journal-container");
+
+    card.animate([
+        { transform: "scale(1)" },
+        { transform: "scale(1.1)" },
+        { transform: "scale(0)" }
+    ], { 
+        duration: 250,
+        easing: "cubic-bezier(0.4,0,0.2,1)" 
+
+    }).finished.finally(() => {
+        card.remove();
+
+        if (prev.tagName == "H2" && (next === null || next.tagName == "H2")) {
+            prev.remove();
+            card.remove();
+
+            if (cont.childElementCount == 0) {
+                cont.previousElementSibling.remove();
+
+                cont.classList.add("empty",  "card-container");
+                
+                let span = document.createElement("span");
+                let h1 = document.createElement("h1");
+                let p = document.createElement("p");
+                let p2 = document.createElement("p");
+
+                span.style.gridColumn = "1/-1";
+                h1.append("A napló üres");
+                p.append("Adj hozzá útvonalakat és azok itt fognak megjelenni");
+                p2.append("Az is előfordulhat, hogy nincs a szűrési feltételeknek megfelelő elmentett útvonalad");
+
+                span.append(h1, p, p2);
+                cont.append(span);
+            }
+        }
+    });
 }
