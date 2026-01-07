@@ -22,7 +22,27 @@ const closeModal = (mod) => {
 }
 
 const toggleInputs = (inputList) => {
-    inputList.forEach((input) => input.disabled = !input.disabled);
+    inputList.forEach((input) => {
+        input.disabled = !input.disabled;
+
+        if (input.classList.contains("button") && input.classList.contains("primary")) {
+
+            if (!input.classList.contains("loading")) {
+                input.classList.add("loading");
+
+                let spinner = document.createElement("i");
+
+                spinner.setAttribute("class", "fa-solid fa-rotate fa-spin");
+                spinner.innerHTML = "&nbsp;";
+
+                input.appendChild(spinner);
+
+            } else {
+                input.classList.remove("loading");
+                input.removeChild(input.lastChild);
+            }
+        }
+    });
 };
 
 const updateVehicle = async (cardId) => {
@@ -81,7 +101,7 @@ const updateVehicle = async (cardId) => {
         });
     }
 
-    toggleInputs(inputList);
+    setTimeout(() => toggleInputs(inputList), 200);
 };
 
 const deleteVehicle = async (cardId) => {
@@ -131,13 +151,13 @@ const deleteVehicle = async (cardId) => {
         });
 
     } else
-        toggleInputs(inputList);
+        setTimeout(() => toggleInputs(inputList), 200);
 }
 
 const saveProfileData = async (cardId) => {
     let cont = document.getElementById(cardId);
     let form = cont.querySelector('form');
-    let inputList = form.querySelectorAll('input');
+    let inputList = form.querySelectorAll('input,button');
     let data = new FormData(form);
     let url = new URLSearchParams();
 
@@ -188,7 +208,7 @@ const saveProfileData = async (cardId) => {
         });
     }
 
-    toggleInputs(inputList);
+    setTimeout(() => toggleInputs(inputList), 200);
 }
 
 const deleteRoute = async (cardId) => {

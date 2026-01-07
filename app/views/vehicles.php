@@ -234,9 +234,9 @@
                 </span>
                 <span class="dual-input-group">
                     <button type="button" class="button danger" onclick="deleteVehicle('<?= $idPrefix ?>')">
-                        Jármű törlése
+                        Jármű törlése 
                     </button>
-                    <button type="button" class="button primary" onclick="updateVehicle('<?= $idPrefix ?>')">Mentés</button>
+                    <button type="button" class="button primary" onclick="updateVehicle('<?= $idPrefix ?>')">Mentés </button>
                 </span>
             </form>
         </div>

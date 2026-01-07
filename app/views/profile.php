@@ -18,7 +18,7 @@ use function EcoDrive\Routing\route;
                 <input type="email" name="email" id="email" placeholder="Email cím" value="<?= $user->email ?>">
             </div>
             <button type="button" class="button primary" onclick="saveProfileData('emailUsernameCard')">
-                Mentés
+                Mentés 
             </button>
         </form>
     </div>
@@ -43,7 +43,7 @@ use function EcoDrive\Routing\route;
                 </div>
             </span>
             <button type="button" class="button primary" onclick="saveProfileData('passwordCard')">
-                Új jelszó beállítása
+                Új jelszó beállítása 
             </button>
         </form>
     </div>
