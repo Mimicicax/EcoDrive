@@ -2,6 +2,7 @@
 
 namespace EcoDrive\Endpoints;
 
+use EcoDrive\Models\Route;
 use EcoDrive\Models\Session;
 use EcoDrive\Models\Vehicle;
 
@@ -126,11 +127,10 @@ class Vehicles implements Endpoint
             else if ($vehicle->user->id !== Session::currentUser()->id)
                 http_response_code(401);
 
-            else if ($vehicle->delete() !== Vehicle::ERROR_NO_ERROR)
-                http_response_code(500);
+            Route::deleteRoutes($vehicle);
+            $vehicle->delete();
 
-            else 
-                http_response_code(200);
+            http_response_code(200);
         }
     }
 

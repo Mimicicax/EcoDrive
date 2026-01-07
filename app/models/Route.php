@@ -62,6 +62,8 @@ class Route extends Model {
             to_street
         ) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
+    private const deleteRoutesForVehicle = "DELETE FROM routes WHERE vehicle=?";
+
     public function __construct($row = null) {
         if (!isset($row))
             return;
@@ -248,6 +250,21 @@ class Route extends Model {
             return;
 
         if (!mysqli_stmt_prepare($stmt, Route::deleteQuery) || !mysqli_stmt_bind_param($stmt, "i", $this->id)) {
+            mysqli_stmt_close($stmt);
+            return;     
+        }
+
+        mysqli_stmt_execute($stmt);
+        mysqli_stmt_close($stmt);
+    }
+
+    public static function deleteRoutes(Vehicle $vehicle) {
+        $stmt = mysqli_stmt_init(appConfig()->DB_CONN);
+
+        if (!$stmt)
+            return;
+
+        if (!mysqli_stmt_prepare($stmt, Route::deleteRoutesForVehicle) || !mysqli_stmt_bind_param($stmt, "i", $vehicle->id)) {
             mysqli_stmt_close($stmt);
             return;     
         }
