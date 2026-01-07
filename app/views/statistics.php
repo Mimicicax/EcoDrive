@@ -321,7 +321,7 @@
 
                 {
                     type: "line",
-                    label: "Interpolált kibocsátási görbe",
+                    label: "Extrapolált kibocsátási görbe",
                     borderColor: "#1dd1a1",
                     data: [
                         {x: 1, y: <?= roundStatInfo($stats["predictedMonthlyExtrapolator"]->evaluate(1) / 1000) ?> },
@@ -365,7 +365,7 @@
 
                 {
                     type: "line",
-                    label: "Interpolált kibocsátási görbe",
+                    label: "Extrapolált kibocsátási görbe",
                     borderColor: "#1dd1a1",
                     data: [
                         {x: 1, y: <?= roundStatInfo($stats["predictedYearlyExtrapolator"]->evaluate(1) / 1000) ?> },
