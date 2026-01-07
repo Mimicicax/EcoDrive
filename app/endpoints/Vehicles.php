@@ -80,7 +80,7 @@ class Vehicles implements Endpoint
             return http_build_query($errors);
         }
 
-        $vehicle = Vehicle::find($id);
+        $vehicle = Vehicle::findById($id);
 
         if (!$vehicle)
             http_response_code(404);
@@ -193,19 +193,12 @@ class Vehicles implements Endpoint
             preg_match("/^[a-zA-Z]{2}-[a-zA-Z]{2}-[0-9]{3}$/", $plate) === 1 ||
             preg_match("/^(([a-zA-Z]{3}[0-9]{4})|([a-zA-Z]{4}[0-9]{3})|([a-zA-Z]{5}[0-9]{2})|([a-zA-Z]{6}[0-9]{1}))$/", $plate) === 1) {
 
-            $exists = Vehicle::exists($plate);
+            $existing = isset($vehicleId) ? Vehicle::findById($vehicleId) : Vehicle::find($plate);
 
-            if (!isset($exists))
-                return Vehicles::plateVerificationError;
+            if (!isset($existing) || $existing->id == $vehicleId)
+                return false;
 
-            if ($exists) {
-                if ($plate === $vehicleId)
-                    return false;
-
-                return Vehicles::plateExistsError;
-            }
-
-            return false;
+            return Vehicles::plateExistsError;
         }
 
         return Vehicles::plateFormatError;

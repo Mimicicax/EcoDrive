@@ -25,7 +25,7 @@ const toggleInputs = (inputList) => {
     inputList.forEach((input) => input.disabled = !input.disabled);
 };
 
-const updateVehicle = async (cardId, plate) => {
+const updateVehicle = async (cardId) => {
     let card = document.getElementById(cardId);
     let form = card.querySelector("form");
     let formData = new FormData(form);
@@ -34,7 +34,7 @@ const updateVehicle = async (cardId, plate) => {
     toggleInputs(inputList);
 
     const setError = (fieldName, errorText) => {
-        let group = document.getElementById(plate + "-" + fieldName).parentNode;
+        let group = document.getElementById(cardId + "-" + fieldName).parentNode;
         let msg = document.createElement("span");
 
         msg.textContent = errorText;
@@ -61,13 +61,12 @@ const updateVehicle = async (cardId, plate) => {
 
     clearErrors();
 
-    let resp = await fetch(`/vehicles`, {
+    let resp = await fetch(form.action, {
         method: "PUT",
         body: new URLSearchParams(formData)
     });
 
     if (resp.status == 200) {
-        card.querySelector("[type=hidden]").value = formData.get("licensePlate");
         card.getElementsByClassName("car-license-plate")[0].textContent = formData.get("licensePlate");
         card.getElementsByClassName("car-brand")[0].textContent = formData.get("brand");
         card.getElementsByClassName("car-model")[0].textContent = formData.get("model");

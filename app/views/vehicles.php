@@ -142,9 +142,9 @@
 <div id="vehicle-container">
     <?php foreach ($vehicleList as $vehicle): ?>
         
-        <?php $idPrefix = $vehicle->licensePlate ?>
+        <?php $idPrefix = "vehicle-" . $vehicle->id ?>
 
-        <div class="vehicle card" id="<?= "vehicle-$idPrefix" ?>">
+        <div class="vehicle card" id="<?= $idPrefix ?>">
             <p>
                 <span class="car-license-plate"><?= $vehicle->licensePlate ?></span>
                 (<span class="car-brand"><?= $vehicle->brand ?></span>
@@ -152,12 +152,11 @@
                 <span class="car-year"><?= $vehicle->year ?></span>)
             </p>
 
-            <form>
+            <form action="<?= route("vehicles") ?>">
                 <input type="hidden" 
-                value="<?= $idPrefix ?>" 
                 name="vehicleId" 
-                value="<?= $vehicle->licensePlate ?>">
-
+                value="<?= $vehicle->id ?>">
+                
                 <div class="input-group">
                     <label for="<?= "$idPrefix-brand" ?>">
                         Márka
@@ -237,7 +236,7 @@
                     <button type="button" class="button danger" onclick="if (confirm('Biztosan törli a járművet?')) deleteVehicle('<?= "vehicle-$idPrefix" ?>', '<?= $idPrefix ?>', '<?= route("vehicles") ?>')">
                         Jármű törlése
                     </button>
-                    <button type="button" class="button primary" onclick="updateVehicle('<?= "vehicle-$idPrefix" ?>', '<?= $idPrefix ?>', '<?= route("vehicles") ?>')">Mentés</button>
+                    <button type="button" class="button primary" onclick="updateVehicle('<?= $idPrefix ?>')">Mentés</button>
                 </span>
             </form>
         </div>
