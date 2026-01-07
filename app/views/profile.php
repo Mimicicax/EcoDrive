@@ -4,10 +4,10 @@ use function EcoDrive\Routing\route;
 
 <div id="profileContainer">
 
-    <div class="card">
+    <div class="card" id="emailUsernameCard">
         <h2>Email cím és felhasználónév</h2>
 
-        <form>
+        <form action="<?= route('profile') ?>">
             <div class="input-group">
                 <label for="username">Felhasználónév</label>
                 <input type="text" name="username" id="username" placeholder="Felhasználónév" value="<?= $user->username ?>">
@@ -17,15 +17,15 @@ use function EcoDrive\Routing\route;
                 <label for="email">Email cím</label>
                 <input type="email" name="email" id="email" placeholder="Email cím" value="<?= $user->email ?>">
             </div>
-            <button type="button" class="button primary" onclick="saveProfileData(['username', 'email'], '<?= route("profile") ?>')">
+            <button type="button" class="button primary" onclick="saveProfileData('emailUsernameCard')">
                 Mentés
             </button>
         </form>
     </div>
 
-    <div class="card">
+    <div class="card" id="passwordCard">
         <h2>Jelszó</h2>
-        <form action="">
+        <form action="<?= route('profile') ?>">
             <div class="input-group">
                 <label for="currentPassword">Jelenlegi jelszó</label>
                 <input type="password" name="currentPassword" id="currentPassword" placeholder="Jelenlegi jelszó">
@@ -42,7 +42,7 @@ use function EcoDrive\Routing\route;
                     <input type="password" name="confirmPassword" id="confirmPassword" placeholder="Új jelszó megerősítése">
                 </div>
             </span>
-            <button type="button" class="button primary" onclick="saveProfileData(['currentPassword', 'newPassword', 'confirmPassword'], '<?= route("profile") ?>')">
+            <button type="button" class="button primary" onclick="saveProfileData('passwordCard')">
                 Új jelszó beállítása
             </button>
         </form>

@@ -134,15 +134,16 @@ const deleteVehicle = async (cardId) => {
         toggleInputs(inputList);
 }
 
-const saveProfileData = async (fields, route) => {
-    let data = new URLSearchParams();
-    let inputList = [];
+const saveProfileData = async (cardId) => {
+    let cont = document.getElementById(cardId);
+    let form = cont.querySelector('form');
+    let inputList = form.querySelectorAll('input');
+    let data = new FormData(form);
+    let url = new URLSearchParams();
 
-    fields.forEach((id) => {
-        let input = document.getElementById(id);
-        data.append(id, input.value);
-        inputList.push(input);
-    });
+    for (const kv of data.entries())
+        url.append(kv[0], kv[1]);
+
 
     toggleInputs(inputList);
 
@@ -160,9 +161,9 @@ const saveProfileData = async (fields, route) => {
         el.remove();
     })
 
-    let resp = await fetch(route, {
+    let resp = await fetch(form.action, {
         method: "PATCH",
-        body: data
+        body: url
     });
 
     if (resp.status === 200) {
