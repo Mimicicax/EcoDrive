@@ -67,6 +67,10 @@ class Config {
 
 // Ezen keresztül elérhetőek a beállítások
 function appConfig() {
-    static $appConfig = new Config();
-    return $appConfig;
+    static $config = null;
+
+    if (!isset($config))
+        $config = new Config();
+
+    return $config;
 }
