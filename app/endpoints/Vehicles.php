@@ -26,7 +26,7 @@ class Vehicles implements Endpoint
     private const yearInvalidError = "Az évjárat érvénytelen";
     private const consumptionInvalidError = "A megadott fogyasztás formátuma nem megfelelő";
     private const emissionInvalidError = "A megadott CO2 kibocsátás formátuma nem megfelelő";
-    private const vehicleCreationFailed = "A járművet belső hiba miatt nem sikerült rögzíteni";
+    private const vehicleRequiredError = "A jármű megadása kötelező";
 
     public function show() {
         return $this->showVehiclesView();
@@ -106,13 +106,19 @@ class Vehicles implements Endpoint
 
     public function delete() {
         parse_str($_SERVER['QUERY_STRING'], $params);
+        $id = trim($params["vehicleId"] ?? "");
 
-        if (!isset($params["licensePlate"])) {
+        if ($id == "") {
             http_response_code(422);
-            return "{\"error\": \"" . Vehicles::plateRequiredError . "\"}";
+            return "{\"error\": \"" . Vehicles::vehicleRequiredError . "\"}";
 
         } else {
-            $vehicle = Vehicle::find($params["licensePlate"]);
+            if (filter_var($id, FILTER_VALIDATE_INT, ["options" => [ "min" => 0 ]]) === false) {
+                http_response_code(400);
+                return;
+            }
+
+            $vehicle = Vehicle::findById((int) $id);
 
             if (!isset($vehicle))
                 http_response_code(404);

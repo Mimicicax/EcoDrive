@@ -233,7 +233,7 @@
                     </div>   
                 </span>
                 <span class="dual-input-group">
-                    <button type="button" class="button danger" onclick="if (confirm('Biztosan törli a járművet?')) deleteVehicle('<?= "vehicle-$idPrefix" ?>', '<?= $idPrefix ?>', '<?= route("vehicles") ?>')">
+                    <button type="button" class="button danger" onclick="deleteVehicle('<?= $idPrefix ?>')">
                         Jármű törlése
                     </button>
                     <button type="button" class="button primary" onclick="updateVehicle('<?= $idPrefix ?>')">Mentés</button>

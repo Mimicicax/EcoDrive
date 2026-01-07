@@ -84,13 +84,19 @@ const updateVehicle = async (cardId) => {
     toggleInputs(inputList);
 };
 
-const deleteVehicle = async (cardId, plate, route) => {
+const deleteVehicle = async (cardId) => {
+    if (!confirm('Biztosan törli a járművet?'))
+        return;
+
     let card = document.getElementById(cardId);
     let inputList = card.querySelectorAll("input,button");
+    let form = card.querySelector('form');
+    let route = form.action;
+    let id = form.querySelector('[type=hidden]').value;
 
     toggleInputs(inputList);
 
-    let resp = await fetch(`${route}?licensePlate=${encodeURIComponent(plate)}`, {
+    let resp = await fetch(`${route}?vehicleId=${id}`, {
         method: "DELETE",
     });
 
@@ -106,10 +112,10 @@ const deleteVehicle = async (cardId, plate, route) => {
         }).finished.finally(() => {
             card.remove();
 
-            let cont = document.querySelector(".vehicle.card-container");
+            let cont = document.getElementById("vehicle-container");
 
             if (cont.children.length == 0) {
-                cont.classList.add("empty");
+                cont.classList.add("empty",  "card-container");
                 
                 let span = document.createElement("span");
                 let h1 = document.createElement("h1");
