@@ -2,6 +2,7 @@
 
 namespace EcoDrive\Endpoints;
 
+use EcoDrive\Helpers\UserDataValidationError;
 use EcoDrive\Models\Session;
 use EcoDrive\Models\User;
 use function EcoDrive\Environment\appConfig;
@@ -22,7 +23,20 @@ class Admin implements Endpoint
         if (!Session::currentUser()->isAdmin)
             return redirect("home");
         
-        return $this->showView();
+        $query = trim($_GET["query"] ?? "");
+
+        if (empty($query))
+            return $this->showView([ "noQuery" => true ]);
+
+        $queriedUser = null;
+
+        if (\EcoDrive\Helpers\validateEmail($query, false) === false)
+            $queriedUser = User::find($query, User::FIND_BY_EMAIL);
+
+        else
+            $queriedUser = User::find($query, User::FIND_BY_USERNAME);
+
+        return $this->showView([ "queriedUser" => $queriedUser, "query" => $query ]);
     }
 
     public static function requiresAuth(): bool {
@@ -33,8 +47,9 @@ class Admin implements Endpoint
         return true;
     }
 
-    private function showView() {
+    private function showView(array $data = []) {
         return view("admin", [
+            ...$data,
             "title" => "Adminisztráció",
             "activeNavLink" => route("admin")
         ]);
