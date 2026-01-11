@@ -16,6 +16,7 @@ class User extends Model {
     public ?string $password;
     public ?string $resetToken;
     public ?DateTimeImmutable $resetTokenExpiry;
+    public ?bool $isAdmin;
 
     private const findByEmailQuery = "SELECT * FROM users WHERE email LIKE ?";
     private const findByUsernameQuery = "SELECT * FROM users WHERE username LIKE ?";
@@ -42,6 +43,11 @@ class User extends Model {
             $bindTypes .= "s";
         }
 
+        if (!empty($this->isAdmin)) {
+            $query .= (\strlen($bindTypes) != 0 ? "," : "") . "is_admin=?";
+            $bindTypes .= "i";
+        }
+
         if (\strlen($bindTypes) == 0)
             return "";
 
@@ -60,6 +66,7 @@ class User extends Model {
         $this->email = $row["email"] ?? "";
         $this->password = $row["password"] ?? "";
         $this->resetToken = $row["reset_token"] ?? null;
+        $this->isAdmin = $row["is_admin"] ?? null;
 
         if (isset($row["reset_token_expiry"]))
             $this->resetTokenExpiry = DateTimeImmutable::createFromFormat(appConfig()->DB_DATETIME_FORMAT, $row["reset_token_expiry"], appConfig()->DB_DATETIME_TIMEZONE);
@@ -158,6 +165,9 @@ class User extends Model {
 
         if (!empty($this->password))
             array_push($bindParams, $this->computePasswordHash($this->password));
+
+        if (!empty($this->isAdmin))
+            array_push($bindParams, $this->isAdmin);
 
         array_push($bindParams, $this->id);
 
