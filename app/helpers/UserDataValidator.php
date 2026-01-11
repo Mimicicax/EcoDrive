@@ -29,6 +29,10 @@ function validateUsername(string $username): bool|string {
     if (preg_match("/^(\p{L}|\p{M}|\p{N}|\p{P}|\p{S}|\p{Zs}|\x{1F320}-\x{1FAFF}|(\x{1F1E6}-\x{1F1FF}){2})*$/u", $username) !== 1)
         return UserDataValidationError::USERNAME_CODE_POINT_ERROR;   
 
+    // Nem tartalmazhat '@'-ot
+    if (str_contains($username, '@'))
+        return UserDataValidationError::USERNAME_CODE_POINT_ERROR;   
+
     // Szabadnak kell lennie
     if (User::exists($username, User::FIND_BY_USERNAME))
         return UserDataValidationError::USERNAME_TAKEN_ERROR;   
