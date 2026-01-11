@@ -10,11 +10,14 @@ require_once appConfig()->APP_ROOT."/endpoints/Vehicles.php";
 require_once appConfig()->APP_ROOT."/endpoints/Profile.php";
 require_once appConfig()->APP_ROOT."/endpoints/Journal.php";
 require_once appConfig()->APP_ROOT."/endpoints/Statistics.php";
+require_once appConfig()->APP_ROOT."/endpoints/Admin.php";
 
 function registerAppRoutes() {
     // Itt lehet regisztrálni a végpontokat
 
     registerRoute("GET", "/", \EcoDrive\Endpoints\Vehicles::class, "show", "home");
+
+    registerRoute("GET", "/admin", \EcoDrive\Endpoints\Admin::class, "show", "admin");
 
     registerRoute("GET", "/login", \EcoDrive\Endpoints\Authenticator::class, "showLogin");
     registerRoute("POST", "/login", \EcoDrive\Endpoints\Authenticator::class, "processLogin", "login");
