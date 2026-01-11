@@ -92,4 +92,8 @@ class Profile implements Endpoint
     public static function requiresAuth(): bool {
         return true;
     }
+
+    public static function isAdminPermissible(): bool {
+        return true;
+    }
 }

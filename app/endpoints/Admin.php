@@ -20,7 +20,7 @@ class Admin implements Endpoint
 
     public function show() {
         if (!Session::currentUser()->isAdmin)
-            return redirect("/", false);
+            return redirect("home");
         
         return $this->showView();
     }

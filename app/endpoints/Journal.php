@@ -127,6 +127,10 @@ class Journal implements Endpoint
     public static function requiresAuth(): bool {
         return true;
     }
+    
+    public static function isAdminPermissible(): bool {
+        return false;
+    }
 
     private function validateTravelStart(string $datetime) {
         if ($datetime === "")

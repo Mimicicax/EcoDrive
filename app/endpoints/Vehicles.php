@@ -138,6 +138,10 @@ class Vehicles implements Endpoint
         return true;
     }
 
+    public static function isAdminPermissible(): bool {
+        return false;
+    }
+    
     private function validateFields($brand, $model, $plate, $year, $consumption, $emission, $vehicleId = null) {
         $errors = [];
 
