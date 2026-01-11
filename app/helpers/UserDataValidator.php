@@ -40,13 +40,13 @@ function validateUsername(string $username): bool|string {
     return false;
 }
 
-function validateEmail(string $email): bool|string {    
+function validateEmail(string $email, bool $performExistenceCheck = true): bool|string {    
     // Helyes formátum
     if (!filter_var($email, FILTER_VALIDATE_EMAIL))
         return UserDataValidationError::INVALID_EMAIL_ERROR;    
 
     // Nem használhatja más
-    if (User::exists($email, User::FIND_BY_EMAIL))
+    if ($performExistenceCheck && User::exists($email, User::FIND_BY_EMAIL))
         return UserDataValidationError::EMAIL_TAKEN_ERROR;  
 
     return false;
