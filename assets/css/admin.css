@@ -1,0 +1,27 @@
+#user-search-bar {
+    display: flex;
+    flex-flow: row wrap;
+    gap: 1em;
+    align-items: center;
+    width: 100%;
+}
+
+#user-search-bar .input-group {
+    width: 100%;
+}
+
+#user-search-bar button {
+    flex-basis:0;
+    flex-grow:1;
+}
+
+@media screen and (min-width: 600px) {
+    #user-search-bar {
+        width: auto;
+    }
+
+    #user-search-bar .input-group {
+        width: auto;
+        min-width: 300px;
+    }
+}
