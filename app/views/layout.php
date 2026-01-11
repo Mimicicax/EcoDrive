@@ -48,6 +48,15 @@
                         Profil
                     </a>
                 </li>
+                <?php if (Session::currentUser()->isAdmin): ?>
+                    <li>
+                        <a href="<?= route("admin") ?>" <?= $activeNavLink == route("admin") ? "class=\"active\"" : ""?>>
+                            <i class="fa-solid fa-screwdriver-wrench"></i>
+                            &nbsp;
+                            Felhasználók
+                        </a>
+                    </li>
+                <?php else: ?>
                 <li>
                     <a href="<?= route("vehicles") ?>" <?= $activeNavLink == route("vehicles") ? "class=\"active\"" : ""?>>
                         <i class="fa-solid fa-car fa-fw"></i>
@@ -69,6 +78,7 @@
                         Statisztika
                     </a>
                 </li>
+                <?php endif ?>
                 <li>
                     <a href="<?= route("logout") ?>" class="button" id="logoutButton">
                         <i class="fa-solid fa-right-from-bracket fa-flip-horizontal"></i>
