@@ -7,6 +7,7 @@ use function EcoDrive\Environment\appConfig;
 
 require_once "config.php";
 require_once appConfig()->APP_ROOT . "/models/User.php";
+require_once appConfig()->APP_ROOT . "/models/Session.php";
 
 class UserDataValidationError {
     const USERNAME_LENGTH_ERROR = "A felhasználónév minimum 1, maximum 50 karakterből állhat";
@@ -16,6 +17,7 @@ class UserDataValidationError {
     const EMAIL_TAKEN_ERROR = "Az email cím már foglalt";
     const PASSWORD_ERROR = "A jelszónak legalább 8 karakterből kell állnia és tartalmaznia kell legalább egy nagybetűt és számot";
     const PASSWORD_MISMATCH_ERROR = "A jelszavak nem egyeznek";
+    const WRONG_OLD_PASSWORD_ERROR = "A megadott jelszó helytelen";
 }
 
 function validateUsername(string $username): bool|string {
