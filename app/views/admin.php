@@ -7,7 +7,7 @@
         <span id="user-search-bar">
             <span class="input-group">
                 <label for="user">Felhasználó</label>
-                <input type="search" name="query" id="user" placeholder="Felhasználónév vagy email cím">
+                <input type="search" name="query" id="user" placeholder="Felhasználónév vagy email cím" <?= isset($query) ? "value=\"$query\"" : "" ?>>
             </span>
             <button class="button primary">Keresés</button>
         </span>
