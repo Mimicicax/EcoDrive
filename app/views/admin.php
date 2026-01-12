@@ -35,22 +35,43 @@
     <div id="user-data-card" class="card">
         <form action="<?= route("admin") ?>" method="POST" onsubmit="return confirm('Biztosan módosítja a felhasználó adatait?')">
             <input type="hidden" name="user" value="<?= $queriedUser->id ?>">
-            <span class="input-group">
+            <span class=<?= "\"input-group" . (isset($errors["usernameError"]) ? " error" : "") . "\"" ?>>
                 <label for="username">Felhasználónév</label>
-                <input type="text" name="username" id="username" value="<?= $queriedUser->username ?>">
+                <input type="text" name="username" id="username" value="<?= $providedUsername ?? $queriedUser->username ?>">
             </span>
-            <span class="input-group">
+
+            <?php if (isset($errors["usernameError"])): ?>
+                <span class="error">
+                    <?= $errors["usernameError"] ?>
+                </span>
+            <?php endif ?>
+
+            <span class=<?= "\"input-group" . (isset($errors["emailError"]) ? " error" : "") . "\"" ?>>
                 <label for="email">Email cím</label>
-                <input type="text" name="email" id="email" value="<?= $queriedUser->email ?>">
+                <input type="text" name="email" id="email" value="<?= $providedEmail ?? $queriedUser->email ?>">
             </span>
-            <span class="input-group">
+            
+            <?php if (isset($errors["emailError"])): ?>
+                <span class="error">
+                    <?= $errors["emailError"] ?>
+                </span>
+            <?php endif ?>
+
+            <span class=<?= "\"input-group" . (isset($errors["newPasswordError"]) ? " error" : "") . "\"" ?>>
                 <label for="newPass">Új jelszó</label>
                 <input type="password" name="newPassword" id="newPass">
             </span>
-            <span class="input-group">
+            <span class=<?= "\"input-group" . (isset($errors["newPasswordError"]) ? " error" : "") . "\"" ?>>
                 <label for="confirmPass">Jelszó megerősítése</label>
                 <input type="password" name="confirmPassword" id="confirmPass">
             </span>
+
+            <?php if (isset($errors["newPasswordError"])): ?>
+                <span class="error">
+                    <?= $errors["newPasswordError"] ?>
+                </span>
+            <?php endif ?>
+
             <input type="submit" class="button primary" value="Mentés">
         </form>
         <form action="<?= route("admin") ?>" method="POST" onsubmit="return confirm('Biztosan törli a felhasználót?')">

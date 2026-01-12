@@ -109,15 +109,14 @@ class Admin implements Endpoint
 
         if (!empty($errors)) {
             return $this->showView([
-                "providedUsername" => $_POST["username"] ?? "",
-                "providedEmail" => $_POST["email"] ?? "",
-                "providedNewPassword" => $_POST["newPassword"] ?? "",
-                "providedConfirmPassword" => $_POST["confirmPassword"] ?? ""
+                "providedUsername" => isset($errors["usernameError"]) ? $_POST["username"] : null,
+                "providedEmail" =>isset($errors["emailError"]) ? $_POST["email"] : null,
+                "query" => $user->username
 
             ], $user, $errors);
         }
 
-        $queryName = isset($username) ? $username : $user->username;
+        $queryName = $username ?? $user->username;
         $user->username = $username;
         $user->email = $email;
         $user->password = $password;
@@ -135,6 +134,7 @@ class Admin implements Endpoint
     }
 
     private function showView(array $data = [], ?User $queriedUser = null, ?array $errors = null) {
+
         return view("admin", [
             ...$data,
             "title" => "Adminisztráció",
