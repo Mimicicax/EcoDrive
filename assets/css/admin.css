@@ -1,27 +1,37 @@
 #user-search-bar {
     display: flex;
-    flex-flow: row wrap;
+    flex-flow: column;
+    width: 100%;
     gap: 1em;
-    align-items: center;
-    width: 100%;
 }
 
-#user-search-bar .input-group {
-    width: 100%;
+#user-data-card {
+    max-width: 500px;
 }
 
-#user-search-bar button {
-    flex-basis:0;
-    flex-grow:1;
+.admin.container-header form {
+    display: inline;
+    width: 100%;
 }
 
 @media screen and (min-width: 600px) {
+
     #user-search-bar {
-        width: auto;
+        flex-flow: row;
+        align-items: center;
+        width: 80%;
+        max-width: 700px;
     }
 
     #user-search-bar .input-group {
-        width: auto;
-        min-width: 300px;
+        flex: 1 1 0;
+    }
+}
+
+@media screen and (max-width: 900px) {
+
+    #user-data-card {
+        width: 100%;
+        margin: auto;
     }
 }
