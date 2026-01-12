@@ -82,6 +82,8 @@
     </div>
 <?php endif ?>
 
-<?php if (isset($updateFailed)): ?>
+<?php if (isset($errors["updateFailed"])): ?>
     <script>alert("Az adatok frissítése nem sikerült.")</script>
+<?php elseif (isset($errors["deleteFailed"])): ?>
+    <script>alert("A felhasználó törlése nem sikerült.")</script>
 <?php endif ?>

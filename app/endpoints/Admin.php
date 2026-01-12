@@ -130,7 +130,10 @@ class Admin implements Endpoint
     }
 
     private function deleteUser(User $user) {
-
+        if ($user->id === Session::currentUser()->id || !$user->delete())
+            return $this->showView(errors: [ "deleteFailed" => true ], data: [ "noQuery" => true ]);
+        
+        return redirect(to: "admin", type: \EcoDrive\Helpers\RedirectType::SeeOther);
     }
 
     private function showView(array $data = [], ?User $queriedUser = null, ?array $errors = null) {

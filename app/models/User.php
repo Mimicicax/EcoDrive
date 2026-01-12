@@ -24,6 +24,7 @@ class User extends Model {
     private const existsByUsernameQuery = "SELECT COUNT(*) FROM users WHERE username LIKE ?";
     private const existsByEmailQuery = "SELECT COUNT(*) FROM users WHERE email LIKE ?";
     private const createUserQuery = "INSERT INTO users(username, email, password) VALUES(?, ?, ?)";
+    private const deleteUserQuery = "DELETE FROM users WHERE id=?";
 
     private function updateQueryBuilder(&$bindTypes): string {
         $query = "UPDATE users SET ";
@@ -205,6 +206,18 @@ class User extends Model {
         }
 
         mysqli_stmt_close($stmt);
+        return true;
+    }
+
+    public function delete() {
+        if (!($stmt = mysqli_prepare(appConfig()->DB_CONN, User::deleteUserQuery)) ||
+            !mysqli_stmt_bind_param($stmt, "i", $this->id) ||
+            !mysqli_stmt_execute($stmt)) {
+
+            mysqli_stmt_close($stmt);
+            return false;
+        }
+
         return true;
     }
 
