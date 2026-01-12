@@ -16,12 +16,15 @@ class User extends Model {
     public ?string $password;
     public ?string $resetToken;
     public ?DateTimeImmutable $resetTokenExpiry;
+    public ?bool $isAdmin;
 
     private const findByEmailQuery = "SELECT * FROM users WHERE email LIKE ?";
     private const findByUsernameQuery = "SELECT * FROM users WHERE username LIKE ?";
+    private const findByIdQuery = "SELECT * FROM users WHERE id=?";
     private const existsByUsernameQuery = "SELECT COUNT(*) FROM users WHERE username LIKE ?";
     private const existsByEmailQuery = "SELECT COUNT(*) FROM users WHERE email LIKE ?";
     private const createUserQuery = "INSERT INTO users(username, email, password) VALUES(?, ?, ?)";
+    private const deleteUserQuery = "DELETE FROM users WHERE id=?";
 
     private function updateQueryBuilder(&$bindTypes): string {
         $query = "UPDATE users SET ";
@@ -42,6 +45,11 @@ class User extends Model {
             $bindTypes .= "s";
         }
 
+        if (!empty($this->isAdmin)) {
+            $query .= (\strlen($bindTypes) != 0 ? "," : "") . "is_admin=?";
+            $bindTypes .= "i";
+        }
+
         if (\strlen($bindTypes) == 0)
             return "";
 
@@ -60,6 +68,7 @@ class User extends Model {
         $this->email = $row["email"] ?? "";
         $this->password = $row["password"] ?? "";
         $this->resetToken = $row["reset_token"] ?? null;
+        $this->isAdmin = $row["is_admin"] ?? null;
 
         if (isset($row["reset_token_expiry"]))
             $this->resetTokenExpiry = DateTimeImmutable::createFromFormat(appConfig()->DB_DATETIME_FORMAT, $row["reset_token_expiry"], appConfig()->DB_DATETIME_TIMEZONE);
@@ -93,7 +102,31 @@ class User extends Model {
         mysqli_free_result($results);
         mysqli_stmt_close($stmt);
 
-        if ($fields === false)
+        if ($fields === false || $fields === null)
+            return null;
+
+        return new User($fields);
+    }
+
+    public static function findById(int $id): ?User {
+
+        if (!($stmt = mysqli_prepare(appConfig()->DB_CONN, User::findByIdQuery))) {
+            mysqli_stmt_close($stmt);
+            return null;
+        }
+
+        if (!mysqli_stmt_bind_param($stmt, "i", $id) || !mysqli_stmt_execute($stmt)) {
+            mysqli_stmt_close($stmt);
+            return null;
+        }
+
+        $results = mysqli_stmt_get_result($stmt);
+        $fields = mysqli_fetch_assoc($results);
+
+        mysqli_free_result($results);
+        mysqli_stmt_close($stmt);
+
+        if ($fields === false || $fields === null)
             return null;
 
         return new User($fields);
@@ -159,6 +192,9 @@ class User extends Model {
         if (!empty($this->password))
             array_push($bindParams, $this->computePasswordHash($this->password));
 
+        if (!empty($this->isAdmin))
+            array_push($bindParams, $this->isAdmin);
+
         array_push($bindParams, $this->id);
 
         if (!mysqli_stmt_prepare($stmt, $query) ||
@@ -170,6 +206,18 @@ class User extends Model {
         }
 
         mysqli_stmt_close($stmt);
+        return true;
+    }
+
+    public function delete() {
+        if (!($stmt = mysqli_prepare(appConfig()->DB_CONN, User::deleteUserQuery)) ||
+            !mysqli_stmt_bind_param($stmt, "i", $this->id) ||
+            !mysqli_stmt_execute($stmt)) {
+
+            mysqli_stmt_close($stmt);
+            return false;
+        }
+
         return true;
     }
 

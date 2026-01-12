@@ -12,7 +12,8 @@ CREATE TABLE IF NOT EXISTS users (
     email VARCHAR(250) NOT NULL UNIQUE,
     password VARCHAR(250) NOT NULL,
     reset_token CHAR(44) NULL DEFAULT NULL,
-    reset_token_expiry TIMESTAMP NULL DEFAULT NULL
+    reset_token_expiry TIMESTAMP NULL DEFAULT NULL,
+    is_admin BOOLEAN DEFAULT FALSE
 );
 
 CREATE TABLE IF NOT EXISTS sessions (
@@ -58,3 +59,11 @@ CREATE EVENT IF NOT EXISTS SessionCleanupEvent
 ON SCHEDULE EVERY 1 DAY
 COMMENT "Kitörli a lejárt sessionöket"
 DO DELETE FROM sessions WHERE expiry <= NOW();
+
+-- Adminisztrátor: admin:admin
+INSERT INTO users (username, email, password, is_admin)
+VALUES("admin", 
+       "admin@ecodrive.com", 
+       "$argon2i$v=19$m=65536,t=4,p=1$SkN3ekpPZ2N0d3p2UTlCUA$cWDEOQ8MTaYXvdg6ew/gKUUIS8zgeAD7P2yv1oLO1LI",
+       1
+);

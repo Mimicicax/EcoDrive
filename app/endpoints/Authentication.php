@@ -96,6 +96,10 @@ class Authenticator implements Endpoint
         return false;
     }
 
+    public static function isAdminPermissible(): bool {
+        return true;
+    }
+
     private function loginView($data = null, $errors = null) {
         if (!isset($data))
             $data = [];

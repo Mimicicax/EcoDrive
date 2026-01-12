@@ -20,14 +20,14 @@ class Session extends Model {
 
     private const queryCurrentSession = 
     "SELECT sessions.id AS sid, sessions.session_id, sessions.expiry, 
-            users.id, users.username, users.email, users.password, users.reset_token, users.reset_token_expiry 
+            users.id, users.username, users.email, users.password, users.reset_token, users.reset_token_expiry, users.is_admin 
      FROM sessions 
      INNER JOIN users on sessions.user = users.id 
      WHERE sessions.session_id LIKE ? AND sessions.expiry > CURRENT_TIMESTAMP()";
     
     private const queryActiveSession =
     "SELECT sessions.id AS sid, sessions.session_id, sessions.expiry, 
-            users.id, users.username, users.email, users.password, users.reset_token, users.reset_token_expiry 
+            users.id, users.username, users.email, users.password, users.reset_token, users.reset_token_expiry, users.is_admin
      FROM sessions 
      INNER JOIN users on sessions.user = users.id 
      WHERE sessions.user = ? AND sessions.expiry > CURRENT_TIMESTAMP()";

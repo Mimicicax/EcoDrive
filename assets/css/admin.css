@@ -1,0 +1,37 @@
+#user-search-bar {
+    display: flex;
+    flex-flow: column;
+    width: 100%;
+    gap: 1em;
+}
+
+#user-data-card {
+    max-width: 500px;
+}
+
+.admin.container-header form {
+    display: inline;
+    width: 100%;
+}
+
+@media screen and (min-width: 600px) {
+
+    #user-search-bar {
+        flex-flow: row;
+        align-items: center;
+        width: 80%;
+        max-width: 700px;
+    }
+
+    #user-search-bar .input-group {
+        flex: 1 1 0;
+    }
+}
+
+@media screen and (max-width: 900px) {
+
+    #user-data-card {
+        width: 100%;
+        margin: auto;
+    }
+}

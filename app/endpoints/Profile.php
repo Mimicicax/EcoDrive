@@ -2,6 +2,7 @@
 
 namespace EcoDrive\Endpoints;
 
+use EcoDrive\Helpers\UserDataValidationError;
 use EcoDrive\Models\User;
 use function EcoDrive\Environment\appConfig;
 use function EcoDrive\Routing\route;
@@ -18,9 +19,6 @@ require_once appConfig()->APP_ROOT . "/helpers/UserDataValidator.php";
 
 class Profile implements Endpoint
 {
-
-    private const wrongOldPasswordError = "A megadott jelszó helytelen";
-
     public function show() {
         return view("profile", [
             "activeNavLink" => route("profile"), 
@@ -66,7 +64,7 @@ class Profile implements Endpoint
                 $errors["newPasswordError"] = $e;
             
             if (!Session::currentUser()->passwordEquals($current))
-                $errors["currentPasswordError"] = Profile::wrongOldPasswordError;
+                $errors["currentPasswordError"] = UserDataValidationError::WRONG_OLD_PASSWORD_ERROR;
             
             $password = $params["newPassword"];
         }
@@ -90,6 +88,10 @@ class Profile implements Endpoint
     }
 
     public static function requiresAuth(): bool {
+        return true;
+    }
+
+    public static function isAdminPermissible(): bool {
         return true;
     }
 }

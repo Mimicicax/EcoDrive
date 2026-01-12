@@ -81,6 +81,9 @@ if (!isset($endpoint)) {
         if ($instance->requiresAuth() && !Session::isAuthenticated())
             return redirect("login");
 
+        if (Session::isAuthenticated() && Session::currentUser()->isAdmin && !$instance->isAdminPermissible())
+            return redirect("admin");
+
         try {
            echo $instance->{$handler[1]}();
 

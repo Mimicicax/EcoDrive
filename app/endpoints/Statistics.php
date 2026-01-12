@@ -128,4 +128,8 @@ class Statistics implements Endpoint
     public static function requiresAuth(): bool {
         return true;
     }
+
+    public static function isAdminPermissible(): bool {
+        return false;
+    }
 }
