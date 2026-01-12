@@ -20,6 +20,7 @@ class User extends Model {
 
     private const findByEmailQuery = "SELECT * FROM users WHERE email LIKE ?";
     private const findByUsernameQuery = "SELECT * FROM users WHERE username LIKE ?";
+    private const findByIdQuery = "SELECT * FROM users WHERE id=?";
     private const existsByUsernameQuery = "SELECT COUNT(*) FROM users WHERE username LIKE ?";
     private const existsByEmailQuery = "SELECT COUNT(*) FROM users WHERE email LIKE ?";
     private const createUserQuery = "INSERT INTO users(username, email, password) VALUES(?, ?, ?)";
@@ -100,7 +101,31 @@ class User extends Model {
         mysqli_free_result($results);
         mysqli_stmt_close($stmt);
 
-        if ($fields === false)
+        if ($fields === false || $fields === null)
+            return null;
+
+        return new User($fields);
+    }
+
+    public static function findById(int $id): ?User {
+
+        if (!($stmt = mysqli_prepare(appConfig()->DB_CONN, User::findByIdQuery))) {
+            mysqli_stmt_close($stmt);
+            return null;
+        }
+
+        if (!mysqli_stmt_bind_param($stmt, "i", $id) || !mysqli_stmt_execute($stmt)) {
+            mysqli_stmt_close($stmt);
+            return null;
+        }
+
+        $results = mysqli_stmt_get_result($stmt);
+        $fields = mysqli_fetch_assoc($results);
+
+        mysqli_free_result($results);
+        mysqli_stmt_close($stmt);
+
+        if ($fields === false || $fields === null)
             return null;
 
         return new User($fields);
