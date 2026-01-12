@@ -18,6 +18,7 @@ function registerAppRoutes() {
     registerRoute("GET", "/", \EcoDrive\Endpoints\Vehicles::class, "show", "home");
 
     registerRoute("GET", "/admin", \EcoDrive\Endpoints\Admin::class, "show", "admin");
+    registerRoute("POST", "/admin", \EcoDrive\Endpoints\Admin::class, "editUser");
 
     registerRoute("GET", "/login", \EcoDrive\Endpoints\Authenticator::class, "showLogin");
     registerRoute("POST", "/login", \EcoDrive\Endpoints\Authenticator::class, "processLogin", "login");
