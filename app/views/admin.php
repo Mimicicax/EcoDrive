@@ -27,7 +27,10 @@
         </span>
     </div>
 <?php else: ?>
-    <p>Találatok megjelenítése a következő kifejezésre: "<?= $query ?>"</p>
+
+    <?php if (isset($query)): ?>
+        <p>Találatok megjelenítése a következő kifejezésre: "<?= $query ?>"</p>
+    <?php endif ?>
 
     <div id="user-data-card" class="card">
         <form action="<?= route("admin") ?>" method="POST" onsubmit="return confirm('Biztosan módosítja a felhasználó adatait?')">
@@ -42,11 +45,11 @@
             </span>
             <span class="input-group">
                 <label for="newPass">Új jelszó</label>
-                <input type="password" name="newPass" id="newPass">
+                <input type="password" name="newPassword" id="newPass">
             </span>
             <span class="input-group">
                 <label for="confirmPass">Jelszó megerősítése</label>
-                <input type="password" name="confirmPass" id="confirmPass">
+                <input type="password" name="confirmPassword" id="confirmPass">
             </span>
             <input type="submit" class="button primary" value="Mentés">
         </form>
