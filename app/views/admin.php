@@ -60,3 +60,7 @@
         </form>
     </div>
 <?php endif ?>
+
+<?php if (isset($updateFailed)): ?>
+    <script>alert("Az adatok frissítése nem sikerült.")</script>
+<?php endif ?>
