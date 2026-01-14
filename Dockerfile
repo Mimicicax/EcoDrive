@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1
 
-FROM php:8.5-apache
+FROM php:8.3-apache
 
 # Szükséges kiegészítők telepítése
 # mysqli: adatbázis kapcsolathoz
@@ -9,15 +9,12 @@ RUN docker-php-ext-install mysqli pdo pdo_mysql \
     && a2enmod rewrite headers
 
 # Production php.ini használata
-RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
-
-# Kód másolása
-COPY . /var/www/html/
+RUN cp "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
 
 # Port expose 
 EXPOSE 80
 
 # Jogosultságok beállítása
-RUN chown -R www-data:www-data /var/www/html
+COPY --chown=www-data:www-data app assets *.php /var/www/html/
 
 USER www-data
