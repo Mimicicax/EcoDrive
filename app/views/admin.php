@@ -82,8 +82,16 @@
     </div>
 <?php endif ?>
 
-<?php if (isset($errors["updateFailed"])): ?>
-    <script>alert("Az adatok frissítése nem sikerült.")</script>
-<?php elseif (isset($errors["deleteFailed"])): ?>
-    <script>alert("A felhasználó törlése nem sikerült.")</script>
+<?php if (isset($errors["updateFailed"]) || isset($errors["deleteFailed"])): ?>
+    <div class="error-banner">
+        <p>    
+            <i class="fa-solid fa-circle-exclamation banner-icon"></i>
+            <?php if (isset($errors["updateFailed"])): ?>
+                Az adatok frissítése nem sikerült
+            <?php else: ?>
+                A felhasználó törlése nem sikerült.
+            <?php endif ?>
+        </p>
+        <i class="fa-solid fa-xmark banner-close-mark" onclick="this.parentNode.style.display='none'"></i>
+    </div>
 <?php endif ?>
