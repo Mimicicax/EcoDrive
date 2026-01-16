@@ -14,6 +14,7 @@ require_once appConfig()->APP_ROOT . "/models/Session.php";
 require_once appConfig()->APP_ROOT . "/models/User.php";
 require_once appConfig()->APP_ROOT . "/helpers/Redirect.php";
 require_once appConfig()->APP_ROOT . "/helpers/UserDataValidator.php";
+
 class Authenticator implements Endpoint
 {
     private const loginError = "A felhasználónév vagy jelszó helytelen";
