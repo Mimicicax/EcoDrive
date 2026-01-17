@@ -40,27 +40,31 @@ class Admin implements Endpoint
     }
 
     public function editUser() {
-        if (!Session::currentUser()->isAdmin)
-            return redirect("home");
+        if (!Session::currentUser()->isAdmin) {
+            http_response_code(403);
+            return;
+        }
 
-        $userId = trim($_POST["user"] ?? "");
+        parse_str(file_get_contents("php://input"), $params);
+
+        $userId = trim($params["user"] ?? "");
 
         if (!isset($userId) || filter_var($userId, FILTER_VALIDATE_INT) === false) {
             http_response_code(404);
-            return $this->showView(errors: [ "updateFailed" => true ]);
+            return;
         }
 
         $user = User::findById((int) $userId);
 
         if (!isset($user)) {
             http_response_code(404);
-            return $this->showView(errors: [ "updateFailed" => true ]);
+            return;
         }
 
         if (isset($_POST["action"]) && $_POST["action"] == "delete")
             return $this->deleteUser($user);
 
-        return $this->updateUserInfo($user);
+        return $this->updateUserInfo($user, $params);
     }
 
     public static function requiresAuth(): bool {
@@ -71,14 +75,14 @@ class Admin implements Endpoint
         return true;
     }
 
-    private function updateUserInfo(User $user) {
+    private function updateUserInfo(User $user, array $params) {
         $username = null;
         $email = null;
         $password = null;
         $errors = [];
 
-        if (isset($_POST["username"]) && $_POST["username"] !== "") {
-            $username = trim($_POST["username"]);
+        if (isset($params["username"]) && $params["username"] !== "") {
+            $username = trim($params["username"]);
 
             if ($username === $user->username)
                 $username = null;
@@ -87,8 +91,8 @@ class Admin implements Endpoint
                 $errors["usernameError"] = $e;
         }
 
-        if (isset($_POST["email"]) && $_POST["email"] !== "") {
-            $email = trim($_POST["email"]);
+        if (isset($params["email"]) && $params["email"] !== "") {
+            $email = trim($params["email"]);
 
             if ($email === $user->email)
                 $email = null;
@@ -97,36 +101,31 @@ class Admin implements Endpoint
                 $errors["emailError"] = $e;
         }
 
-        if (isset($_POST["newPassword"]) && $_POST["newPassword"] !== "") {
-            $new = $_POST["newPassword"] ?? "";
-            $confirm = $_POST["confirmPassword"] ?? "";
+        if (isset($params["newPassword"]) && $params["newPassword"] !== "") {
+            $new = $params["newPassword"] ?? "";
+            $confirm = $params["confirmPassword"] ?? "";
 
             if ($e = \EcoDrive\Helpers\validatePassword($new, $confirm))
                 $errors["newPasswordError"] = $e;
 
-            $password = $_POST["newPassword"];
+            $password = $params["newPassword"];
         }
 
         if (!empty($errors)) {
-            return $this->showView([
-                "providedUsername" => isset($errors["usernameError"]) ? $_POST["username"] : null,
-                "providedEmail" =>isset($errors["emailError"]) ? $_POST["email"] : null,
-                "query" => $user->username
-
-            ], $user, $errors);
+            http_response_code(422);
+            return json_encode($errors);
         }
 
-        $queryName = $username ?? $user->username;
         $user->username = $username;
         $user->email = $email;
         $user->password = $password;
 
         if (!$user->update()) {
             http_response_code(500);
-            return $this->showView(queriedUser: $user, errors: [ "updateFailed" => true ]);
+            return;
         }
 
-        return redirect(to: "admin", type: \EcoDrive\Helpers\RedirectType::SeeOther, additionalData: [ "query" => $queryName ]);
+        http_response_code(200);
     }
 
     private function deleteUser(User $user) {

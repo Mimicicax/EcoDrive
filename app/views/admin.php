@@ -33,65 +33,35 @@
     <?php endif ?>
 
     <div id="user-data-card" class="card">
-        <form action="<?= route("admin") ?>" method="POST" onsubmit="return confirm('Biztosan módosítja a felhasználó adatait?')">
+        <form action="<?= route("adminUpdateUser") ?>" method="PATCH">
             <input type="hidden" name="user" value="<?= $queriedUser->id ?>">
-            <span class=<?= "\"input-group" . (isset($errors["usernameError"]) ? " error" : "") . "\"" ?>>
+            <span class="input-group">
                 <label for="username">Felhasználónév</label>
-                <input type="text" name="username" id="username" value="<?= $providedUsername ?? $queriedUser->username ?>">
+                <input type="text" name="username" id="username" value="<?= $queriedUser->username ?>">
             </span>
 
-            <?php if (isset($errors["usernameError"])): ?>
-                <span class="error">
-                    <?= $errors["usernameError"] ?>
-                </span>
-            <?php endif ?>
-
-            <span class=<?= "\"input-group" . (isset($errors["emailError"]) ? " error" : "") . "\"" ?>>
+            <span class="input-group">
                 <label for="email">Email cím</label>
-                <input type="text" name="email" id="email" value="<?= $providedEmail ?? $queriedUser->email ?>">
+                <input type="text" name="email" id="email" value="<?= $queriedUser->email ?>">
             </span>
-            
-            <?php if (isset($errors["emailError"])): ?>
-                <span class="error">
-                    <?= $errors["emailError"] ?>
-                </span>
-            <?php endif ?>
 
-            <span class=<?= "\"input-group" . (isset($errors["newPasswordError"]) ? " error" : "") . "\"" ?>>
+            <span class="input-group">
                 <label for="newPass">Új jelszó</label>
                 <input type="password" name="newPassword" id="newPass">
             </span>
-            <span class=<?= "\"input-group" . (isset($errors["newPasswordError"]) ? " error" : "") . "\"" ?>>
+            <span class="input-group"></span>
                 <label for="confirmPass">Jelszó megerősítése</label>
                 <input type="password" name="confirmPassword" id="confirmPass">
             </span>
 
-            <?php if (isset($errors["newPasswordError"])): ?>
-                <span class="error">
-                    <?= $errors["newPasswordError"] ?>
-                </span>
-            <?php endif ?>
-
-            <input type="submit" class="button primary" value="Mentés">
+            <button type="button" class="button primary" onclick="updateUserData('user-data-card')">
+                Mentés
+            </button>
         </form>
         <form action="<?= route("admin") ?>" method="POST" onsubmit="return confirm('Biztosan törli a felhasználót?')">
             <input type="hidden" name="user" value="<?= $queriedUser->id ?>">
             <input type="hidden" name="action" value="delete">
             <input type="submit" class="button secondary danger" value="Felhasználó törlése">
         </form>
-    </div>
-<?php endif ?>
-
-<?php if (isset($errors["updateFailed"]) || isset($errors["deleteFailed"])): ?>
-    <div class="error-banner">
-        <p>    
-            <i class="fa-solid fa-circle-exclamation banner-icon"></i>
-            <?php if (isset($errors["updateFailed"])): ?>
-                Az adatok frissítése nem sikerült
-            <?php else: ?>
-                A felhasználó törlése nem sikerült.
-            <?php endif ?>
-        </p>
-        <i class="fa-solid fa-xmark banner-close-mark" onclick="this.parentNode.style.display='none'"></i>
     </div>
 <?php endif ?>

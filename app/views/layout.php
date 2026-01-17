@@ -20,6 +20,9 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.1/dist/chart.umd.min.js"></script>
     <script src="https://kit.fontawesome.com/b71a3cf50f.js" crossorigin="anonymous"></script>
     <script src="<?= asset("script.js") ?>"></script>
+    <?php if (Session::isAuthenticated() && Session::currentUser()->isAdmin): ?>
+        <script src="<?= asset("admin.js") ?>"></script>
+    <?php endif ?>
     <title>
         <?= isset($title) ? $title . " | EcoDrive" : "EcoDrive" ?>
     </title>
