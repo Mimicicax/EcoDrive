@@ -10,7 +10,7 @@
     }
 
     function echoDeviation($dev, bool $decreaseIsPositive = true) {
-        $devPercent = roundStatInfo($dev * 100);
+        $devPercent = $dev * 100;
         $class = "";
         $prefix = "";
         $arrow = "";
@@ -34,6 +34,8 @@
             $arrow = "<i class='fa-solid fa-arrow-up'></i>";
         }
 
+        $devPercent = roundStatInfo($devPercent);
+        
         echo "<span class='$class'>$prefix$devPercent%$arrow</span>";
     }
 ?>
