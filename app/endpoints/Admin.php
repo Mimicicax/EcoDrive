@@ -45,7 +45,13 @@ class Admin implements Endpoint
             return;
         }
 
-        parse_str(file_get_contents("php://input"), $params);
+        $params = null;
+
+        if ($_SERVER['REQUEST_METHOD'] === "DELETE")
+            $params = $_GET;
+
+        else
+            parse_str(file_get_contents("php://input"), $params);
 
         $userId = trim($params["user"] ?? "");
 
@@ -61,7 +67,7 @@ class Admin implements Endpoint
             return;
         }
 
-        if (isset($_POST["action"]) && $_POST["action"] == "delete")
+        if ($_SERVER['REQUEST_METHOD'] === "DELETE")
             return $this->deleteUser($user);
 
         return $this->updateUserInfo($user, $params);
@@ -129,10 +135,15 @@ class Admin implements Endpoint
     }
 
     private function deleteUser(User $user) {
-        if ($user->id === Session::currentUser()->id || !$user->delete())
-            return $this->showView(errors: [ "deleteFailed" => true ], data: [ "noQuery" => true ]);
-        
-        return redirect(to: "admin", type: \EcoDrive\Helpers\RedirectType::SeeOther);
+        if ($user->id === Session::currentUser()->id) {
+            http_response_code(422);
+            return;
+
+        } else if (!$user->delete())
+            http_response_code(500);
+
+        else
+            http_response_code(200);
     }
 
     private function showView(array $data = [], ?User $queriedUser = null, ?array $errors = null) {

@@ -21,11 +21,11 @@ const closeModal = (mod) => {
     mod.close();
 }
 
-const toggleInputs = (inputList) => {
+const toggleInputs = (inputList, loadingButton = null) => {
     inputList.forEach((input) => {
         input.disabled = !input.disabled;
 
-        if (input.classList.contains("button") && input.classList.contains("primary")) {
+        if ((input === loadingButton && loadingButton !== null) || (loadingButton === null && input.classList.contains("button") && input.classList.contains("primary"))) {
 
             if (!input.classList.contains("loading")) {
                 input.classList.add("loading");

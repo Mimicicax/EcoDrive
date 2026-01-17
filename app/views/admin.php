@@ -33,7 +33,7 @@
     <?php endif ?>
 
     <div id="user-data-card" class="card">
-        <form action="<?= route("adminUpdateUser") ?>" method="PATCH">
+        <form action="<?= route("admin") ?>" method="PATCH">
             <input type="hidden" name="user" value="<?= $queriedUser->id ?>">
             <span class="input-group">
                 <label for="username">Felhasználónév</label>
@@ -58,10 +58,11 @@
                 Mentés
             </button>
         </form>
-        <form action="<?= route("admin") ?>" method="POST" onsubmit="return confirm('Biztosan törli a felhasználót?')">
+        <form action="<?= route("admin") ?>" method="DELETE">
             <input type="hidden" name="user" value="<?= $queriedUser->id ?>">
-            <input type="hidden" name="action" value="delete">
-            <input type="submit" class="button secondary danger" value="Felhasználó törlése">
+            <button type="button" class="button secondary danger" onclick="deleteUser(this.parentElement)">
+                Felhasználó törlése
+            </button>
         </form>
     </div>
 <?php endif ?>
