@@ -49,7 +49,7 @@
                 <label for="newPass">Új jelszó</label>
                 <input type="password" name="newPassword" id="newPass">
             </span>
-            <span class="input-group"></span>
+            <span class="input-group">
                 <label for="confirmPass">Jelszó megerősítése</label>
                 <input type="password" name="confirmPassword" id="confirmPass">
             </span>
