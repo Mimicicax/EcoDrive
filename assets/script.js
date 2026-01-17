@@ -21,6 +21,27 @@ const closeModal = (mod) => {
     mod.close();
 }
 
+const UI_LOADING_BUTTON_WAIT_TIME_MS = 200;
+
+const addErrorBanner = (msg) => {
+    let banner = document.createElement("div");
+    let content = document.createElement("p");  
+    let close = document.createElement("i");
+
+    banner.classList.add("error-banner");   
+
+    content.innerHTML = `<i class=\"fa-solid fa-circle-exclamation banner-icon\"></i>${msg}`;
+
+    close.classList.add("fa-solid", "fa-xmark", "banner-close-mark");
+    close.addEventListener("click", () => banner.style.display = 'none');
+
+    banner.appendChild(content);
+    banner.appendChild(close);
+    document.body.appendChild(banner);
+}
+
+const removeBanner = () => document.querySelector(".error-banner")?.remove();
+
 const toggleInputs = (inputList, loadingButton = null) => {
     inputList.forEach((input) => {
         input.disabled = !input.disabled;
@@ -51,8 +72,6 @@ const updateVehicle = async (cardId) => {
     let formData = new FormData(form);
     let inputList = card.querySelectorAll("input,button");
 
-    toggleInputs(inputList);
-
     const setError = (fieldName, errorText) => {
         let group = document.getElementById(cardId + "-" + fieldName).parentNode;
         let msg = document.createElement("span");
@@ -79,29 +98,36 @@ const updateVehicle = async (cardId) => {
         });
     }
 
+    toggleInputs(inputList);
     clearErrors();
+    removeBanner();
 
     let resp = await fetch(form.action, {
         method: "PUT",
         body: new URLSearchParams(formData)
     });
 
-    if (resp.status == 200) {
-        card.getElementsByClassName("car-license-plate")[0].textContent = formData.get("licensePlate");
-        card.getElementsByClassName("car-brand")[0].textContent = formData.get("brand");
-        card.getElementsByClassName("car-model")[0].textContent = formData.get("model");
-        card.getElementsByClassName("car-year")[0].textContent = formData.get("year");
+    setTimeout(async () => {
+        toggleInputs(inputList);
 
-    } else if (resp.status == 400) {
-        let errors = new URLSearchParams(await resp.text());
-    
-        errors.forEach((value, key) => {
-            let fieldName = key.slice(0, key.length - "Error".length);
-            setError(fieldName, value);
-        });
-    }
+        if (resp.status == 200) {
+            card.getElementsByClassName("car-license-plate")[0].textContent = formData.get("licensePlate");
+            card.getElementsByClassName("car-brand")[0].textContent = formData.get("brand");
+            card.getElementsByClassName("car-model")[0].textContent = formData.get("model");
+            card.getElementsByClassName("car-year")[0].textContent = formData.get("year");
 
-    setTimeout(() => toggleInputs(inputList), 200);
+        } else if (resp.status == 400) {
+            let errors = new URLSearchParams(await resp.text());
+        
+            errors.forEach((value, key) => {
+                let fieldName = key.slice(0, key.length - "Error".length);
+                setError(fieldName, value);
+            });
+
+        } else
+            addErrorBanner("A jármű frissítése nem sikerült");
+
+    }, UI_LOADING_BUTTON_WAIT_TIME_MS);
 };
 
 const deleteVehicle = async (cardId) => {
@@ -116,6 +142,7 @@ const deleteVehicle = async (cardId) => {
     let deleteButton =card.querySelector(".danger");
 
     toggleInputs(inputList, deleteButton);
+    removeBanner();
 
     let resp = await fetch(`${route}?vehicleId=${id}`, {
         method: "DELETE",
@@ -124,8 +151,10 @@ const deleteVehicle = async (cardId) => {
     setTimeout(() => {
         toggleInputs(inputList, deleteButton);
 
-        if (resp.status !== 200)
+        if (resp.status !== 200) {
+            addErrorBanner("A jármű törlése nem sikerült");
             return;
+        }
 
         card.animate([
             { transform: "scale(1)" },
@@ -156,7 +185,7 @@ const deleteVehicle = async (cardId) => {
             }
         });
 
-    }, 200);
+    }, UI_LOADING_BUTTON_WAIT_TIME_MS);
 }
 
 const saveProfileData = async (cardId) => {
@@ -170,6 +199,7 @@ const saveProfileData = async (cardId) => {
         url.append(kv[0], kv[1]);
 
     toggleInputs(inputList);
+    removeBanner();
 
     inputList.forEach((input) => {
         input.parentNode.classList.remove("error");
@@ -190,30 +220,33 @@ const saveProfileData = async (cardId) => {
         body: url
     });
 
-    if (resp.status === 200) {
+    setTimeout(async () => {
+        toggleInputs(inputList);
 
-    } else {
-        let errors = new URLSearchParams(await resp.text());
+        if (resp.status === 400) {
+            let errors = new URLSearchParams(await resp.text());
 
-        errors.forEach((value, key) => {
-            let fieldId = key.substring(0, key.length - "Error".length);
-            let input = document.getElementById(fieldId);
+            errors.forEach((value, key) => {
+                let fieldId = key.substring(0, key.length - "Error".length);
+                let input = document.getElementById(fieldId);
 
-            input.parentNode.classList.add("error");
+                input.parentNode.classList.add("error");
 
-            let msg = document.createElement("span");
-            msg.classList.add("error");
-            msg.textContent = value;
+                let msg = document.createElement("span");
+                msg.classList.add("error");
+                msg.textContent = value;
 
-            if (input.parentNode.parentNode.classList.contains("dual-input-group"))
-                input.parentNode.parentNode.after(msg);
-            
-            else
-                input.parentNode.after(msg);
-        });
-    }
+                if (input.parentNode.parentNode.classList.contains("dual-input-group"))
+                    input.parentNode.parentNode.after(msg);
 
-    setTimeout(() => toggleInputs(inputList), 200);
+                else
+                    input.parentNode.after(msg);
+            });
+
+        } else if (resp.status !== 200)
+            addErrorBanner("Az adatok frissítése nem sikerült");
+
+    }, UI_LOADING_BUTTON_WAIT_TIME_MS);
 }
 
 const deleteRoute = async (cardId) => {
@@ -229,6 +262,7 @@ const deleteRoute = async (cardId) => {
         url.append(kv[0], kv[1]);
 
     toggleInputs(inputs, inputs[0]);
+    removeBanner();
 
     let resp = await fetch(`${form.action}?${url.toString()}`, {
         method: 'DELETE',
@@ -237,13 +271,15 @@ const deleteRoute = async (cardId) => {
     setTimeout(() => {
         toggleInputs(inputs, inputs[0]);
 
-        if (resp.status !== 200)
+        if (resp.status !== 200) {
+            addErrorBanner("Az útvonal törlése nem sikerült");
             return;
+        }
 
         let prev = card.previousElementSibling;
         let next = card.nextElementSibling;
         let cont = document.getElementById("journal-container");
-    
+
         card.animate([
             { transform: "scale(1)" },
             { transform: "scale(1.1)" },
@@ -251,34 +287,34 @@ const deleteRoute = async (cardId) => {
         ], { 
             duration: 250,
             easing: "cubic-bezier(0.4,0,0.2,1)" 
-        
+
         }).finished.finally(() => {
             card.remove();
-        
+
             if (prev.tagName == "H2" && (next === null || next.tagName == "H2")) {
                 prev.remove();
                 card.remove();
-            
+
                 if (cont.childElementCount == 0) {
                     cont.previousElementSibling.remove();
-                
+
                     cont.classList.add("empty",  "card-container");
-                    
+
                     let span = document.createElement("span");
                     let h1 = document.createElement("h1");
                     let p = document.createElement("p");
                     let p2 = document.createElement("p");
-                
+
                     span.style.gridColumn = "1/-1";
                     h1.append("A napló üres");
                     p.append("Adj hozzá útvonalakat és azok itt fognak megjelenni");
                     p2.append("Az is előfordulhat, hogy nincs a szűrési feltételeknek megfelelő elmentett útvonalad");
-                
+
                     span.append(h1, p, p2);
                     cont.append(span);
                 }
             }
         });
 
-    }, 200);
+    }, UI_LOADING_BUTTON_WAIT_TIME_MS);
 }

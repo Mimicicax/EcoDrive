@@ -11,25 +11,6 @@ const addErrorToField = (field, msg = null) => {
     }
 }
 
-const addErrorBanner = (msg) => {
-    let banner = document.createElement("div");
-    let content = document.createElement("p");  
-    let close = document.createElement("i");
-
-    banner.classList.add("error-banner");   
-
-    content.innerHTML = `<i class=\"fa-solid fa-circle-exclamation banner-icon\"></i>${msg}`;
-
-    close.classList.add("fa-solid", "fa-xmark", "banner-close-mark");
-    close.addEventListener("click", () => banner.style.display = 'none');
-
-    banner.appendChild(content);
-    banner.appendChild(close);
-    document.body.appendChild(banner);
-}
-
-const removeBanner = () => document.querySelector(".error-banner")?.remove();
-
 const updateUserData = async (cardId) => {
     if (!confirm('Biztosan módosítja a felhasználó adatait?'))
         return;
@@ -86,7 +67,7 @@ const updateUserData = async (cardId) => {
         } else
             addErrorBanner("Az adatok frissítése nem sikerült");
 
-    }, 200);
+    }, UI_LOADING_BUTTON_WAIT_TIME_MS);
 }
 
 const deleteUser = async (deleteForm) => {
@@ -146,6 +127,5 @@ const deleteUser = async (deleteForm) => {
             main.appendChild(cont);
         });
 
-    }, 200);
-
+    }, UI_LOADING_BUTTON_WAIT_TIME_MS);
 }
