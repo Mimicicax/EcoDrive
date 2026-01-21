@@ -6,11 +6,6 @@ services:
     # Bind mount a fejlesztéshez (live reload)
     volumes:
       - .:/var/www/html
-    environment:
-      - APP_ENV=development
-      - DEBUG_MODE=true
-    env_file:
-      - .env.dev
 
   database:
     # A host gépről is elérhető legyen (pl. MySQL Workbench-hez)
