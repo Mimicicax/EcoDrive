@@ -14,6 +14,7 @@ require_once appConfig()->APP_ROOT . "/endpoints/Endpoint.php";
 require_once appConfig()->APP_ROOT . "/models/User.php";
 require_once appConfig()->APP_ROOT . "/helpers/UserDataValidator.php";
 require_once appConfig()->APP_ROOT . "/routing.php";
+require_once appConfig()->APP_ROOT . "/helpers/Redirect.php";
 
 class Admin implements Endpoint
 {
