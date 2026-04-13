@@ -51,8 +51,6 @@ Az alábbi funkciók szerepelnek a projektdokumentációban/ötletlistában, de 
 - Exportálás (kép/PDF)
 - Google OAuth
 
-Ezekhez a tesztesetek a [08_Coverage_Matrix.md](08_Coverage_Matrix.md) fájlban „Nem elérhető” státusszal szerepelnek.
-
 ## 4. Tesztelési megközelítés
 
 - **Black-box** szemlélet (funkcionális UI + API viselkedés)
