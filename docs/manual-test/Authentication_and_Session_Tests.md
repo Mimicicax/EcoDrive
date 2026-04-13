@@ -1,4 +1,4 @@
-# 01 – Autentikáció és session tesztek
+# Autentikáció és session tesztek
 
 ## Tesztadatok (javasolt)
 
@@ -7,13 +7,13 @@
 
 ### Jelszó teszt adatok (ekvivalencia partíciók + határérték)
 
-| Kód | Jelszó | Megerősítés | Várható |
-|---|---|---|---|
-| P1 | `Abcdefg1` | `Abcdefg1` | Elfogadva |
-| P2 | `Abcdefg` | `Abcdefg` | Hiba: "A jelszónak legalább 8..." |
-| P3 | `abcdefgh1` | `abcdefgh1` | Hiba a policy szerint (nincs nagybetű) |
-| P4 | `Abcdefgh` | `Abcdefgh` | Hiba a policy szerint (nincs szám) |
-| P5 | `Abcdefg1` | `Abcdefg2` | Hiba: "A jelszavak nem egyeznek" |
+| Kód | Jelszó       | Megerősítés | Várható                               |
+| ---- | ------------- | -------------- | --------------------------------------- |
+| P1   | `Abcdefg1`  | `Abcdefg1`   | Elfogadva                               |
+| P2   | `Abcdefg`   | `Abcdefg`    | Hiba: "A jelszónak legalább 8..."     |
+| P3   | `abcdefgh1` | `abcdefgh1`  | Hiba a policy szerint (nincs nagybetű) |
+| P4   | `Abcdefgh`  | `Abcdefgh`   | Hiba a policy szerint (nincs szám)     |
+| P5   | `Abcdefg1`  | `Abcdefg2`   | Hiba: "A jelszavak nem egyeznek"        |
 
 Megjegyzés: a hibaüzenet a rendszerben a következő: `A jelszónak legalább 8 karakterből kell állnia és tartalmaznia kell legalább egy nagybetűt és számot`.
 
