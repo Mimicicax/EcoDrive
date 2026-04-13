@@ -1,10 +1,10 @@
-CREATE USER IF NOT EXISTS 'ecodrive'@'localhost' IDENTIFIED BY 'ecodrive2026';
+CREATE USER IF NOT EXISTS 'ecodrive'@'127.0.0.1' IDENTIFIED BY 'ecodrive2026';
 
 DROP DATABASE IF EXISTS ecodrive;
 CREATE DATABASE ecodrive DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 USE ecodrive;
 
-GRANT ALL ON `ecodrive`.* TO 'ecodrive'@'localhost' IDENTIFIED BY 'ecodrive2026';
+GRANT ALL PRIVILEGES ON ecodrive.* TO 'ecodrive'@'127.0.0.1' WITH GRANT OPTION;
 
 CREATE TABLE IF NOT EXISTS users (
     id INTEGER PRIMARY KEY AUTO_INCREMENT,
