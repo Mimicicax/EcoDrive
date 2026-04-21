@@ -51,7 +51,7 @@ Megjegyzés: a hibaüzenet a rendszerben a következő: `A jelszónak legalább 
   4. Kattints: „Regisztráció”.
 - **Elvárt:** hibaüzenet a felhasználónévhez: `A felhasználónév minimum 1, maximum 50 karakterből állhat`.
 
-### AUTH-REG-004 – Felhasználónév tiltott karakter: `@`
+### AUTH-REG-004 – Felhasználónévben van speciális karakter: `@`
 
 - **Prioritás:** High
 - **Előfeltétel:** kijelentkezett állapot
@@ -60,7 +60,7 @@ Megjegyzés: a hibaüzenet a rendszerben a következő: `A jelszónak legalább 
   2. Username: pl. `nev@valami`.
   3. Egyedi email + P1.
   4. „Regisztráció”.
-- **Elvárt:** hibaüzenet: `Érvénytelen karakter a felhasználónévben`.
+- **Elvárt:** a rendszer elfogadja a `@` karaktert a felhasználónévben (nincs validációs hiba); a regisztráció sikeres és átirányítás a bejelentkezés oldalra (`/login`).
 
 ### AUTH-REG-005 – Felhasználónév már foglalt
 
