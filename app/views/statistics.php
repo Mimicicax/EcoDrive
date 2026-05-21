@@ -286,7 +286,7 @@
         }
     });
 
-    <?php $lastDayOfMonth = (new DateTimeImmutable('last day of this month'))->format('z') + 1 ?>
+    <?php $lastDayOfMonth = (new DateTimeImmutable('last day of this month'))->format('d') ?>
     <?php $lastDayOfYear = (new DateTimeImmutable('last day of december this year'))->format('z') + 1 ?>
 
     const monthlyConsumptionPredictionCurve = new Chart("monthlyConsumptionPredictionCurve", {
